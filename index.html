@@ -1,1 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beeta OS</title>
+  <style>
+:root{
+  --bg:#070812;
+  --card:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.12);
+  --accent1:#5ee7ff;
+  --accent2:#9b6cff;
+  --accent3:#ff6bd6;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',sans-serif}
+body{
+  background:radial-gradient(1200px 600px at 10% 10%,#141a3a,#070812 60%),
+             radial-gradient(800px 400px at 90% 80%,#2a0d3f,transparent 60%);
+  color:#eef1ff;overflow-x:hidden;scroll-behavior:smooth
+}
+header{
+  position:fixed;top:0;left:0;width:100%;z-index:100;
+  padding:22px 60px;display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(180deg,rgba(10,12,30,.75),rgba(10,12,30,.35));
+  backdrop-filter:blur(18px) saturate(180%);
+  border-bottom:1px solid var(--border)
+}
+header h2{
+  font-weight:800;letter-spacing:.5px;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  -webkit-background-clip:text;color:transparent
+}
+header nav a{
+  margin-left:34px;text-decoration:none;color:#cfd6ff;font-weight:500;position:relative
+}
+header nav a::after{
+  content:'';position:absolute;left:0;bottom:-6px;width:0;height:2px;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));transition:.3s
+}
+header nav a:hover::after{width:100%}
+.section{min-height:100vh;padding:160px 90px 100px;position:relative}
+
+#home{
+  display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center;
+  position:relative
+}
+#home::before{
+  content:'BEETA OS';
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:140px;
+  font-weight:900;
+  letter-spacing:12px;
+  color:rgba(255,255,255,0.035);
+  white-space:nowrap;
+  pointer-events:none;
+  animation:floatingText 6s ease-in-out infinite
+}
+#home::after{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    linear-gradient(transparent 95%,rgba(255,255,255,.05) 96%),
+    linear-gradient(90deg,transparent 95%,rgba(255,255,255,.05) 96%);
+  background-size:60px 60px;
+  opacity:.25;pointer-events:none
+}
+@keyframes floatingText{
+  0%{transform:translate(-50%,-52%)}
+  50%{transform:translate(-50%,-48%)}
+  100%{transform:translate(-50%,-52%)}
+}
+#home h1{
+  font-size:84px;line-height:1.05;font-weight:900;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;color:transparent
+}
+#home p{margin-top:28px;font-size:22px;max-width:720px;opacity:.9}
+.hero-card{
+  background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.02));
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:36px;
+  box-shadow:0 40px 120px rgba(0,0,0,.6);
+  transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease, background .35s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero-card::before{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  background:linear-gradient(120deg,transparent,rgba(94,231,255,.35),rgba(155,108,255,.35),transparent);
+  opacity:0;
+  transition:.4s;
+}
+
+.hero-card:hover{
+  transform:translateY(-10px) scale(1.015);
+  box-shadow:0 60px 160px rgba(0,0,0,.8);
+  border-color:rgba(155,108,255,.6);
+}
+
+.hero-card:hover::before{opacity:1}
+
+.fade-in{opacity:0;transform:translateY(30px);transition:.9s cubic-bezier(.2,.7,.2,1)}
+.fade-in.show{opacity:1;transform:none}
+
+.tagline{margin-top:18px;font-size:20px;opacity:.85;min-height:28px}
+
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at top,#111,#000);
+  animation:splashOut 1.2s ease forwards;
+  animation-delay:2.6s;
+  pointer-events:auto
+}
+#splash.hidden{
+  pointer-events:none
+}
+#splash .splash-inner{
+  display:flex;flex-direction:column;align-items:center;gap:18px
+}
+#splash img{
+  width:96px;height:96px;object-fit:contain;
+  opacity:0;animation:splashIn 1.2s ease forwards
+}
+#splash h1{
+  font-size:72px;letter-spacing:6px;font-weight:900;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;color:transparent;
+  opacity:0;animation:splashIn 1.6s ease forwards
+}
+#splash p{
+  margin-top:6px;font-size:18px;opacity:.8;letter-spacing:1px;
+  animation:splashIn 1.8s ease forwards
+}
+@keyframes splashIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes splashOut{to{opacity:0;visibility:hidden}}
+</style>
+</head>
+<body>
+<div id="splash">
+  <div class="splash-inner">
+    <!-- Replace logo.png with your actual Beeta OS logo file -->
+    <img src="logo.png" alt="Beeta OS Logo" />
+    <h1>Welcome to Beeta OS</h1>
+    <p>The next‑generation operating system</p>
+  </div>
+</div>
+
+<header>
+  <h2>Beeta OS</h2>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="#download">Download</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section id="home" class="section fade-in">
+  <div>
+    <h1>Experience the Future of Operating Systems</h1>
+    <div class="tagline" id="tagline"></div>
+    <p>Beeta OS is a lightweight, modern OS for gamers, professionals, and everyday users.</p>
+  </div>
+  <div class="hero-card">
+    <h3>Beeta AI</h3>
+    <p>Your built-in assistant for installation help, productivity, and everyday tasks.</p>
+  </div>
+</section>
+
+<section id="features" class="section fade-in">
+  <h1>Features</h1>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;margin-top:40px">
+    <div class="hero-card">
+      <h3>Beeta Store</h3>
+      <p>One‑click installation of supported Windows apps directly from Beeta Store.</p>
+    </div>
+    <div class="hero-card">
+      <h3>Beeta AI</h3>
+      <p>Your built‑in assistant for setup guidance, productivity, and daily tasks.</p>
+    </div>
+    <div class="hero-card">
+      <h3>Dual UI Modes</h3>
+      <p>Choose between a Windows‑11‑like UI or the custom Beeta UI.</p>
+    </div>
+    <div class="hero-card">
+      <h3>For Everyone</h3>
+      <p>Designed for gamers, professionals, business users, and everyday computing.</p>
+    </div>
+  </div>
+</section>
+
+<section id="download" class="section fade-in">
+  <h1>Download</h1>
+  <p style="max-width:700px;margin-top:20px">Beeta OS is currently under active development. You can’t download it yet, but you can join the wishlist to show your interest and get early updates.</p>
+
+  <div style="margin-top:40px;display:flex;gap:20px;flex-wrap:wrap;align-items:center">
+    <button style="padding:18px 34px;border-radius:16px;border:none;background:#444;color:#aaa;font-size:16px;cursor:not-allowed">Coming Soon</button>
+
+    <form action="https://formspree.io/f/mdkqlogb" method="POST" style="display:flex;gap:12px;flex-wrap:wrap">
+      <input type="hidden" name="wishlist" value="true" />
+      <input type="email" name="email" required placeholder="Enter your email" style="padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff;min-width:260px" />
+      <button type="submit" style="padding:16px 26px;border-radius:14px;border:none;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#000;font-weight:700;cursor:pointer">Add to Wishlist</button>
+    </form>
+  </div>
+
+  <p style="margin-top:18px;opacity:.75">Clicking “Add to Wishlist” helps us understand your interest in Beeta OS.</p>
+</section>
+
+<section id="contact" class="section fade-in">
+  <h1>Contact</h1>
+  <p style="margin-top:18px">Have questions, ideas, or feedback? Reach out to us.</p>
+
+  <form action="https://formspree.io/f/mdkqlogb" method="POST" style="margin-top:32px;max-width:520px;display:flex;flex-direction:column;gap:16px">
+    <input type="text" name="name" placeholder="Your name" style="padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff" />
+    <input type="email" name="email" required placeholder="Your email" style="padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff" />
+    <textarea name="message" required placeholder="Your message" rows="5" style="padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff"></textarea>
+    <button type="submit" style="padding:16px;border-radius:14px;border:none;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#000;font-weight:800;cursor:pointer">Send Message</button>
+  </form>
+
+  <p style="margin-top:22px;opacity:.75">Or email us directly at <strong>beeta.main@gmail.com</strong></p>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  // Ensure scrolling is enabled
+  document.documentElement.style.overflowY='auto';
+  document.body.style.overflowY='auto';
+
+  // Splash cleanup (remove blocker after animation)
+  const splash=document.getElementById('splash');
+  if(splash){
+    const hide=()=>{
+      splash.classList.add('hidden');
+      setTimeout(()=>splash.remove(),300);
+    };
+    splash.addEventListener('animationend',hide,{once:true});
+    // Fallback in case animationend doesn't fire
+    setTimeout(hide,3200);
+  }
+
+  // Fade-in
+  const faders=document.querySelectorAll('.fade-in');
+  const reveal=()=>{
+    faders.forEach(f=>{
+      const r=f.getBoundingClientRect();
+      if(r.top<window.innerHeight-100) f.classList.add('show');
+    });
+  };
+  window.addEventListener('scroll',reveal);
+  reveal();
+
+  // Rotating tagline (safe)
+  const taglineEl=document.getElementById('tagline');
+  if(taglineEl){
+    const taglines=[
+      'Built for gamers, professionals, and everyday users',
+      'One OS. Every workflow.',
+      'Windows apps. Linux power.',
+      'Designed for the future'
+    ];
+    let i=0;
+    taglineEl.textContent=taglines[0];
+    setInterval(()=>{
+      taglineEl.textContent=taglines[++i%taglines.length];
+    },2600);
+  }
+});
+</script>
+
+<footer style="padding:40px 0 30px;text-align:center;font-size:14px;color:rgba(255,255,255,0.6);">
+  &copy; Beeta&reg; 2025
+</footer>
+
+</body>
+</html>
 
