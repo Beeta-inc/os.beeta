@@ -1,0 +1,8 @@
+NAME="Beeta OS"
+VERSION="1.0"
+ID=beeta
+PRETTY_NAME="Beeta OS 1.0"
+VERSION_ID="1.0"
+HOME_URL="https://beetaos.local"
+SUPPORT_URL="https://beetatechnologies.pages.dev"
+BUG_REPORT_URL="https://beetatechnologies.pages.dev"
