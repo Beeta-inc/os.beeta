@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Beeta OS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
 :root{
   --bg:#070812;
@@ -17,27 +18,31 @@
 body{
   background:radial-gradient(1200px 600px at 10% 10%,#141a3a,#070812 60%),
              radial-gradient(800px 400px at 90% 80%,#2a0d3f,transparent 60%);
-  color:#eef1ff;overflow-x:hidden;scroll-behavior:smooth
+  color:#eef1ff;overflow-x:hidden;scroll-behavior:smooth;position:relative
 }
+body::before{content:'';position:fixed;inset:0;background:url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.03)"/></svg>');pointer-events:none;z-index:0}
 header{
   position:fixed;top:0;left:0;width:100%;z-index:100;
   padding:22px 60px;display:flex;justify-content:space-between;align-items:center;
-  background:linear-gradient(180deg,rgba(10,12,30,.75),rgba(10,12,30,.35));
-  backdrop-filter:blur(18px) saturate(180%);
-  border-bottom:1px solid var(--border)
+  background:linear-gradient(180deg,rgba(10,12,30,.85),rgba(10,12,30,.45));
+  backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);transition:all .3s
 }
+header.scrolled{padding:16px 60px;background:linear-gradient(180deg,rgba(10,12,30,.95),rgba(10,12,30,.75));box-shadow:0 8px 32px rgba(0,0,0,.4)}
 header h2{
-  font-weight:800;letter-spacing:.5px;
+  font-weight:800;letter-spacing:.5px;font-size:24px;
   background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  -webkit-background-clip:text;color:transparent
+  -webkit-background-clip:text;background-clip:text;color:transparent;transition:transform .3s
 }
+header h2:hover{transform:scale(1.05)}
 header nav a{
-  margin-left:34px;text-decoration:none;color:#cfd6ff;font-weight:500;position:relative
+  margin-left:34px;text-decoration:none;color:#cfd6ff;font-weight:500;position:relative;transition:color .3s
 }
 header nav a::after{
   content:'';position:absolute;left:0;bottom:-6px;width:0;height:2px;
   background:linear-gradient(90deg,var(--accent1),var(--accent2));transition:.3s
 }
+header nav a:hover{color:#fff}
 header nav a:hover::after{width:100%}
 .section{min-height:100vh;padding:160px 90px 100px;position:relative}
 
@@ -75,9 +80,11 @@ header nav a:hover::after{width:100%}
 #home h1{
   font-size:84px;line-height:1.05;font-weight:900;
   background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
-  -webkit-background-clip:text;color:transparent
+  -webkit-background-clip:text;background-clip:text;color:transparent
 }
-#home p{margin-top:28px;font-size:22px;max-width:720px;opacity:.9}
+#home p{margin-top:28px;font-size:22px;max-width:720px;opacity:.9;line-height:1.6}
+.cta-btn{padding:18px 40px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;font-size:16px;cursor:pointer;transition:all .3s;box-shadow:0 8px 24px rgba(94,231,255,.3);margin-top:32px}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(94,231,255,.5)}
 .hero-card{
   background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.02));
   border:1px solid var(--border);
@@ -87,20 +94,23 @@ header nav a:hover::after{width:100%}
   transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease, background .35s ease;
   position:relative;
   overflow:hidden;
+  backdrop-filter:blur(10px)
 }
-
+.hero-card i{font-size:42px;background:linear-gradient(135deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px;display:block}
+.hero-card h3{font-size:24px;margin-bottom:12px;color:#fff}
+.hero-card p{opacity:.85;line-height:1.6}
 .hero-card::before{
   content:'';
   position:absolute;
   inset:-1px;
   background:linear-gradient(120deg,transparent,rgba(94,231,255,.35),rgba(155,108,255,.35),transparent);
   opacity:0;
-  transition:.4s;
+  transition:.4s;border-radius:26px
 }
 
 .hero-card:hover{
   transform:translateY(-10px) scale(1.015);
-  box-shadow:0 60px 160px rgba(0,0,0,.8);
+  box-shadow:0 60px 160px rgba(94,231,255,.3);
   border-color:rgba(155,108,255,.6);
 }
 
@@ -109,7 +119,11 @@ header nav a:hover::after{width:100%}
 .fade-in{opacity:0;transform:translateY(30px);transition:.9s cubic-bezier(.2,.7,.2,1)}
 .fade-in.show{opacity:1;transform:none}
 
-.tagline{margin-top:18px;font-size:20px;opacity:.85;min-height:28px}
+.tagline{margin-top:18px;font-size:20px;opacity:.85;min-height:28px;font-weight:600;color:var(--accent1)}
+input,textarea{font-family:inherit;outline:none;transition:all .3s}
+input:focus,textarea:focus{border-color:var(--accent1)!important;box-shadow:0 0 0 3px rgba(94,231,255,.2)}
+button{transition:all .3s}
+@media(max-width:768px){header{padding:18px 24px!important}.section{padding:120px 24px 60px!important}#home{grid-template-columns:1fr!important;gap:40px}#home h1{font-size:48px!important}}
 
 #splash{
   position:fixed;inset:0;z-index:9999;
@@ -132,7 +146,7 @@ header nav a:hover::after{width:100%}
 #splash h1{
   font-size:72px;letter-spacing:6px;font-weight:900;
   background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
-  -webkit-background-clip:text;color:transparent;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
   opacity:0;animation:splashIn 1.6s ease forwards
 }
 #splash p{
@@ -146,7 +160,6 @@ header nav a:hover::after{width:100%}
 <body>
 <div id="splash">
   <div class="splash-inner">
-    <!-- Replace logo.png with your actual Beeta OS logo file -->
     <img src="logo.png" alt="Beeta OS Logo" />
     <h1>Welcome to Beeta OS</h1>
     <p>The next‑generation operating system</p>
@@ -168,29 +181,35 @@ header nav a:hover::after{width:100%}
     <h1>Experience the Future of Operating Systems</h1>
     <div class="tagline" id="tagline"></div>
     <p>Beeta OS is a lightweight, modern OS for gamers, professionals, and everyday users.</p>
+    <a href="#download"><button class="cta-btn">Join the Waitlist <i class="fas fa-arrow-right" style="margin-left:8px"></i></button></a>
   </div>
   <div class="hero-card">
+    <i class="fas fa-robot"></i>
     <h3>Beeta AI</h3>
     <p>Your built-in assistant for installation help, productivity, and everyday tasks.</p>
   </div>
 </section>
 
 <section id="features" class="section fade-in">
-  <h1>Features</h1>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;margin-top:40px">
+  <h1 style="text-align:center;font-size:56px;margin-bottom:60px">Powerful Features</h1>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px">
     <div class="hero-card">
+      <i class="fas fa-store"></i>
       <h3>Beeta Store</h3>
       <p>One‑click installation of supported Windows apps directly from Beeta Store.</p>
     </div>
     <div class="hero-card">
+      <i class="fas fa-brain"></i>
       <h3>Beeta AI</h3>
       <p>Your built‑in assistant for setup guidance, productivity, and daily tasks.</p>
     </div>
     <div class="hero-card">
+      <i class="fas fa-palette"></i>
       <h3>Dual UI Modes</h3>
       <p>Choose between a Windows‑11‑like UI or the custom Beeta UI.</p>
     </div>
     <div class="hero-card">
+      <i class="fas fa-users"></i>
       <h3>For Everyone</h3>
       <p>Designed for gamers, professionals, business users, and everyday computing.</p>
     </div>
@@ -198,43 +217,53 @@ header nav a:hover::after{width:100%}
 </section>
 
 <section id="download" class="section fade-in">
-  <h1>Download</h1>
-  <p style="max-width:700px;margin-top:20px">Beeta OS is currently under active development. You can’t download it yet, but you can join the wishlist to show your interest and get early updates.</p>
+  <div style="max-width:800px;margin:0 auto;text-align:center">
+    <h1 style="font-size:56px;margin-bottom:24px">Get Early Access</h1>
+    <p style="font-size:20px;opacity:.9;line-height:1.6">Beeta OS is currently under active development. Join the wishlist to show your interest and get early updates when we launch.</p>
 
-  <div style="margin-top:40px;display:flex;gap:20px;flex-wrap:wrap;align-items:center">
-    <button style="padding:18px 34px;border-radius:16px;border:none;background:#444;color:#aaa;font-size:16px;cursor:not-allowed">Coming Soon</button>
+    <div style="margin-top:50px;display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:center">
+      <div style="padding:20px 40px;border-radius:16px;border:2px dashed var(--border);background:rgba(255,255,255,.02);color:#aaa;font-size:16px;font-weight:600"><i class="fas fa-clock" style="margin-right:8px"></i>Coming Soon</div>
 
-    <form action="https://formspree.io/f/mdkqlogb" method="POST" style="display:flex;gap:12px;flex-wrap:wrap">
-      <input type="hidden" name="wishlist" value="true" />
-      <input type="email" name="email" required placeholder="Enter your email" style="padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff;min-width:260px" />
-      <button type="submit" style="padding:16px 26px;border-radius:14px;border:none;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#000;font-weight:700;cursor:pointer">Add to Wishlist</button>
-    </form>
+      <form action="https://formspree.io/f/mdkqlogb" method="POST" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <input type="hidden" name="wishlist" value="true" />
+        <input type="email" name="email" required placeholder="Enter your email" style="padding:18px 24px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;min-width:300px;font-size:16px" />
+        <button type="submit" style="padding:18px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;cursor:pointer;font-size:16px;box-shadow:0 8px 24px rgba(94,231,255,.3)"><i class="fas fa-bell" style="margin-right:8px"></i>Join Wishlist</button>
+      </form>
+    </div>
+
+    <p style="margin-top:28px;opacity:.7;font-size:15px"><i class="fas fa-info-circle" style="margin-right:6px"></i>Be among the first to experience the future of operating systems</p>
   </div>
-
-  <p style="margin-top:18px;opacity:.75">Clicking “Add to Wishlist” helps us understand your interest in Beeta OS.</p>
 </section>
 
 <section id="contact" class="section fade-in">
-  <h1>Contact</h1>
-  <p style="margin-top:18px">Have questions, ideas, or feedback? Reach out to us.</p>
+  <div style="max-width:600px;margin:0 auto">
+    <h1 style="font-size:56px;text-align:center;margin-bottom:20px">Get in Touch</h1>
+    <p style="text-align:center;font-size:18px;opacity:.9;margin-bottom:40px">Have questions, ideas, or feedback? We'd love to hear from you.</p>
 
-  <form action="https://formspree.io/f/mdkqlogb" method="POST" style="margin-top:32px;max-width:520px;display:flex;flex-direction:column;gap:16px">
-    <input type="text" name="name" placeholder="Your name" style="padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff" />
-    <input type="email" name="email" required placeholder="Your email" style="padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff" />
-    <textarea name="message" required placeholder="Your message" rows="5" style="padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff"></textarea>
-    <button type="submit" style="padding:16px;border-radius:14px;border:none;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#000;font-weight:800;cursor:pointer">Send Message</button>
-  </form>
+    <form action="https://formspree.io/f/mdkqlogb" method="POST" style="display:flex;flex-direction:column;gap:20px">
+      <input type="text" name="name" placeholder="Your name" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px" />
+      <input type="email" name="email" required placeholder="Your email" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px" />
+      <textarea name="message" required placeholder="Your message" rows="6" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px;resize:vertical"></textarea>
+      <button type="submit" style="padding:18px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:800;cursor:pointer;font-size:16px;box-shadow:0 8px 24px rgba(94,231,255,.3)"><i class="fas fa-paper-plane" style="margin-right:8px"></i>Send Message</button>
+    </form>
 
-  <p style="margin-top:22px;opacity:.75">Or email us directly at <strong>beeta.main@gmail.com</strong></p>
+    <p style="margin-top:32px;text-align:center;opacity:.75;font-size:15px"><i class="fas fa-envelope" style="margin-right:6px"></i>Or email us at <strong style="color:var(--accent1)">beeta.main@gmail.com</strong></p>
+  </div>
 </section>
 
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
-  // Ensure scrolling is enabled
   document.documentElement.style.overflowY='auto';
   document.body.style.overflowY='auto';
 
-  // Splash cleanup (remove blocker after animation)
+  // Header scroll effect
+  const header=document.querySelector('header');
+  window.addEventListener('scroll',()=>{
+    if(window.scrollY>50)header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  });
+
+  // Splash cleanup
   const splash=document.getElementById('splash');
   if(splash){
     const hide=()=>{
@@ -242,7 +271,6 @@ document.addEventListener('DOMContentLoaded',()=>{
       setTimeout(()=>splash.remove(),300);
     };
     splash.addEventListener('animationend',hide,{once:true});
-    // Fallback in case animationend doesn't fire
     setTimeout(hide,3200);
   }
 
@@ -257,7 +285,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('scroll',reveal);
   reveal();
 
-  // Rotating tagline (safe)
+  // Rotating tagline
   const taglineEl=document.getElementById('tagline');
   if(taglineEl){
     const taglines=[
@@ -281,4 +309,3 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 </body>
 </html>
-
