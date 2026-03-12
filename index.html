@@ -21,6 +21,8 @@ body{
   color:#eef1ff;overflow-x:hidden;scroll-behavior:smooth;position:relative
 }
 body::before{content:'';position:fixed;inset:0;background:url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.03)"/></svg>');pointer-events:none;z-index:0}
+
+/* ── HEADER ── */
 header{
   position:fixed;top:0;left:0;width:100%;z-index:100;
   padding:22px 60px;display:flex;justify-content:space-between;align-items:center;
@@ -32,132 +34,231 @@ header.scrolled{padding:16px 60px;background:linear-gradient(180deg,rgba(10,12,3
 header h2{
   font-weight:800;letter-spacing:.5px;font-size:24px;
   background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  -webkit-background-clip:text;background-clip:text;color:transparent;transition:transform .3s
+  -webkit-background-clip:text;background-clip:text;color:transparent;transition:transform .3s;cursor:pointer
 }
 header h2:hover{transform:scale(1.05)}
+header nav{display:flex;align-items:center;gap:4px}
 header nav a{
-  margin-left:34px;text-decoration:none;color:#cfd6ff;font-weight:500;position:relative;transition:color .3s
+  margin-left:8px;text-decoration:none;color:#cfd6ff;font-weight:500;
+  position:relative;transition:color .3s;padding:8px 14px;border-radius:10px;font-size:15px
 }
 header nav a::after{
-  content:'';position:absolute;left:0;bottom:-6px;width:0;height:2px;
+  content:'';position:absolute;left:14px;bottom:2px;width:0;height:2px;
   background:linear-gradient(90deg,var(--accent1),var(--accent2));transition:.3s
 }
-header nav a:hover{color:#fff}
-header nav a:hover::after{width:100%}
-.section{min-height:100vh;padding:160px 90px 100px;position:relative}
-
-#home{
-  display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center;
-  position:relative
+header nav a:hover{color:#fff;background:rgba(255,255,255,.05)}
+header nav a:hover::after{width:calc(100% - 28px)}
+header nav a.devlog-link{
+  color:var(--accent1);border:1px solid rgba(94,231,255,.25);
+  background:rgba(94,231,255,.07)
 }
+header nav a.devlog-link::after{display:none}
+header nav a.devlog-link:hover{background:rgba(94,231,255,.14);border-color:rgba(94,231,255,.45)}
+
+/* Auth button */
+#authBtn{
+  display:flex;align-items:center;gap:8px;padding:8px 16px;
+  border-radius:10px;border:1px solid var(--border);
+  background:rgba(255,255,255,.05);color:#eef1ff;
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .3s;margin-left:12px;white-space:nowrap
+}
+#authBtn:hover{border-color:rgba(94,231,255,.4);background:rgba(94,231,255,.08);color:var(--accent1)}
+#authBtn img{width:20px;height:20px;border-radius:50%;object-fit:cover}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── ORIGINAL SITE STYLES ── */
+.section{min-height:100vh;padding:160px 90px 100px;position:relative}
+#home{display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center;position:relative}
 #home::before{
-  content:'BEETA OS';
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  font-size:140px;
-  font-weight:900;
-  letter-spacing:12px;
-  color:rgba(255,255,255,0.035);
-  white-space:nowrap;
-  pointer-events:none;
-  animation:floatingText 6s ease-in-out infinite
+  content:'BEETA OS';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:140px;font-weight:900;
+  letter-spacing:12px;color:rgba(255,255,255,0.035);white-space:nowrap;
+  pointer-events:none;animation:floatingText 6s ease-in-out infinite
 }
 #home::after{
-  content:'';
-  position:absolute;inset:0;
-  background:
-    linear-gradient(transparent 95%,rgba(255,255,255,.05) 96%),
-    linear-gradient(90deg,transparent 95%,rgba(255,255,255,.05) 96%);
-  background-size:60px 60px;
-  opacity:.25;pointer-events:none
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(transparent 95%,rgba(255,255,255,.05) 96%),linear-gradient(90deg,transparent 95%,rgba(255,255,255,.05) 96%);
+  background-size:60px 60px;opacity:.25;pointer-events:none
 }
 @keyframes floatingText{
-  0%{transform:translate(-50%,-52%)}
-  50%{transform:translate(-50%,-48%)}
-  100%{transform:translate(-50%,-52%)}
+  0%{transform:translate(-50%,-52%)}50%{transform:translate(-50%,-48%)}100%{transform:translate(-50%,-52%)}
 }
-#home h1{
-  font-size:84px;line-height:1.05;font-weight:900;
-  background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
-  -webkit-background-clip:text;background-clip:text;color:transparent
-}
+#home h1{font-size:84px;line-height:1.05;font-weight:900;background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent}
 #home p{margin-top:28px;font-size:22px;max-width:720px;opacity:.9;line-height:1.6}
 .cta-btn{padding:18px 40px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;font-size:16px;cursor:pointer;transition:all .3s;box-shadow:0 8px 24px rgba(94,231,255,.3);margin-top:32px}
 .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(94,231,255,.5)}
 .hero-card{
   background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.02));
-  border:1px solid var(--border);
-  border-radius:26px;
-  padding:36px;
+  border:1px solid var(--border);border-radius:26px;padding:36px;
   box-shadow:0 40px 120px rgba(0,0,0,.6);
-  transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease, background .35s ease;
-  position:relative;
-  overflow:hidden;
-  backdrop-filter:blur(10px)
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease,background .35s ease;
+  position:relative;overflow:hidden;backdrop-filter:blur(10px)
 }
 .hero-card i{font-size:42px;background:linear-gradient(135deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px;display:block}
 .hero-card h3{font-size:24px;margin-bottom:12px;color:#fff}
 .hero-card p{opacity:.85;line-height:1.6}
-.hero-card::before{
-  content:'';
-  position:absolute;
-  inset:-1px;
-  background:linear-gradient(120deg,transparent,rgba(94,231,255,.35),rgba(155,108,255,.35),transparent);
-  opacity:0;
-  transition:.4s;border-radius:26px
-}
-
-.hero-card:hover{
-  transform:translateY(-10px) scale(1.015);
-  box-shadow:0 60px 160px rgba(94,231,255,.3);
-  border-color:rgba(155,108,255,.6);
-}
-
+.hero-card::before{content:'';position:absolute;inset:-1px;background:linear-gradient(120deg,transparent,rgba(94,231,255,.35),rgba(155,108,255,.35),transparent);opacity:0;transition:.4s;border-radius:26px}
+.hero-card:hover{transform:translateY(-10px) scale(1.015);box-shadow:0 60px 160px rgba(94,231,255,.3);border-color:rgba(155,108,255,.6)}
 .hero-card:hover::before{opacity:1}
-
 .fade-in{opacity:0;transform:translateY(30px);transition:.9s cubic-bezier(.2,.7,.2,1)}
 .fade-in.show{opacity:1;transform:none}
-
 .tagline{margin-top:18px;font-size:20px;opacity:.85;min-height:28px;font-weight:600;color:var(--accent1)}
 input,textarea{font-family:inherit;outline:none;transition:all .3s}
 input:focus,textarea:focus{border-color:var(--accent1)!important;box-shadow:0 0 0 3px rgba(94,231,255,.2)}
 button{transition:all .3s}
-@media(max-width:768px){header{padding:18px 24px!important}.section{padding:120px 24px 60px!important}#home{grid-template-columns:1fr!important;gap:40px}#home h1{font-size:48px!important}}
 
+/* ── SPLASH ── */
 #splash{
   position:fixed;inset:0;z-index:9999;
   display:flex;align-items:center;justify-content:center;
   background:radial-gradient(circle at top,#111,#000);
-  animation:splashOut 1.2s ease forwards;
-  animation-delay:2.6s;
-  pointer-events:auto
+  animation:splashOut 1.2s ease forwards;animation-delay:2.6s;pointer-events:auto
 }
-#splash.hidden{
-  pointer-events:none
-}
-#splash .splash-inner{
-  display:flex;flex-direction:column;align-items:center;gap:18px
-}
-#splash img{
-  width:96px;height:96px;object-fit:contain;
-  opacity:0;animation:splashIn 1.2s ease forwards
-}
-#splash h1{
-  font-size:72px;letter-spacing:6px;font-weight:900;
-  background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  opacity:0;animation:splashIn 1.6s ease forwards
-}
-#splash p{
-  margin-top:6px;font-size:18px;opacity:.8;letter-spacing:1px;
-  animation:splashIn 1.8s ease forwards
-}
+#splash.hidden{pointer-events:none}
+#splash .splash-inner{display:flex;flex-direction:column;align-items:center;gap:18px}
+#splash img{width:96px;height:96px;object-fit:contain;opacity:0;animation:splashIn 1.2s ease forwards}
+#splash h1{font-size:72px;letter-spacing:6px;font-weight:900;background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;animation:splashIn 1.6s ease forwards}
+#splash p{margin-top:6px;font-size:18px;opacity:.8;letter-spacing:1px;animation:splashIn 1.8s ease forwards}
 @keyframes splashIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 @keyframes splashOut{to{opacity:0;visibility:hidden}}
-</style>
+
+/* ── DEV LOG PAGE ── */
+.devlog-hero{padding:140px 90px 60px;position:relative;border-bottom:1px solid var(--border)}
+.devlog-hero .eyebrow{font-family:'Courier New',monospace;font-size:13px;letter-spacing:3px;color:var(--accent2);text-transform:uppercase;margin-bottom:20px}
+.devlog-hero h1{font-size:72px;font-weight:900;line-height:1.05;background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.devlog-hero p{margin-top:20px;font-size:18px;opacity:.8;max-width:640px;line-height:1.7}
+.hero-stats{display:flex;gap:40px;margin-top:40px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat-num{font-family:'Courier New',monospace;font-size:32px;font-weight:700;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-label{font-size:13px;opacity:.6;letter-spacing:1px;text-transform:uppercase}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(94,231,255,.12);border:1px solid rgba(94,231,255,.3);color:var(--accent1);font-family:'Courier New',monospace;font-size:11px;padding:4px 10px;border-radius:20px}
+.live-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent1);animation:blink 1.4s ease infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+
+.devlog-body{padding:60px 90px 100px;display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:start}
+
+/* New post panel */
+#newPostPanel{display:none;background:rgba(94,231,255,.04);border:1px solid rgba(94,231,255,.2);border-radius:20px;padding:28px;margin-bottom:32px}
+#newPostPanel h3{font-size:18px;font-weight:700;margin-bottom:20px;color:var(--accent1)}
+.np-input{width:100%;padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:#eef1ff;font-family:inherit;font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:12px}
+.np-input:focus{border-color:var(--accent1)!important;box-shadow:0 0 0 3px rgba(94,231,255,.15)}
+.np-input::placeholder{color:#3a4060}
+textarea.np-input{resize:vertical;min-height:140px}
+.tags-select{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag-toggle{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:#8a93b8;font-size:12px;font-family:'Courier New',monospace;cursor:pointer;transition:all .2s}
+.tag-toggle.selected{border-color:var(--accent1);color:var(--accent1);background:rgba(94,231,255,.1)}
+.np-actions{display:flex;gap:12px}
+.btn-publish{padding:12px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(94,231,255,.25)}
+.btn-publish:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(94,231,255,.4)}
+.btn-cancel-np{padding:12px 20px;border-radius:12px;border:1px solid var(--border);background:transparent;color:#8a93b8;font-size:15px;cursor:pointer;font-family:inherit}
+.btn-cancel-np:hover{color:#eef1ff;border-color:rgba(255,255,255,.3)}
+#openNewPostBtn{display:none;padding:13px 28px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;margin-bottom:28px;box-shadow:0 6px 24px rgba(94,231,255,.3)}
+#openNewPostBtn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(94,231,255,.45)}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:10px;margin-bottom:32px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:8px 18px;border-radius:20px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#8a93b8;font-size:13px;font-family:inherit;cursor:pointer;transition:all .25s}
+.filter-btn:hover{border-color:rgba(255,255,255,.25);color:#eef1ff}
+.filter-btn.active{background:rgba(94,231,255,.1);border-color:rgba(94,231,255,.35);color:var(--accent1)}
+.post-count{font-family:'Courier New',monospace;font-size:13px;color:#4a5070;margin-left:auto}
+
+/* Post cards */
+.posts-list{display:flex;flex-direction:column;gap:28px}
+.post-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:border-color .35s,box-shadow .35s;animation:fadeUp .5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.post-card:hover{border-color:rgba(94,231,255,.25);box-shadow:0 24px 80px rgba(94,231,255,.07)}
+.post-header{padding:24px 28px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.post-tags{display:flex;gap:8px;flex-wrap:wrap}
+.ptag{font-family:'Courier New',monospace;font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid}
+.ptag.ui{color:#ff6bd6;border-color:rgba(255,107,214,.3);background:rgba(255,107,214,.08)}
+.ptag.core{color:#5ee7ff;border-color:rgba(94,231,255,.3);background:rgba(94,231,255,.08)}
+.ptag.ai{color:#9b6cff;border-color:rgba(155,108,255,.3);background:rgba(155,108,255,.08)}
+.ptag.store{color:#ffd166;border-color:rgba(255,209,102,.3);background:rgba(255,209,102,.08)}
+.ptag.fix{color:#06d6a0;border-color:rgba(6,214,160,.3);background:rgba(6,214,160,.08)}
+.post-date{font-family:'Courier New',monospace;font-size:12px;color:#6a7090;white-space:nowrap;flex-shrink:0}
+.post-title{padding:14px 28px 0;font-size:21px;font-weight:700;line-height:1.3}
+.post-body{padding:12px 28px 20px;font-size:15px;opacity:.8;line-height:1.75;white-space:pre-wrap}
+.del-btn{margin:0 28px 12px;background:none;border:none;color:#4a5070;font-size:12px;cursor:pointer;font-family:'Courier New',monospace;transition:color .2s;padding:0;display:block}
+.del-btn:hover{color:#ff7070}
+
+/* Comments */
+.post-comments{border-top:1px solid var(--border)}
+.comments-toggle{width:100%;padding:14px 28px;background:none;border:none;color:#8a93b8;font-size:14px;font-family:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:8px}
+.comments-toggle:hover{color:#eef1ff}
+.comments-toggle .arr{margin-left:auto;font-size:11px;transition:transform .3s}
+.comments-toggle.open .arr{transform:rotate(180deg)}
+.comments-panel{display:none;padding:4px 28px 24px;flex-direction:column;gap:14px}
+.comments-panel.open{display:flex}
+.dl-comment{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 18px}
+.dl-comment-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;flex-wrap:wrap;gap:6px}
+.dl-commenter{font-weight:600;font-size:14px;color:var(--accent1)}
+.ctb{font-family:'Courier New',monospace;font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px}
+.ctb.suggestion{background:rgba(155,108,255,.15);color:var(--accent2);border:1px solid rgba(155,108,255,.2)}
+.ctb.issue{background:rgba(255,107,107,.1);color:#ff7070;border:1px solid rgba(255,107,107,.2)}
+.ctb.praise{background:rgba(6,214,160,.1);color:#06d6a0;border:1px solid rgba(6,214,160,.2)}
+.dl-comment-date{font-family:'Courier New',monospace;font-size:11px;color:#4a5070}
+.dl-comment-text{font-size:14px;opacity:.8;line-height:1.6}
+.comment-form{background:rgba(94,231,255,.03);border:1px solid rgba(94,231,255,.1);border-radius:14px;padding:18px}
+.comment-form h4{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--accent1)}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.cf-input{width:100%;padding:11px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;color:#eef1ff;font-family:inherit;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
+.cf-input:focus{border-color:var(--accent1)!important;box-shadow:0 0 0 3px rgba(94,231,255,.12)}
+.cf-input::placeholder{color:#3a4060}
+textarea.cf-input{resize:vertical;min-height:72px;margin-bottom:10px}
+.cf-submit{padding:10px 22px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(94,231,255,.2)}
+.cf-submit:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(94,231,255,.35)}
+
+/* Sidebar */
+.sidebar{position:sticky;top:90px;display:flex;flex-direction:column;gap:20px}
+.side-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:18px;padding:22px}
+.side-card h3{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#6a7090;font-family:'Courier New',monospace;margin-bottom:16px}
+.progress-list{display:flex;flex-direction:column;gap:14px}
+.progress-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.progress-pct{font-family:'Courier New',monospace;font-size:12px;color:var(--accent1)}
+.progress-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.08)}
+.progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent1),var(--accent2))}
+.tl-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer}
+.tl-item:last-child{border-bottom:none}
+.tl-item:hover .tl-title{color:var(--accent1)}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;background:rgba(255,255,255,.15)}
+.tl-dot.active{background:var(--accent1);box-shadow:0 0 8px rgba(94,231,255,.5)}
+.tl-title{font-size:13px;font-weight:600;color:#c0c8e8;transition:color .2s;line-height:1.4}
+.tl-date{font-family:'Courier New',monospace;font-size:11px;color:#4a5070;margin-top:3px}
+
+/* Spinner / empty */
+.spinner{width:20px;height:20px;border:2px solid rgba(94,231,255,.2);border-top-color:var(--accent1);border-radius:50%;animation:spin .7s linear infinite;margin:24px auto;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px;color:#4a5070;font-size:15px}
+.empty-state i{font-size:36px;margin-bottom:16px;display:block;opacity:.3}
+
+/* Toast */
+#toast{position:fixed;bottom:28px;right:28px;z-index:9999;padding:13px 20px;border-radius:14px;font-size:14px;font-weight:600;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;border:1px solid transparent;background:rgba(10,12,30,.95)}
+#toast.show{opacity:1;transform:none}
+#toast.success{border-color:rgba(6,214,160,.4);color:#06d6a0}
+#toast.error{border-color:rgba(255,107,107,.4);color:#ff7070}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  header{padding:18px 24px!important}
+  header nav a{margin-left:4px;padding:6px 10px;font-size:13px}
+  .section{padding:120px 24px 60px!important}
+  #home{grid-template-columns:1fr!important;gap:40px}
+  #home h1{font-size:48px!important}
+  .devlog-hero{padding:110px 24px 40px}
+  .devlog-hero h1{font-size:42px}
+  .devlog-body{padding:36px 24px 60px;grid-template-columns:1fr}
+  .sidebar{position:static}
+  .cf-row{grid-template-columns:1fr}
+  #authBtn span.auth-label{display:none}
+}
+  </style>
 </head>
 <body>
+
+<!-- SPLASH -->
 <div id="splash">
   <div class="splash-inner">
     <img src="logo.png" alt="Beeta OS Logo" />
@@ -166,146 +267,456 @@ button{transition:all .3s}
   </div>
 </div>
 
-<header>
-  <h2>Beeta OS</h2>
+<!-- HEADER -->
+<header id="hdr">
+  <h2 onclick="showPage('main')">Beeta OS</h2>
   <nav>
-    <a href="#home">Home</a>
-    <a href="#features">Features</a>
-    <a href="#download">Download</a>
-    <a href="#contact">Contact</a>
+    <a href="#home"    onclick="showPage('main')">Home</a>
+    <a href="#features" onclick="showPage('main')">Features</a>
+    <a href="#download" onclick="showPage('main')">Download</a>
+    <a href="#contact"  onclick="showPage('main')">Contact</a>
+    <a href="#" class="devlog-link" onclick="showPage('devlog');return false;">
+      <i class="fas fa-terminal" style="margin-right:6px;font-size:11px"></i>Dev Log
+    </a>
   </nav>
+  <button id="authBtn" onclick="handleAuth()" style="display:none">
+    <i class="fab fa-google"></i><span class="auth-label"> Sign in</span>
+  </button>
 </header>
 
-<section id="home" class="section fade-in">
-  <div>
-    <h1>Experience the Future of Operating Systems</h1>
-    <div class="tagline" id="tagline"></div>
-    <p>Beeta OS is a lightweight, modern OS for gamers, professionals, and everyday users.</p>
-    <a href="#download"><button class="cta-btn">Join the Waitlist <i class="fas fa-arrow-right" style="margin-left:8px"></i></button></a>
-  </div>
-  <div class="hero-card">
-    <i class="fas fa-robot"></i>
-    <h3>Beeta AI</h3>
-    <p>Your built-in assistant for installation help, productivity, and everyday tasks.</p>
-  </div>
-</section>
+<!-- ══════════════════════════════════════════
+     MAIN PAGE
+══════════════════════════════════════════ -->
+<div id="mainPage" class="page active">
 
-<section id="features" class="section fade-in">
-  <h1 style="text-align:center;font-size:56px;margin-bottom:60px">Powerful Features</h1>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px">
-    <div class="hero-card">
-      <i class="fas fa-store"></i>
-      <h3>Beeta Store</h3>
-      <p>One‑click installation of supported Windows apps directly from Beeta Store.</p>
+  <section id="home" class="section fade-in">
+    <div>
+      <h1>Experience the Future of Operating Systems</h1>
+      <div class="tagline" id="tagline"></div>
+      <p>Beeta OS is a lightweight, modern OS for gamers, professionals, and everyday users.</p>
+      <a href="#download"><button class="cta-btn">Join the Waitlist <i class="fas fa-arrow-right" style="margin-left:8px"></i></button></a>
     </div>
     <div class="hero-card">
-      <i class="fas fa-brain"></i>
+      <i class="fas fa-robot"></i>
       <h3>Beeta AI</h3>
-      <p>Your built‑in assistant for setup guidance, productivity, and daily tasks.</p>
+      <p>Your built-in assistant for installation help, productivity, and everyday tasks.</p>
     </div>
-    <div class="hero-card">
-      <i class="fas fa-palette"></i>
-      <h3>Dual UI Modes</h3>
-      <p>Choose between a Windows‑11‑like UI or the custom Beeta UI.</p>
+  </section>
+
+  <section id="features" class="section fade-in">
+    <h1 style="text-align:center;font-size:56px;margin-bottom:60px">Powerful Features</h1>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px">
+      <div class="hero-card">
+        <i class="fas fa-store"></i>
+        <h3>Beeta Store</h3>
+        <p>One‑click installation of supported Windows apps directly from Beeta Store.</p>
+      </div>
+      <div class="hero-card">
+        <i class="fas fa-brain"></i>
+        <h3>Beeta AI</h3>
+        <p>Your built‑in assistant for setup guidance, productivity, and daily tasks.</p>
+      </div>
+      <div class="hero-card">
+        <i class="fas fa-palette"></i>
+        <h3>Dual UI Modes</h3>
+        <p>Choose between a Windows‑11‑like UI or the custom Beeta UI.</p>
+      </div>
+      <div class="hero-card">
+        <i class="fas fa-users"></i>
+        <h3>For Everyone</h3>
+        <p>Designed for gamers, professionals, business users, and everyday computing.</p>
+      </div>
     </div>
-    <div class="hero-card">
-      <i class="fas fa-users"></i>
-      <h3>For Everyone</h3>
-      <p>Designed for gamers, professionals, business users, and everyday computing.</p>
+  </section>
+
+  <section id="download" class="section fade-in">
+    <div style="max-width:800px;margin:0 auto;text-align:center">
+      <h1 style="font-size:56px;margin-bottom:24px">Get Early Access</h1>
+      <p style="font-size:20px;opacity:.9;line-height:1.6">Beeta OS is currently under active development. Join the wishlist to show your interest and get early updates when we launch.</p>
+      <div style="margin-top:50px;display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:center">
+        <div style="padding:20px 40px;border-radius:16px;border:2px dashed var(--border);background:rgba(255,255,255,.02);color:#aaa;font-size:16px;font-weight:600">
+          <i class="fas fa-clock" style="margin-right:8px"></i>Coming Soon
+        </div>
+        <form action="https://formspree.io/f/mdkqlogb" method="POST" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+          <input type="hidden" name="wishlist" value="true" />
+          <input type="email" name="email" required placeholder="Enter your email" style="padding:18px 24px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;min-width:300px;font-size:16px" />
+          <button type="submit" style="padding:18px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;cursor:pointer;font-size:16px;box-shadow:0 8px 24px rgba(94,231,255,.3)">
+            <i class="fas fa-bell" style="margin-right:8px"></i>Join Wishlist
+          </button>
+        </form>
+      </div>
+      <p style="margin-top:28px;opacity:.7;font-size:15px"><i class="fas fa-info-circle" style="margin-right:6px"></i>Be among the first to experience the future of operating systems</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="download" class="section fade-in">
-  <div style="max-width:800px;margin:0 auto;text-align:center">
-    <h1 style="font-size:56px;margin-bottom:24px">Get Early Access</h1>
-    <p style="font-size:20px;opacity:.9;line-height:1.6">Beeta OS is currently under active development. Join the wishlist to show your interest and get early updates when we launch.</p>
-
-    <div style="margin-top:50px;display:flex;gap:20px;flex-wrap:wrap;justify-content:center;align-items:center">
-      <div style="padding:20px 40px;border-radius:16px;border:2px dashed var(--border);background:rgba(255,255,255,.02);color:#aaa;font-size:16px;font-weight:600"><i class="fas fa-clock" style="margin-right:8px"></i>Coming Soon</div>
-
-      <form action="https://formspree.io/f/mdkqlogb" method="POST" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-        <input type="hidden" name="wishlist" value="true" />
-        <input type="email" name="email" required placeholder="Enter your email" style="padding:18px 24px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;min-width:300px;font-size:16px" />
-        <button type="submit" style="padding:18px 32px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;cursor:pointer;font-size:16px;box-shadow:0 8px 24px rgba(94,231,255,.3)"><i class="fas fa-bell" style="margin-right:8px"></i>Join Wishlist</button>
+  <section id="contact" class="section fade-in">
+    <div style="max-width:600px;margin:0 auto">
+      <h1 style="font-size:56px;text-align:center;margin-bottom:20px">Get in Touch</h1>
+      <p style="text-align:center;font-size:18px;opacity:.9;margin-bottom:40px">Have questions, ideas, or feedback? We'd love to hear from you.</p>
+      <form action="https://formspree.io/f/mdkqlogb" method="POST" style="display:flex;flex-direction:column;gap:20px">
+        <input type="text" name="name" placeholder="Your name" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px" />
+        <input type="email" name="email" required placeholder="Your email" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px" />
+        <textarea name="message" required placeholder="Your message" rows="6" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px;resize:vertical"></textarea>
+        <button type="submit" style="padding:18px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:800;cursor:pointer;font-size:16px;box-shadow:0 8px 24px rgba(94,231,255,.3)">
+          <i class="fas fa-paper-plane" style="margin-right:8px"></i>Send Message
+        </button>
       </form>
+      <p style="margin-top:32px;text-align:center;opacity:.75;font-size:15px">
+        <i class="fas fa-envelope" style="margin-right:6px"></i>Or email us at
+        <strong style="color:var(--accent1)">beeta.main@gmail.com</strong>
+      </p>
+    </div>
+  </section>
+
+</div><!-- end mainPage -->
+
+
+<!-- ══════════════════════════════════════════
+     DEV LOG PAGE
+══════════════════════════════════════════ -->
+<div id="devlogPage" class="page">
+
+  <div class="devlog-hero">
+    <p class="eyebrow"><i class="fas fa-terminal" style="margin-right:8px"></i>Development Log</p>
+    <h1>Building in<br>the Open</h1>
+    <p>Every update, every breakthrough, every bug we crush — posted here in real time. Comment on any post to suggest improvements or report issues.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" id="statPosts">—</span><span class="stat-label">Dev Updates</span></div>
+      <div class="stat"><span class="stat-num" id="statComments">—</span><span class="stat-label">Community Comments</span></div>
+      <div class="stat"><span class="stat-num">~68%</span><span class="stat-label">Core Complete</span></div>
+    </div>
+  </div>
+
+  <div class="devlog-body">
+    <div>
+      <!-- Admin: publish button -->
+      <button id="openNewPostBtn" onclick="togglePanel(true)">
+        <i class="fas fa-plus" style="margin-right:8px"></i>New Dev Log Post
+      </button>
+
+      <!-- Admin: new post form -->
+      <div id="newPostPanel">
+        <h3><i class="fas fa-pen-nib" style="margin-right:8px"></i>Create New Post</h3>
+        <input class="np-input" id="npTitle" type="text" placeholder="Post title — what did you build or fix today?">
+        <div class="tags-select" id="npTagsRow">
+          <button class="tag-toggle" data-tag="core">CORE</button>
+          <button class="tag-toggle" data-tag="ui">UI</button>
+          <button class="tag-toggle" data-tag="ai">AI</button>
+          <button class="tag-toggle" data-tag="store">STORE</button>
+          <button class="tag-toggle" data-tag="fix">BUG FIX</button>
+        </div>
+        <textarea class="np-input" id="npBody" placeholder="Describe what you worked on. Be as detailed as you like — people love the behind-the-scenes details."></textarea>
+        <div class="np-actions">
+          <button class="btn-publish" onclick="submitPost()"><i class="fas fa-rocket" style="margin-right:6px"></i>Publish</button>
+          <button class="btn-cancel-np" onclick="togglePanel(false)">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="core">Core</button>
+        <button class="filter-btn" data-filter="ui">UI</button>
+        <button class="filter-btn" data-filter="ai">AI</button>
+        <button class="filter-btn" data-filter="store">Store</button>
+        <button class="filter-btn" data-filter="fix">Bug Fix</button>
+        <span class="post-count" id="postCount"></span>
+      </div>
+
+      <div class="posts-list" id="postsContainer">
+        <div class="spinner"></div>
+      </div>
     </div>
 
-    <p style="margin-top:28px;opacity:.7;font-size:15px"><i class="fas fa-info-circle" style="margin-right:6px"></i>Be among the first to experience the future of operating systems</p>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-card" style="text-align:center">
+        <div class="live-badge" style="justify-content:center;margin-bottom:10px">
+          <span class="dot"></span>Actively In Development
+        </div>
+        <p style="font-size:13px;opacity:.7;line-height:1.6;margin-top:8px">Your feedback directly shapes what gets built next. Comment on any post!</p>
+      </div>
+      <div class="side-card">
+        <h3><i class="fas fa-chart-bar" style="margin-right:6px"></i>Build Progress</h3>
+        <div class="progress-list">
+          <div><div class="progress-label"><span>Kernel / Boot</span><span class="progress-pct">85%</span></div><div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div></div>
+          <div><div class="progress-label"><span>Desktop UI</span><span class="progress-pct">60%</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></div>
+          <div><div class="progress-label"><span>Beeta AI</span><span class="progress-pct">40%</span></div><div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div></div>
+          <div><div class="progress-label"><span>Beeta Store</span><span class="progress-pct">25%</span></div><div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div></div>
+          <div><div class="progress-label"><span>Driver Support</span><span class="progress-pct">70%</span></div><div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div></div>
+        </div>
+      </div>
+      <div class="side-card">
+        <h3><i class="fas fa-history" style="margin-right:6px"></i>Recent Posts</h3>
+        <div id="sideTimeline"><div style="font-size:13px;color:#4a5070">Loading…</div></div>
+      </div>
+    </aside>
   </div>
-</section>
 
-<section id="contact" class="section fade-in">
-  <div style="max-width:600px;margin:0 auto">
-    <h1 style="font-size:56px;text-align:center;margin-bottom:20px">Get in Touch</h1>
-    <p style="text-align:center;font-size:18px;opacity:.9;margin-bottom:40px">Have questions, ideas, or feedback? We'd love to hear from you.</p>
+</div><!-- end devlogPage -->
 
-    <form action="https://formspree.io/f/mdkqlogb" method="POST" style="display:flex;flex-direction:column;gap:20px">
-      <input type="text" name="name" placeholder="Your name" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px" />
-      <input type="email" name="email" required placeholder="Your email" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px" />
-      <textarea name="message" required placeholder="Your message" rows="6" style="padding:18px 22px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:16px;resize:vertical"></textarea>
-      <button type="submit" style="padding:18px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:800;cursor:pointer;font-size:16px;box-shadow:0 8px 24px rgba(94,231,255,.3)"><i class="fas fa-paper-plane" style="margin-right:8px"></i>Send Message</button>
-    </form>
+<div id="toast"></div>
 
-    <p style="margin-top:32px;text-align:center;opacity:.75;font-size:15px"><i class="fas fa-envelope" style="margin-right:6px"></i>Or email us at <strong style="color:var(--accent1)">beeta.main@gmail.com</strong></p>
-  </div>
-</section>
-
+<!-- ══════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════ -->
 <script>
+// ── PAGE SWITCHER ─────────────────────────
+function showPage(name){
+  document.getElementById('mainPage').classList.toggle('active', name==='main');
+  document.getElementById('devlogPage').classList.toggle('active', name==='devlog');
+  document.getElementById('authBtn').style.display = name==='devlog' ? 'flex' : 'none';
+  if(name==='main') window.scrollTo({top:0});
+  if(name==='devlog') window.scrollTo({top:0});
+}
+
+// ── ORIGINAL SITE JS ─────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
   document.documentElement.style.overflowY='auto';
   document.body.style.overflowY='auto';
 
-  // Header scroll effect
-  const header=document.querySelector('header');
+  // Header scroll
+  const hdr=document.getElementById('hdr');
   window.addEventListener('scroll',()=>{
-    if(window.scrollY>50)header.classList.add('scrolled');
-    else header.classList.remove('scrolled');
+    hdr.classList.toggle('scrolled',window.scrollY>50);
   });
 
-  // Splash cleanup
+  // Splash
   const splash=document.getElementById('splash');
   if(splash){
-    const hide=()=>{
-      splash.classList.add('hidden');
-      setTimeout(()=>splash.remove(),300);
-    };
+    const hide=()=>{ splash.classList.add('hidden'); setTimeout(()=>splash.remove(),300); };
     splash.addEventListener('animationend',hide,{once:true});
     setTimeout(hide,3200);
   }
 
   // Fade-in
   const faders=document.querySelectorAll('.fade-in');
-  const reveal=()=>{
-    faders.forEach(f=>{
-      const r=f.getBoundingClientRect();
-      if(r.top<window.innerHeight-100) f.classList.add('show');
-    });
-  };
-  window.addEventListener('scroll',reveal);
-  reveal();
+  const reveal=()=>{ faders.forEach(f=>{ if(f.getBoundingClientRect().top<window.innerHeight-100) f.classList.add('show'); }); };
+  window.addEventListener('scroll',reveal); reveal();
 
   // Rotating tagline
   const taglineEl=document.getElementById('tagline');
   if(taglineEl){
-    const taglines=[
-      'Built for gamers, professionals, and everyday users',
-      'One OS. Every workflow.',
-      'Windows apps. Linux power.',
-      'Designed for the future'
-    ];
-    let i=0;
-    taglineEl.textContent=taglines[0];
-    setInterval(()=>{
-      taglineEl.textContent=taglines[++i%taglines.length];
-    },2600);
+    const taglines=['Built for gamers, professionals, and everyday users','One OS. Every workflow.','Windows apps. Linux power.','Designed for the future'];
+    let i=0; taglineEl.textContent=taglines[0];
+    setInterval(()=>{ taglineEl.textContent=taglines[++i%taglines.length]; },2600);
   }
+
+  // Tag toggles for new post form
+  document.getElementById('npTagsRow').querySelectorAll('.tag-toggle').forEach(b=>
+    b.addEventListener('click',()=>b.classList.toggle('selected'))
+  );
+
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter=btn.dataset.filter;
+      renderPosts();
+    });
+  });
 });
 </script>
 
-<footer style="padding:40px 0 30px;text-align:center;font-size:14px;color:rgba(255,255,255,0.6);">
-  &copy; Beeta Technologies,Inc | Beeta Os is an open-source software liscensed under GPL-3.0&reg; 2023-2026
-</footer>
+<!-- FIREBASE (module) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc,
+  query, orderBy, onSnapshot, serverTimestamp, updateDoc, increment }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const ADMIN = "beeta.main@gmail.com";
+const app  = initializeApp({
+  apiKey:"AIzaSyDGm7GLAJpGrfMu37I5qEhVsKVYByZ_a6c",
+  authDomain:"beetaos-dev-log.firebaseapp.com",
+  projectId:"beetaos-dev-log",
+  storageBucket:"beetaos-dev-log.firebasestorage.app",
+  messagingSenderId:"887435194919",
+  appId:"1:887435194919:web:ac28dfead1be21d820d402"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const gp   = new GoogleAuthProvider();
+
+let user=null, isAdmin=false, allPosts=[];
+window.currentFilter = "all";
+
+// ── AUTH ─────────────────────────────────
+window.handleAuth = async () => {
+  if(user){ await signOut(auth); showToast("Signed out","success"); }
+  else { try{ await signInWithPopup(auth,gp); }catch(e){ showToast(e.message,"error"); } }
+};
+
+onAuthStateChanged(auth, u => {
+  user=u; isAdmin=u?.email===ADMIN;
+  const btn=document.getElementById("authBtn");
+  if(u){
+    btn.innerHTML=`<img src="${u.photoURL}" referrerpolicy="no-referrer">${isAdmin?"👑 ":""}<span class="auth-label">${u.displayName.split(" ")[0]}</span> <span style="opacity:.4;font-size:11px">sign out</span>`;
+  } else {
+    btn.innerHTML=`<i class="fab fa-google"></i><span class="auth-label"> Sign in</span>`;
+  }
+  document.getElementById("openNewPostBtn").style.display = isAdmin?"inline-flex":"none";
+});
+
+// ── NEW POST ─────────────────────────────
+window.togglePanel = show => {
+  document.getElementById("newPostPanel").style.display = show?"block":"none";
+  document.getElementById("openNewPostBtn").style.display = show?"none":(isAdmin?"inline-flex":"none");
+};
+
+window.submitPost = async () => {
+  if(!isAdmin) return;
+  const title=document.getElementById("npTitle").value.trim();
+  const body=document.getElementById("npBody").value.trim();
+  const tags=[...document.querySelectorAll("#npTagsRow .tag-toggle.selected")].map(b=>b.dataset.tag);
+  if(!title||!body){ showToast("Title and body are required","error"); return; }
+  try{
+    await addDoc(collection(db,"posts"),{title,body,tags,commentCount:0,createdAt:serverTimestamp()});
+    document.getElementById("npTitle").value="";
+    document.getElementById("npBody").value="";
+    document.querySelectorAll("#npTagsRow .tag-toggle.selected").forEach(b=>b.classList.remove("selected"));
+    window.togglePanel(false);
+    showToast("Post published! 🚀","success");
+  }catch(e){ showToast(e.message,"error"); }
+};
+
+window.deletePost = async id => {
+  if(!isAdmin||!confirm("Delete this post?")) return;
+  try{ await deleteDoc(doc(db,"posts",id)); showToast("Deleted","success"); }
+  catch(e){ showToast(e.message,"error"); }
+};
+
+// ── LIVE POSTS ───────────────────────────
+onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc")), snap => {
+  allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
+  window.renderPosts(); updateStats(); renderTimeline();
+});
+
+window.renderPosts = () => {
+  const c=document.getElementById("postsContainer");
+  const list=window.currentFilter==="all"?allPosts:allPosts.filter(p=>p.tags?.includes(window.currentFilter));
+  document.getElementById("postCount").textContent=list.length+" update"+(list.length!==1?"s":"");
+  if(!list.length){
+    c.innerHTML=`<div class="empty-state"><i class="fas fa-satellite-dish"></i>${allPosts.length===0?"No posts yet — check back soon!":"No posts with this tag."}</div>`;
+    return;
+  }
+  c.innerHTML="";
+  list.forEach((p,i)=>{
+    const el=document.createElement("div");
+    el.className="post-card"; el.id="post-"+p.id;
+    el.style.animationDelay=(i*0.06)+"s";
+    const d=p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"Just now";
+    const tg=(p.tags||[]).map(t=>`<span class="ptag ${t}">${t.toUpperCase()}</span>`).join("");
+    const cc=p.commentCount||0;
+    el.innerHTML=`
+      <div class="post-header"><div class="post-tags">${tg}</div><span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:5px;opacity:.4"></i>${d}</span></div>
+      <h2 class="post-title">${esc(p.title)}</h2>
+      <div class="post-body">${esc(p.body)}</div>
+      ${isAdmin?`<button class="del-btn" onclick="deletePost('${p.id}')"><i class="fas fa-trash" style="margin-right:4px"></i>Delete post</button>`:""}
+      <div class="post-comments">
+        <button class="comments-toggle" onclick="openComments(this,'${p.id}')">
+          <i class="fas fa-comment-dots"></i>
+          <span id="cc-${p.id}">${cc} comment${cc!==1?"s":""}</span> &amp; suggestions
+          <i class="fas fa-chevron-down arr"></i>
+        </button>
+        <div class="comments-panel" id="cp-${p.id}">
+          <div id="cl-${p.id}"><div class="spinner"></div></div>
+          <div class="comment-form">
+            <h4><i class="fas fa-lightbulb" style="margin-right:6px"></i>Leave a Comment or Suggestion</h4>
+            <div class="cf-row">
+              <input class="cf-input" id="cfn-${p.id}" type="text" placeholder="Your name (optional)" maxlength="40">
+              <select class="cf-input" id="cft-${p.id}">
+                <option value="suggestion">💡 Suggestion</option>
+                <option value="issue">🐛 Found an Issue</option>
+                <option value="praise">⭐ General Feedback</option>
+              </select>
+            </div>
+            <textarea class="cf-input" id="cfc-${p.id}" placeholder="Share your thoughts, report a bug, or suggest an improvement…" rows="3"></textarea>
+            <button class="cf-submit" onclick="postComment('${p.id}',this)"><i class="fas fa-paper-plane" style="margin-right:6px"></i>Post Comment</button>
+          </div>
+        </div>
+      </div>`;
+    c.appendChild(el);
+  });
+};
+
+// ── COMMENTS ─────────────────────────────
+const opened=new Set();
+window.openComments=(btn,pid)=>{
+  btn.classList.toggle("open");
+  const panel=document.getElementById("cp-"+pid);
+  panel.classList.toggle("open");
+  if(panel.classList.contains("open")&&!opened.has(pid)){
+    opened.add(pid);
+    onSnapshot(query(collection(db,"posts",pid,"comments"),orderBy("createdAt","asc")),snap=>{
+      const cl=document.getElementById("cl-"+pid); if(!cl) return;
+      if(snap.empty){ cl.innerHTML=`<p style="font-size:13px;color:#4a5070">No comments yet — be the first!</p>`; return; }
+      cl.innerHTML=snap.docs.map(d=>{
+        const c=d.data();
+        const dt=c.createdAt?.toDate?c.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric"}):"";
+        return `<div class="dl-comment"><div class="dl-comment-top"><span><span class="dl-commenter">${esc(c.name||"Anonymous")}</span><span class="ctb ${c.type}">${c.type}</span></span><span class="dl-comment-date">${dt}</span></div><p class="dl-comment-text">${esc(c.text)}</p></div>`;
+      }).join("");
+      const cc=document.getElementById("cc-"+pid);
+      if(cc) cc.textContent=snap.size+" comment"+(snap.size!==1?"s":"");
+    });
+  }
+};
+
+window.postComment=async(pid,btn)=>{
+  const txt=document.getElementById("cfc-"+pid).value.trim();
+  if(!txt){ document.getElementById("cfc-"+pid).style.borderColor="rgba(255,100,100,.5)"; setTimeout(()=>document.getElementById("cfc-"+pid).style.borderColor="",1200); return; }
+  const name=document.getElementById("cfn-"+pid).value.trim()||(user?user.displayName:"Anonymous");
+  const type=document.getElementById("cft-"+pid).value;
+  btn.disabled=true; btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Posting…`;
+  try{
+    await addDoc(collection(db,"posts",pid,"comments"),{name,type,text:txt,createdAt:serverTimestamp(),uid:user?.uid||null});
+    await updateDoc(doc(db,"posts",pid),{commentCount:increment(1)});
+    document.getElementById("cfc-"+pid).value="";
+    document.getElementById("cfn-"+pid).value="";
+    btn.innerHTML=`<i class="fas fa-check" style="margin-right:6px"></i>Posted!`;
+    btn.style.background="linear-gradient(135deg,#06d6a0,#048a81)";
+    setTimeout(()=>{ btn.innerHTML=`<i class="fas fa-paper-plane" style="margin-right:6px"></i>Post Comment`; btn.style.background=""; btn.disabled=false; },2000);
+    showToast("Comment posted!","success");
+  }catch(e){ showToast(e.message,"error"); btn.disabled=false; btn.innerHTML=`<i class="fas fa-paper-plane" style="margin-right:6px"></i>Post Comment`; }
+};
+
+// ── SIDEBAR ───────────────────────────────
+function renderTimeline(){
+  const tl=document.getElementById("sideTimeline");
+  if(!allPosts.length){ tl.innerHTML=`<div style="font-size:13px;color:#4a5070">No posts yet</div>`; return; }
+  tl.innerHTML=allPosts.slice(0,5).map((p,i)=>{
+    const d=p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric"}):"";
+    return `<div class="tl-item" onclick="document.getElementById('post-${p.id}')?.scrollIntoView({behavior:'smooth',block:'start'})">
+      <div class="tl-dot ${i===0?"active":""}"></div>
+      <div><div class="tl-title">${esc(p.title)}</div><div class="tl-date">${d}</div></div>
+    </div>`;
+  }).join("");
+}
+function updateStats(){
+  document.getElementById("statPosts").textContent=allPosts.length;
+  document.getElementById("statComments").textContent=allPosts.reduce((a,p)=>a+(p.commentCount||0),0);
+}
+
+// ── HELPERS ───────────────────────────────
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+window.showToast=(msg,type)=>{
+  const t=document.getElementById("toast"); t.textContent=msg; t.className="show "+type;
+  clearTimeout(window._tt); window._tt=setTimeout(()=>t.className="",3000);
+};
+
+// filter wiring — needs currentFilter accessible
+document.querySelectorAll(".filter-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    window.currentFilter=btn.dataset.filter;
+    window.renderPosts();
+  });
+});
+</script>
 
 </body>
 </html>
