@@ -264,7 +264,19 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
 .empty-state{text-align:center;padding:50px 20px;color:#4a5070;font-size:14px}
 .empty-state i{font-size:34px;margin-bottom:14px;display:block;opacity:.3}
 
-/* MOBILE */
+/* VIDEO */
+.video-upload-area{border:2px dashed rgba(155,108,255,.25);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:11px;background:rgba(155,108,255,.03);position:relative;overflow:hidden}
+.video-upload-area:hover{border-color:rgba(155,108,255,.5);background:rgba(155,108,255,.06)}
+.video-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.video-preview-wrap{display:none;position:relative;margin-bottom:11px}
+.video-preview-wrap video{width:100%;border-radius:8px;display:block;max-height:200px}
+.remove-video{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);border:none;border-radius:6px;color:#fff;padding:4px 10px;font-size:12px;cursor:pointer;z-index:2}
+.video-progress{display:none;margin-bottom:11px}
+.video-progress-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
+.video-progress-fill{height:100%;width:0%;border-radius:2px;background:linear-gradient(90deg,var(--accent2),var(--accent1));transition:width .3s}
+.video-progress-label{font-size:11px;color:#6a7090;margin-top:5px}
+.post-video-wrap{margin:0 24px 18px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.post-video-wrap video{width:100%;display:block;max-height:340px;background:#000}
 @media(max-width:900px){
   header{padding:16px 20px!important}
   header.scrolled{padding:13px 20px!important}
@@ -464,7 +476,20 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
           <button class="tag-toggle" data-tag="fix">BUG FIX</button>
         </div>
         <textarea class="np-input" id="npBody" placeholder="Describe what you worked on…"></textarea>
-        <div class="np-actions">
+
+        <!-- VIDEO UPLOAD -->
+        <div class="video-upload-area" id="videoUploadArea">
+          <input type="file" accept="video/mp4,video/webm,video/mov" id="videoFileInput">
+          <div id="videoUploadHint"><i class="fas fa-video" style="font-size:22px;color:var(--accent2);opacity:.5;margin-bottom:7px;display:block"></i><p style="font-size:13px;color:#6a7090">Click to attach a video clip (optional)</p><small style="font-size:11px;color:#3a4060">MP4, WebM · max 100MB</small></div>
+        </div>
+        <div class="video-progress" id="videoProgress">
+          <div class="video-progress-bar"><div class="video-progress-fill" id="videoProgressFill"></div></div>
+          <div class="video-progress-label" id="videoProgressLabel">Uploading… 0%</div>
+        </div>
+        <div class="video-preview-wrap" id="videoPreviewWrap">
+          <video id="videoPreview" controls></video>
+          <button class="remove-video" id="removeVideoBtn"><i class="fas fa-times"></i> Remove</button>
+        </div>
           <button class="btn-publish" id="publishBtn"><i class="fas fa-rocket" style="margin-right:6px"></i>Publish</button>
           <button class="btn-cancel-np" id="cancelPostBtn">Cancel</button>
         </div>
@@ -791,6 +816,59 @@ onAuthStateChanged(auth, async u=>{
   renderPosts();
 });
 
+/* ── VIDEO UPLOAD (Cloudinary) ────────── */
+const CLOUDINARY_CLOUD = "drf7oope0";
+const CLOUDINARY_PRESET = "Beeta dev post";
+let selectedVideoFile = null;
+
+document.getElementById("videoFileInput").addEventListener("change", e=>{
+  const file = e.target.files[0]; if(!file) return;
+  if(file.size > 100*1024*1024){ toast("Video too large — max 100MB","error"); return; }
+  selectedVideoFile = file;
+  const url = URL.createObjectURL(file);
+  document.getElementById("videoPreview").src = url;
+  document.getElementById("videoUploadHint").style.display = "none";
+  document.getElementById("videoPreviewWrap").style.display = "block";
+  toast("Video selected — will upload on publish","info");
+});
+document.getElementById("removeVideoBtn").addEventListener("click", e=>{
+  e.stopPropagation();
+  selectedVideoFile = null;
+  document.getElementById("videoFileInput").value = "";
+  document.getElementById("videoPreview").src = "";
+  document.getElementById("videoUploadHint").style.display = "block";
+  document.getElementById("videoPreviewWrap").style.display = "none";
+  document.getElementById("videoProgress").style.display = "none";
+});
+
+async function uploadVideoToCloudinary(file){
+  return new Promise((resolve, reject)=>{
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("upload_preset", CLOUDINARY_PRESET);
+    fd.append("resource_type", "video");
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/video/upload`);
+    document.getElementById("videoProgress").style.display = "block";
+    xhr.upload.onprogress = e=>{
+      if(e.lengthComputable){
+        const pct = Math.round(e.loaded/e.total*100);
+        document.getElementById("videoProgressFill").style.width = pct+"%";
+        document.getElementById("videoProgressLabel").textContent = `Uploading… ${pct}%`;
+      }
+    };
+    xhr.onload = ()=>{
+      document.getElementById("videoProgress").style.display = "none";
+      if(xhr.status===200){
+        const res = JSON.parse(xhr.responseText);
+        resolve(res.secure_url);
+      } else { reject(new Error("Upload failed")); }
+    };
+    xhr.onerror = ()=>{ document.getElementById("videoProgress").style.display="none"; reject(new Error("Network error")); };
+    xhr.send(fd);
+  });
+}
+
 /* ── NEW POST ─────────────────────────── */
 document.getElementById("openNewPostBtn").addEventListener("click", ()=>{
   document.getElementById("newPostPanel").style.display = "block";
@@ -811,11 +889,17 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
   const btn = document.getElementById("publishBtn");
   btn.disabled=true; btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Publishing…`;
   try{
-    await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:img64,commentCount:0,createdAt:serverTimestamp()});
+    let videoUrl = null;
+    if(selectedVideoFile){
+      btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Uploading video…`;
+      videoUrl = await uploadVideoToCloudinary(selectedVideoFile);
+    }
+    await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:img64,videoUrl,commentCount:0,createdAt:serverTimestamp()});
     document.getElementById("npTitle").value="";
     document.getElementById("npBody").value="";
     document.querySelectorAll("#npTagsRow .tag-toggle.selected").forEach(b=>b.classList.remove("selected"));
     document.getElementById("removeImgBtn").click();
+    document.getElementById("removeVideoBtn").click();
     document.getElementById("newPostPanel").style.display = "none";
     document.getElementById("openNewPostBtn").style.display = "inline-flex";
     toast("Post published! 🚀","success");
@@ -843,6 +927,9 @@ function renderPosts(){
     const cc = p.commentCount||0;
     const imgHtml = p.imageBase64
       ? `<div class="post-img-wrap"><img src="${p.imageBase64}" alt="screenshot" loading="lazy"></div>`
+      : "";
+    const videoHtml = p.videoUrl
+      ? `<div class="post-video-wrap"><video controls preload="none" src="${p.videoUrl}"></video></div>`
       : "";
 
     const commentSection = user
@@ -880,6 +967,7 @@ function renderPosts(){
       <h2 class="post-title">${esc(p.title)}</h2>
       <div class="post-body">${esc(p.body)}</div>
       ${imgHtml}
+      ${videoHtml}
       ${isAdmin?`<button class="del-btn" id="del-${p.id}"><i class="fas fa-trash" style="margin-right:4px"></i>Delete post</button>`:""}
       ${commentSection}`;
     c.appendChild(el);
