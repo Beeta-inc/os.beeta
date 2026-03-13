@@ -757,20 +757,17 @@ onAuthStateChanged(auth, async u=>{
       toast(`Welcome, ${u.displayName.split(" ")[0]}! 👋`, "success");
     }
 
-    // Send welcome email to the user once per session
+    // Notify email once per session
     if(!notifiedUsers.has(u.uid) && !isAdmin){
       notifiedUsers.add(u.uid);
-      const firstName = u.displayName?.split(" ")[0] || "there";
-      const uname = currentUsername ? "@"+currentUsername : "(username not set yet)";
       fetch("https://formspree.io/f/mdkqlogb",{
         method:"POST",
         headers:{"Content-Type":"application/json","Accept":"application/json"},
         body:JSON.stringify({
-          _subject:"Welcome to Beeta OS Dev Log!",
-          _replyto: u.email,
-          name: u.displayName||"User",
+          _subject:"🔔 New Login — Beeta OS Dev Log",
+          name: u.displayName||"Unknown",
           email: u.email,
-          message:"Hi "+firstName+",\n\nWelcome to the Beeta OS Dev Log! \n\nYou have successfully signed in as "+uname+".\n\nYou can now:\n  - Read all dev updates from the Beeta OS team\n  - Leave comments and suggestions on any post\n  - Report bugs directly to us\n  - Help shape what gets built next!\n\nVisit the Dev Log anytime:\nhttps://beetaos.pages.dev\n\nThanks for joining the journey. We build this in the open and your feedback genuinely matters.\n\nBest,\nThe Beeta Technologies Team"
+          message:`Sign-in to Beeta OS Dev Log\n\nName: ${u.displayName}\nEmail: ${u.email}\nUsername: ${currentUsername?"@"+currentUsername:"(not set yet)"}\nTime: ${new Date().toLocaleString()}\n\n— Beeta Technologies`
         })
       }).catch(()=>{});
     }
@@ -950,13 +947,10 @@ function renderTimeline(){
     tl.appendChild(el);
   });
 }
-
-/* ── STATS ────────────────────────────── */
 function updateStats(){
   document.getElementById("statPosts").textContent = allPosts.length;
   document.getElementById("statComments").textContent = allPosts.reduce((a,p)=>a+(p.commentCount||0),0);
 }
-
 </script>
 </body>
 </html>
