@@ -816,21 +816,66 @@ onAuthStateChanged(auth, async u=>{
   renderPosts();
 });
 
-/* ── VIDEO UPLOAD (Cloudinary) ────────── */
+/* ── VIDEO UPLOAD (Cloudinary + FFmpeg) ── */
 const CLOUDINARY_CLOUD = "drf7oope0";
 const CLOUDINARY_PRESET = "Beeta dev post";
 let selectedVideoFile = null;
 
-document.getElementById("videoFileInput").addEventListener("change", e=>{
+document.getElementById("videoFileInput").addEventListener("change", async e=>{
   const file = e.target.files[0]; if(!file) return;
-  if(file.size > 100*1024*1024){ toast("Video too large — max 100MB","error"); return; }
-  selectedVideoFile = file;
-  const url = URL.createObjectURL(file);
+
+  // Only admin can upload video
+  if(!isAdmin){ toast("Only admin can upload videos","error"); return; }
+
+  if(file.size > 100*1024*1024){
+    // Need to compress — load FFmpeg only now
+    toast("Video is over 100MB — compressing…","info");
+    document.getElementById("videoProgress").style.display = "block";
+    document.getElementById("videoProgressFill").style.width = "0%";
+    document.getElementById("videoProgressLabel").textContent = "Loading compressor…";
+    try{
+      selectedVideoFile = await compressVideo(file);
+      toast("Compressed successfully!","success");
+    } catch(err){
+      toast("Compression failed: "+err.message,"error");
+      document.getElementById("videoProgress").style.display = "none";
+      return;
+    }
+  } else {
+    selectedVideoFile = file;
+  }
+
+  const url = URL.createObjectURL(selectedVideoFile);
   document.getElementById("videoPreview").src = url;
   document.getElementById("videoUploadHint").style.display = "none";
   document.getElementById("videoPreviewWrap").style.display = "block";
-  toast("Video selected — will upload on publish","info");
+  document.getElementById("videoProgress").style.display = "none";
+  const mb = (selectedVideoFile.size/1024/1024).toFixed(1);
+  toast(`Video ready — ${mb}MB`,"info");
 });
+
+async function compressVideo(file){
+  // Dynamically load FFmpeg only when needed
+  const { createFFmpeg, fetchFile } = await import("https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js");
+  const ffmpeg = createFFmpeg({ log: false,
+    progress: ({ratio})=>{
+      const pct = Math.round(ratio*100);
+      document.getElementById("videoProgressFill").style.width = pct+"%";
+      document.getElementById("videoProgressLabel").textContent = `Compressing… ${pct}%`;
+    }
+  });
+  document.getElementById("videoProgressLabel").textContent = "Loading FFmpeg…";
+  await ffmpeg.load();
+  ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
+  document.getElementById("videoProgressLabel").textContent = "Compressing…";
+  // Compress: scale down, lower bitrate to target ~80MB
+  await ffmpeg.run("-i","input.mp4","-vcodec","libx264","-crf","28","-preset","fast","-acodec","aac","-b:a","128k","output.mp4");
+  const data = ffmpeg.FS("readFile","output.mp4");
+  ffmpeg.FS("unlink","input.mp4");
+  ffmpeg.FS("unlink","output.mp4");
+  return new File([data.buffer],"compressed.mp4",{type:"video/mp4"});
+}
+
 document.getElementById("removeVideoBtn").addEventListener("click", e=>{
   e.stopPropagation();
   selectedVideoFile = null;
@@ -850,6 +895,7 @@ async function uploadVideoToCloudinary(file){
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/video/upload`);
     document.getElementById("videoProgress").style.display = "block";
+    document.getElementById("videoProgressLabel").textContent = "Uploading… 0%";
     xhr.upload.onprogress = e=>{
       if(e.lengthComputable){
         const pct = Math.round(e.loaded/e.total*100);
@@ -859,10 +905,8 @@ async function uploadVideoToCloudinary(file){
     };
     xhr.onload = ()=>{
       document.getElementById("videoProgress").style.display = "none";
-      if(xhr.status===200){
-        const res = JSON.parse(xhr.responseText);
-        resolve(res.secure_url);
-      } else { reject(new Error("Upload failed")); }
+      if(xhr.status===200){ resolve(JSON.parse(xhr.responseText).secure_url); }
+      else { reject(new Error("Upload failed — "+xhr.status)); }
     };
     xhr.onerror = ()=>{ document.getElementById("videoProgress").style.display="none"; reject(new Error("Network error")); };
     xhr.send(fd);
