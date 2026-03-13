@@ -412,7 +412,7 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
         <textarea name="message" required placeholder="Your message" rows="6" style="padding:16px 20px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:15px;resize:vertical"></textarea>
         <button type="submit" style="padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:800;cursor:pointer;font-size:15px"><i class="fas fa-paper-plane" style="margin-right:8px"></i>Send Message</button>
       </form>
-      <p style="margin-top:28px;text-align:center;opacity:.7;font-size:14px">Or email <strong style="color:var(--accent1)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9af8ffffeefbb4f7fbf3f4dafdf7fbf3f6b4f9f5f7">[email&#160;protected]</a></strong></p>
+      <p style="margin-top:28px;text-align:center;opacity:.7;font-size:14px">Or email <strong style="color:var(--accent1)">beeta.main@gmail.com</strong></p>
     </div>
   </section>
 </div>
@@ -502,7 +502,7 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
 <!-- ═══════════════════════════════════════
      ALL SCRIPTS — single module block
 ════════════════════════════════════════ -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+<script type="module">
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -948,4 +948,15 @@ function renderTimeline(){
     el.innerHTML=`<div class="tl-dot ${i===0?"active":""}"></div><div><div class="tl-title">${esc(p.title)}</div><div class="tl-date">${d}</div></div>`;
     el.addEventListener("click", ()=> document.getElementById("post-"+p.id)?.scrollIntoView({behavior:"smooth",block:"start"}));
     tl.appendChild(el);
-  })
+  });
+}
+
+/* ── STATS ────────────────────────────── */
+function updateStats(){
+  document.getElementById("statPosts").textContent = allPosts.length;
+  document.getElementById("statComments").textContent = allPosts.reduce((a,p)=>a+(p.commentCount||0),0);
+}
+
+</script>
+</body>
+</html>
