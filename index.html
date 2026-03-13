@@ -94,6 +94,56 @@ header.scrolled{padding:13px 60px;background:rgba(10,12,30,.96);box-shadow:0 8px
 }
 .signin-box .close-x:hover{color:#eef1ff}
 
+/* ── USERNAME SETUP DIALOG ── */
+#usernameDialog{
+  position:fixed;inset:0;z-index:6000;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(14px);
+  padding:20px
+}
+#usernameDialog.open{display:flex}
+.username-box{
+  background:linear-gradient(160deg,rgba(20,22,50,.99),rgba(10,12,28,.99));
+  border:1px solid rgba(155,108,255,.3);border-radius:24px;
+  padding:44px 40px;max-width:440px;width:100%;
+  box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 80px rgba(155,108,255,.07);
+  text-align:center;animation:dialogIn .4s cubic-bezier(.2,.8,.2,1)
+}
+.username-box .ub-icon{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(155,108,255,.2),rgba(94,231,255,.1));
+  border:1px solid rgba(155,108,255,.3);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;font-size:26px;color:var(--accent2)
+}
+.username-box h2{font-size:26px;font-weight:900;margin-bottom:10px}
+.username-box h2 span{background:linear-gradient(90deg,var(--accent2),var(--accent1));-webkit-background-clip:text;background-clip:text;color:transparent}
+.username-box .ub-sub{font-size:14px;opacity:.65;margin-bottom:28px;line-height:1.6}
+.ub-input-wrap{position:relative;margin-bottom:10px}
+.ub-input-wrap .ub-prefix{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  font-family:'Courier New',monospace;font-size:15px;color:var(--accent1);opacity:.6;pointer-events:none
+}
+#usernameInput{
+  width:100%;padding:14px 14px 14px 28px;
+  background:rgba(255,255,255,.07);border:1px solid var(--border);
+  border-radius:13px;color:#eef1ff;font-size:16px;font-weight:600;
+  letter-spacing:.3px
+}
+#usernameInput:focus{border-color:var(--accent2)!important;box-shadow:0 0 0 3px rgba(155,108,255,.2)}
+#usernameInput::placeholder{color:#3a4060;font-weight:400}
+.ub-hint{font-size:12px;color:#4a5070;margin-bottom:22px;text-align:left}
+.ub-hint.error{color:#ff7070}
+.ub-hint.ok{color:#06d6a0}
+.ub-save-btn{
+  width:100%;padding:14px;border-radius:13px;border:none;
+  background:linear-gradient(135deg,var(--accent2),var(--accent1));
+  color:#000;font-weight:800;font-size:15px;cursor:pointer;
+  box-shadow:0 8px 28px rgba(155,108,255,.35);transition:all .3s
+}
+.ub-save-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(155,108,255,.5)}
+.ub-save-btn:disabled{opacity:.5;transform:none;cursor:not-allowed}
+
 /* Guest banner */
 #guestBanner{
   display:none;
@@ -391,6 +441,23 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
   </div>
 </div>
 
+<!-- USERNAME SETUP DIALOG -->
+<div id="usernameDialog">
+  <div class="username-box">
+    <div class="ub-icon"><i class="fas fa-user-astronaut"></i></div>
+    <h2>Pick your <span>username</span></h2>
+    <p class="ub-sub">This is how you'll appear on comments and suggestions. Choose something cool — you can't change it later!</p>
+    <div class="ub-input-wrap">
+      <span class="ub-prefix">@</span>
+      <input id="usernameInput" type="text" placeholder="cooldev123" maxlength="24" oninput="validateUsername(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <p class="ub-hint" id="ubHint">3–24 characters · letters, numbers, underscores only</p>
+    <button class="ub-save-btn" id="ubSaveBtn" onclick="saveUsername()" disabled>
+      <i class="fas fa-check" style="margin-right:7px"></i>Set Username &amp; Continue
+    </button>
+  </div>
+</div>
+
 <!-- MAIN PAGE -->
 <div id="mainPage" class="page active">
   <section id="home" class="section fade-in">
@@ -439,7 +506,7 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
         <textarea name="message" required placeholder="Your message" rows="6" style="padding:16px 20px;border-radius:14px;border:1px solid var(--border);background:rgba(255,255,255,.08);color:#eef1ff;font-size:15px;resize:vertical"></textarea>
         <button type="submit" style="padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:800;cursor:pointer;font-size:15px;box-shadow:0 8px 24px rgba(94,231,255,.3)"><i class="fas fa-paper-plane" style="margin-right:8px"></i>Send Message</button>
       </form>
-      <p style="margin-top:28px;text-align:center;opacity:.7;font-size:14px"><i class="fas fa-envelope" style="margin-right:6px"></i>Or email us at <strong style="color:var(--accent1)">beeta.main@gmail.com</strong></p>
+      <p style="margin-top:28px;text-align:center;opacity:.7;font-size:14px"><i class="fas fa-envelope" style="margin-right:6px"></i>Or email us at <strong style="color:var(--accent1)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e28087879683cc8f838b8ca2858f838b8ecc818d8f">[email&#160;protected]</a></strong></p>
     </div>
   </section>
 </div>
@@ -541,7 +608,7 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
 <div id="toast"></div>
 
 <!-- SCRIPTS -->
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── PAGE & DIALOG ─────────────────────────
 let dialogDismissed = false;
 
@@ -645,13 +712,62 @@ window.showToast = showToast;
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp, updateDoc, increment, getDoc, setDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const ADMIN = "beeta.main@gmail.com";
 const app = initializeApp({apiKey:"AIzaSyDGm7GLAJpGrfMu37I5qEhVsKVYByZ_a6c",authDomain:"beetaos-dev-log.firebaseapp.com",projectId:"beetaos-dev-log",storageBucket:"beetaos-dev-log.firebasestorage.app",messagingSenderId:"887435194919",appId:"1:887435194919:web:ac28dfead1be21d820d402"});
 const auth = getAuth(app), db = getFirestore(app), gp = new GoogleAuthProvider();
-let user=null, isAdmin=false, allPosts=[];
+let user=null, isAdmin=false, allPosts=[], currentUsername=null;
 window.currentFilter = "all";
+
+// ── USERNAME SETUP ────────────────────────
+window.validateUsername = val => {
+  const hint = document.getElementById('ubHint');
+  const btn  = document.getElementById('ubSaveBtn');
+  const clean = val.trim();
+  if(!clean){ hint.textContent='3–24 characters · letters, numbers, underscores only'; hint.className='ub-hint'; btn.disabled=true; return; }
+  if(!/^[a-zA-Z0-9_]{3,24}$/.test(clean)){ hint.textContent='Only letters, numbers, and underscores. 3–24 chars.'; hint.className='ub-hint error'; btn.disabled=true; return; }
+  hint.textContent='Looks good!'; hint.className='ub-hint ok'; btn.disabled=false;
+};
+
+window.saveUsername = async () => {
+  const val = document.getElementById('usernameInput').value.trim();
+  if(!/^[a-zA-Z0-9_]{3,24}$/.test(val)) return;
+  const btn = document.getElementById('ubSaveBtn');
+  btn.disabled=true; btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:7px"></i>Saving…`;
+
+  // Check uniqueness
+  try{
+    const snap = await getDocs(query(collection(db,'users'), where('username','==',val)));
+    if(!snap.empty){ 
+      document.getElementById('ubHint').textContent='That username is taken — try another!';
+      document.getElementById('ubHint').className='ub-hint error';
+      btn.disabled=false; btn.innerHTML=`<i class="fas fa-check" style="margin-right:7px"></i>Set Username & Continue`;
+      return;
+    }
+    // Save to Firestore users collection
+    await setDoc(doc(db,'users',user.uid),{
+      username: val, email: user.email,
+      displayName: user.displayName, photoURL: user.photoURL,
+      createdAt: serverTimestamp()
+    });
+    currentUsername = val;
+    document.getElementById('usernameDialog').classList.remove('open');
+    showToast(`Username @${val} saved! Welcome 🎉`,'success');
+    window.renderPosts && window.renderPosts();
+  }catch(e){
+    showToast('Error: '+e.message,'error');
+    btn.disabled=false; btn.innerHTML=`<i class="fas fa-check" style="margin-right:7px"></i>Set Username & Continue`;
+  }
+};
+
+async function loadUsername(uid){
+  try{
+    const snap = await getDoc(doc(db,'users',uid));
+    if(snap.exists()) return snap.data().username;
+    return null;
+  }catch(e){ return null; }
+}
 
 // ── SEND LOGIN NOTIFICATION EMAIL ─────────
 async function sendLoginEmail(u){
@@ -664,7 +780,7 @@ async function sendLoginEmail(u){
         _subject:`🔔 New Login — Beeta OS Dev Log`,
         name: u.displayName || "Unknown",
         email: u.email,
-        message:`A user just signed in to the Beeta OS Dev Log.\n\nName: ${u.displayName}\nEmail: ${u.email}\nTime: ${new Date().toLocaleString()}\n\n— Beeta Technologies`
+        message:`A user just signed in to the Beeta OS Dev Log.\n\nName: ${u.displayName}\nEmail: ${u.email}\nUsername: ${currentUsername ? '@'+currentUsername : '(not set yet)'}\nTime: ${new Date().toLocaleString()}\n\n— Beeta Technologies`
       })
     });
   } catch(e){ console.log("Email notify failed:", e); }
@@ -678,7 +794,7 @@ window.handleAuth = async () => {
 
 const notifiedUsers = new Set(); // don't spam email on re-renders
 
-onAuthStateChanged(auth, u => {
+onAuthStateChanged(auth, async u => {
   user = u; isAdmin = u?.email === ADMIN;
   window._firebaseUser = u;
 
@@ -686,11 +802,24 @@ onAuthStateChanged(auth, u => {
   const am = document.getElementById("authMobile");
   const gb = document.getElementById("guestBanner");
   const dialog = document.getElementById("signinDialog");
+  const unDialog = document.getElementById("usernameDialog");
 
   if(u){
-    // Close dialog, hide guest banner
+    // Close sign-in dialog, hide guest banner
     dialog.classList.remove('open');
     if(gb) gb.style.display = 'none';
+
+    // Load username from Firestore
+    currentUsername = await loadUsername(u.uid);
+
+    // New user — show username setup dialog
+    if(!currentUsername && u.email !== ADMIN){
+      unDialog.classList.add('open');
+      // Pre-fill with Google display name as suggestion
+      const suggested = (u.displayName||'').toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'').slice(0,24);
+      const inp = document.getElementById('usernameInput');
+      if(inp && suggested.length >= 3){ inp.value = suggested; window.validateUsername(suggested); }
+    }
 
     // Send login notification email (once per session per user)
     if(!notifiedUsers.has(u.uid) && u.email !== ADMIN){
@@ -698,14 +827,15 @@ onAuthStateChanged(auth, u => {
       sendLoginEmail(u);
     }
 
-    const n = u.displayName.split(" ")[0], cr = isAdmin ? "👑 " : "";
-    ab.innerHTML = `<img src="${u.photoURL}" referrerpolicy="no-referrer">${cr}${n} <span style="opacity:.4;font-size:11px;margin-left:3px">sign out</span>`;
-    if(am) am.innerHTML = `<img src="${u.photoURL}" referrerpolicy="no-referrer" style="width:22px;height:22px;border-radius:50%;object-fit:cover">${cr}${n} — Sign Out`;
-    showToast(`Welcome, ${n}! 👋`,"success");
+    const displayName = currentUsername ? `@${currentUsername}` : u.displayName.split(" ")[0];
+    const cr = isAdmin ? "👑 " : "";
+    ab.innerHTML = `<img src="${u.photoURL}" referrerpolicy="no-referrer">${cr}${displayName} <span style="opacity:.4;font-size:11px;margin-left:3px">sign out</span>`;
+    if(am) am.innerHTML = `<img src="${u.photoURL}" referrerpolicy="no-referrer" style="width:22px;height:22px;border-radius:50%;object-fit:cover">${cr}${displayName} — Sign Out`;
+    if(!currentUsername || u.email === ADMIN) showToast(`Welcome${currentUsername?' back':''}, ${u.displayName.split(' ')[0]}! 👋`,"success");
   } else {
+    currentUsername = null;
     ab.innerHTML = `<i class="fab fa-google"></i> Sign in`;
     if(am) am.innerHTML = `<i class="fab fa-google"></i> Sign in with Google`;
-    // Show guest banner if dialog was already dismissed
     if(gb && window.dialogDismissed) gb.style.display = 'flex';
   }
 
@@ -779,7 +909,7 @@ window.renderPosts = () => {
             <div class="comment-form">
               <h4><i class="fas fa-lightbulb" style="margin-right:5px"></i>Leave a Comment or Suggestion</h4>
               <div class="cf-row">
-                <input class="cf-input" id="cfn-${p.id}" type="text" placeholder="Your name" maxlength="40" value="${esc(user.displayName||'')}">
+                <input class="cf-input" id="cfn-${p.id}" type="text" placeholder="Your name" maxlength="40" value="${esc(currentUsername ? '@'+currentUsername : user.displayName||'')}" ${currentUsername?'readonly style="opacity:.6;cursor:default"':''}>
                 <select class="cf-input" id="cft-${p.id}">
                   <option value="suggestion">💡 Suggestion</option>
                   <option value="issue">🐛 Found an Issue</option>
@@ -831,7 +961,7 @@ window.postComment = async (pid, btn) => {
   if(!user){ handleAuth(); return; }
   const txt = document.getElementById("cfc-"+pid).value.trim();
   if(!txt){ document.getElementById("cfc-"+pid).style.borderColor="rgba(255,100,100,.5)"; setTimeout(()=>document.getElementById("cfc-"+pid).style.borderColor="",1200); return; }
-  const name = document.getElementById("cfn-"+pid).value.trim() || user.displayName || "Anonymous";
+  const name = currentUsername ? '@'+currentUsername : (document.getElementById("cfn-"+pid).value.trim() || user.displayName || "Anonymous");
   const type = document.getElementById("cft-"+pid).value;
   btn.disabled=true; btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:5px"></i>Posting…`;
   try{
@@ -853,9 +983,4 @@ function renderTimeline(){
 }
 function updateStats(){
   document.getElementById("statPosts").textContent = allPosts.length;
-  document.getElementById("statComments").textContent = allPosts.reduce((a,p)=>a+(p.commentCount||0),0);
-}
-function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-</script>
-</body>
-</html>
+  docum
