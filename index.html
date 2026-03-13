@@ -825,21 +825,19 @@ let selectedVideoFile = null;
 
 document.getElementById("videoFileInput").addEventListener("change", async e=>{
   const file = e.target.files[0]; if(!file) return;
-
-  // Only admin can upload video
   if(!isAdmin){ toast("Only admin can upload videos","error"); return; }
 
   if(file.size > 100*1024*1024){
-    // Need to compress — load FFmpeg only now
-    toast("Video is over 100MB — compressing…","info");
+    const mb = (file.size/1024/1024).toFixed(1);
+    toast(`Video is ${mb}MB — compressing…`, "info");
     document.getElementById("videoProgress").style.display = "block";
     document.getElementById("videoProgressFill").style.width = "0%";
     document.getElementById("videoProgressLabel").textContent = "Loading compressor…";
     try{
       selectedVideoFile = await compressVideo(file);
-      toast("Compressed successfully!","success");
+      toast(`Compressed to ${(selectedVideoFile.size/1024/1024).toFixed(1)}MB!`, "success");
     } catch(err){
-      toast("Compression failed: "+err.message,"error");
+      toast("Compression failed: "+err.message, "error");
       document.getElementById("videoProgress").style.display = "none";
       return;
     }
@@ -852,25 +850,21 @@ document.getElementById("videoFileInput").addEventListener("change", async e=>{
   document.getElementById("videoUploadHint").style.display = "none";
   document.getElementById("videoPreviewWrap").style.display = "block";
   document.getElementById("videoProgress").style.display = "none";
-  const mb = (selectedVideoFile.size/1024/1024).toFixed(1);
-  toast(`Video ready — ${mb}MB`,"info");
+  toast(`Video ready — ${(selectedVideoFile.size/1024/1024).toFixed(1)}MB`, "info");
 });
 
 async function compressVideo(file){
-  // Load FFmpeg 0.12 which is browser-independent
   const { FFmpeg } = await import("https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js");
   const { fetchFile, toBlobURL } = await import("https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js");
 
   const ffmpeg = new FFmpeg();
   ffmpeg.on("progress", ({progress})=>{
-    const pct = Math.round(progress*100);
+    const pct = Math.round(Math.min(progress,1)*100);
     document.getElementById("videoProgressFill").style.width = pct+"%";
     document.getElementById("videoProgressLabel").textContent = `Compressing… ${pct}%`;
   });
 
   document.getElementById("videoProgressLabel").textContent = "Loading FFmpeg…";
-
-  // Load with blob URLs so it works in all browsers (no COOP/COEP needed)
   const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
   await ffmpeg.load({
     coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
@@ -879,7 +873,7 @@ async function compressVideo(file){
 
   document.getElementById("videoProgressLabel").textContent = "Compressing…";
   await ffmpeg.writeFile("input.mp4", await fetchFile(file));
-  await ffmpeg.exec(["-i","input.mp4","-vcodec","libx264","-crf","28","-preset","fast","-acodec","aac","-b:a","128k","output.mp4"]);
+  await ffmpeg.exec(["-i","input.mp4","-vcodec","libx264","-crf","28","-preset","ultrafast","-acodec","aac","-b:a","96k","output.mp4"]);
   const data = await ffmpeg.readFile("output.mp4");
   await ffmpeg.deleteFile("input.mp4");
   await ffmpeg.deleteFile("output.mp4");
