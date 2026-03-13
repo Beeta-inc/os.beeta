@@ -15,7 +15,7 @@ html{scroll-behavior:smooth}
 body{background:radial-gradient(1200px 600px at 10% 10%,#141a3a,#070812 60%),radial-gradient(800px 400px at 90% 80%,#2a0d3f,transparent 60%);color:#eef1ff;overflow-x:hidden;position:relative}
 body::before{content:'';position:fixed;inset:0;background:url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.03)"/></svg>');pointer-events:none;z-index:0}
 
-/* HEADER */
+/* ── HEADER ── */
 header{position:fixed;top:0;left:0;width:100%;z-index:200;padding:18px 60px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(10,12,30,.9),rgba(10,12,30,.5));backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);transition:padding .3s,background .3s,box-shadow .3s}
 header.scrolled{padding:13px 60px;background:rgba(10,12,30,.96);box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .logo{font-weight:800;letter-spacing:.5px;font-size:22px;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;cursor:pointer;transition:transform .3s;flex-shrink:0}
@@ -41,14 +41,75 @@ header.scrolled{padding:13px 60px;background:rgba(10,12,30,.96);box-shadow:0 8px
 .nav-mobile a{text-decoration:none;color:#cfd6ff;font-size:20px;font-weight:600;padding:14px 32px;border-radius:14px;transition:all .3s;width:80%;text-align:center}
 .nav-mobile a:hover{color:#fff;background:rgba(255,255,255,.07)}
 .nav-mobile a.devlog-link{color:var(--accent1);border:1px solid rgba(94,231,255,.3);background:rgba(94,231,255,.07);margin-top:8px}
-.auth-mobile{margin-top:20px;display:none;align-items:center;gap:8px;padding:12px 24px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff;font-size:15px;font-weight:600;cursor:pointer;width:80%;justify-content:center}
+.auth-mobile{margin-top:20px;display:none;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#eef1ff;font-size:15px;font-weight:600;cursor:pointer;width:80%}
 .auth-mobile img{width:22px;height:22px;border-radius:50%}
 
-/* PAGES */
+/* ── SIGN-IN DIALOG ── */
+#signinDialog{
+  position:fixed;inset:0;z-index:5000;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(12px);
+  padding:20px
+}
+#signinDialog.open{display:flex}
+.signin-box{
+  background:linear-gradient(160deg,rgba(20,22,50,.98),rgba(10,12,28,.98));
+  border:1px solid rgba(94,231,255,.2);border-radius:24px;
+  padding:44px 40px;max-width:480px;width:100%;
+  box-shadow:0 40px 120px rgba(0,0,0,.8),0 0 80px rgba(94,231,255,.05);
+  text-align:center;position:relative;animation:dialogIn .4s cubic-bezier(.2,.8,.2,1)
+}
+@keyframes dialogIn{from{opacity:0;transform:scale(.92) translateY(16px)}to{opacity:1;transform:none}}
+.signin-box .brand{
+  font-size:13px;letter-spacing:3px;text-transform:uppercase;
+  font-family:'Courier New',monospace;color:var(--accent2);margin-bottom:20px
+}
+.signin-box h2{font-size:32px;font-weight:900;margin-bottom:12px;line-height:1.2}
+.signin-box h2 span{background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.signin-box p{font-size:15px;opacity:.75;line-height:1.65;margin-bottom:28px}
+.features-list{display:flex;flex-direction:column;gap:10px;margin-bottom:32px;text-align:left}
+.feature-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06)}
+.feature-row i{width:18px;text-align:center;flex-shrink:0}
+.feature-row .feat-text{font-size:13px;opacity:.85}
+.feature-row .feat-locked{font-size:11px;opacity:.45;margin-left:auto;font-family:'Courier New',monospace}
+.feat-green{color:#06d6a0}
+.feat-locked-icon{color:#ff7070}
+.google-btn{
+  width:100%;padding:15px 20px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  color:#000;font-weight:800;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 8px 28px rgba(94,231,255,.35);transition:all .3s;margin-bottom:14px
+}
+.google-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(94,231,255,.5)}
+.google-btn i{font-size:18px}
+.skip-btn{
+  background:none;border:none;color:#6a7090;font-size:13px;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;transition:color .2s
+}
+.skip-btn:hover{color:#eef1ff}
+.signin-box .close-x{
+  position:absolute;top:16px;right:18px;background:none;border:none;
+  color:#4a5070;font-size:18px;cursor:pointer;transition:color .2s
+}
+.signin-box .close-x:hover{color:#eef1ff}
+
+/* Guest banner */
+#guestBanner{
+  display:none;
+  background:rgba(155,108,255,.08);border:1px solid rgba(155,108,255,.2);
+  border-radius:14px;padding:14px 20px;margin-bottom:24px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap
+}
+#guestBanner i{color:var(--accent2);font-size:18px;flex-shrink:0}
+#guestBanner p{font-size:14px;opacity:.85;flex:1}
+#guestBanner button{padding:8px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#000;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
+
+/* ── PAGES ── */
 .page{display:none}
 .page.active{display:block}
 
-/* MAIN SITE */
+/* ── MAIN SITE ── */
 .section{min-height:100vh;padding:160px 90px 100px;position:relative}
 #home{display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center;position:relative}
 #home::before{content:'BEETA OS';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:140px;font-weight:900;letter-spacing:12px;color:rgba(255,255,255,0.035);white-space:nowrap;pointer-events:none;animation:floatingText 6s ease-in-out infinite}
@@ -100,8 +161,6 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent1)!important;bo
 .np-input{width:100%;padding:13px 15px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:#eef1ff;font-size:14px;margin-bottom:11px}
 .np-input::placeholder{color:#3a4060}
 textarea.np-input{resize:vertical;min-height:120px}
-
-/* Image upload */
 .img-upload-area{border:2px dashed rgba(94,231,255,.25);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:11px;background:rgba(94,231,255,.03);position:relative;overflow:hidden}
 .img-upload-area:hover{border-color:rgba(94,231,255,.5);background:rgba(94,231,255,.06)}
 .img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -113,7 +172,6 @@ textarea.np-input{resize:vertical;min-height:120px}
 .img-preview-wrap img{width:100%;max-height:180px;object-fit:cover;border-radius:8px;display:block}
 .remove-img{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);border:none;border-radius:6px;color:#fff;padding:4px 10px;font-size:12px;cursor:pointer;z-index:2}
 .img-size-note{font-size:11px;color:#4a5070;margin-top:6px;margin-bottom:11px}
-
 .tags-select{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .tag-toggle{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:#8a93b8;font-size:12px;cursor:pointer;transition:all .2s}
 .tag-toggle.selected{border-color:var(--accent1);color:var(--accent1);background:rgba(94,231,255,.1)}
@@ -128,7 +186,7 @@ textarea.np-input{resize:vertical;min-height:120px}
 
 /* FILTER */
 .filter-bar{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;align-items:center}
-.filter-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#8a93b8;font-size:13px;cursor:pointer;transition:all .25s}
+.filter-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#8a93b8;font-size:13px;cursor:pointer;transition:all .25px}
 .filter-btn:hover{border-color:rgba(255,255,255,.25);color:#eef1ff}
 .filter-btn.active{background:rgba(94,231,255,.1);border-color:rgba(94,231,255,.35);color:var(--accent1)}
 .post-count{font-family:'Courier New',monospace;font-size:13px;color:#4a5070;margin-left:auto}
@@ -154,6 +212,13 @@ textarea.np-input{resize:vertical;min-height:120px}
 .post-img-wrap:hover img{transform:scale(1.02)}
 .del-btn{margin:0 24px 10px;background:none;border:none;color:#4a5070;font-size:12px;cursor:pointer;transition:color .2s;padding:0;display:block}
 .del-btn:hover{color:#ff7070}
+
+/* LOCKED COMMENT AREA */
+.locked-comments{border-top:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .2s}
+.locked-comments:hover{background:rgba(155,108,255,.05)}
+.locked-comments i.lock{color:var(--accent2);font-size:14px}
+.locked-comments p{font-size:13px;color:#8a93b8;flex:1}
+.locked-comments .sign-in-inline{font-size:12px;color:var(--accent1);font-weight:600;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
 
 /* COMMENTS */
 .post-comments{border-top:1px solid var(--border)}
@@ -243,8 +308,9 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
   .cf-row{grid-template-columns:1fr!important}
   .post-header{flex-direction:column;gap:7px}
   #download h1,#contact h1{font-size:36px!important}
-  #download p{font-size:15px!important}
-  #download input[type=email]{min-width:unset!important;width:100%!important}
+  .signin-box{padding:32px 24px}
+  .signin-box h2{font-size:26px}
+  #guestBanner{flex-direction:column;text-align:center}
 }
 @media(max-width:480px){
   #home h1{font-size:32px!important}
@@ -289,6 +355,42 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
   <button class="auth-mobile" id="authMobile" onclick="handleAuth();closeMobileNav()"><i class="fab fa-google"></i> Sign in with Google</button>
 </nav>
 
+<!-- SIGN-IN DIALOG -->
+<div id="signinDialog">
+  <div class="signin-box">
+    <button class="close-x" onclick="dismissDialog()"><i class="fas fa-times"></i></button>
+    <p class="brand"><i class="fas fa-terminal" style="margin-right:6px"></i>Beeta Technologies</p>
+    <h2>Join the <span>Dev Community</span></h2>
+    <p>Sign in to comment, suggest features, and report issues directly to the Beeta OS team.</p>
+    <div class="features-list">
+      <div class="feature-row">
+        <i class="fas fa-eye feat-green"></i>
+        <span class="feat-text">Read all dev log posts</span>
+        <span class="feat-locked">FREE</span>
+      </div>
+      <div class="feature-row">
+        <i class="fas fa-comment-dots feat-green"></i>
+        <span class="feat-text">Comment &amp; suggest improvements</span>
+        <span class="feat-locked feat-locked-icon"><i class="fas fa-lock" style="font-size:9px"></i> Sign in</span>
+      </div>
+      <div class="feature-row">
+        <i class="fas fa-bug feat-green"></i>
+        <span class="feat-text">Report bugs directly to the team</span>
+        <span class="feat-locked feat-locked-icon"><i class="fas fa-lock" style="font-size:9px"></i> Sign in</span>
+      </div>
+      <div class="feature-row">
+        <i class="fas fa-bell feat-green"></i>
+        <span class="feat-text">Your name shown on your comments</span>
+        <span class="feat-locked feat-locked-icon"><i class="fas fa-lock" style="font-size:9px"></i> Sign in</span>
+      </div>
+    </div>
+    <button class="google-btn" onclick="handleAuth()">
+      <i class="fab fa-google"></i> Continue with Google
+    </button>
+    <button class="skip-btn" onclick="dismissDialog()">Just browsing — let me read</button>
+  </div>
+</div>
+
 <!-- MAIN PAGE -->
 <div id="mainPage" class="page active">
   <section id="home" class="section fade-in">
@@ -303,7 +405,6 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
       <p>Your built-in assistant for installation help, productivity, and everyday tasks.</p>
     </div>
   </section>
-
   <section id="features" class="section fade-in">
     <h1 style="text-align:center;font-size:56px;margin-bottom:60px">Powerful Features</h1>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px">
@@ -313,7 +414,6 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
       <div class="hero-card"><i class="fas fa-users"></i><h3>For Everyone</h3><p>Designed for gamers, professionals, business users, and everyday computing.</p></div>
     </div>
   </section>
-
   <section id="download" class="section fade-in">
     <div style="max-width:800px;margin:0 auto;text-align:center">
       <h1 style="font-size:56px;margin-bottom:24px">Get Early Access</h1>
@@ -329,7 +429,6 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
       <p style="margin-top:24px;opacity:.7;font-size:14px"><i class="fas fa-info-circle" style="margin-right:6px"></i>Be among the first to experience the future of operating systems</p>
     </div>
   </section>
-
   <section id="contact" class="section fade-in">
     <div style="max-width:580px;margin:0 auto">
       <h1 style="font-size:56px;text-align:center;margin-bottom:18px">Get in Touch</h1>
@@ -350,37 +449,40 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
   <div class="devlog-hero">
     <p class="eyebrow"><i class="fas fa-terminal" style="margin-right:8px"></i>Development Log</p>
     <h1>Building in<br>the Open</h1>
-    <p>Every update, every breakthrough, every bug we crush — posted here in real time. Comment on any post to suggest improvements or report issues.</p>
+    <p>Every update, every breakthrough, every bug we crush — posted here in real time. Sign in to comment and shape what gets built next.</p>
     <div class="hero-stats">
       <div><div class="stat-num" id="statPosts">—</div><div class="stat-label">Dev Updates</div></div>
       <div><div class="stat-num" id="statComments">—</div><div class="stat-label">Comments</div></div>
       <div><div class="stat-num">~68%</div><div class="stat-label">Core Complete</div></div>
     </div>
   </div>
-
   <div class="devlog-body">
     <div>
+      <!-- Guest banner -->
+      <div id="guestBanner">
+        <i class="fas fa-lock"></i>
+        <p>You're browsing as a guest. <strong>Sign in with Google</strong> to leave comments and suggestions on posts.</p>
+        <button onclick="handleAuth()"><i class="fab fa-google" style="margin-right:6px"></i>Sign In</button>
+      </div>
+
       <button id="openNewPostBtn" onclick="togglePanel(true)"><i class="fas fa-plus" style="margin-right:7px"></i>New Dev Log Post</button>
 
       <div id="newPostPanel">
         <h3><i class="fas fa-pen-nib" style="margin-right:7px"></i>Create New Post</h3>
         <input class="np-input" id="npTitle" type="text" placeholder="Post title — what did you build or fix today?">
-
-        <!-- Image upload — base64 -->
         <div class="img-upload-area" id="imgUploadArea">
           <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" id="imgFileInput" onchange="handleImageSelect(event)">
           <div class="upload-hint" id="uploadHint">
             <i class="fas fa-image"></i>
             <p>Click or drag to attach a screenshot</p>
-            <small>PNG, JPG, GIF · max 800KB for best results</small>
+            <small>PNG, JPG, GIF · max 800KB</small>
           </div>
           <div class="img-preview-wrap" id="imgPreviewWrap">
             <img id="imgPreview" src="" alt="Preview">
             <button class="remove-img" onclick="removeImage(event)"><i class="fas fa-times"></i> Remove</button>
           </div>
         </div>
-        <p class="img-size-note"><i class="fas fa-info-circle" style="margin-right:4px"></i>Image is stored directly — keep under 800KB. Tip: use <strong>squoosh.app</strong> to compress first.</p>
-
+        <p class="img-size-note"><i class="fas fa-info-circle" style="margin-right:4px"></i>Keep image under 800KB. Use <strong>squoosh.app</strong> to compress if needed.</p>
         <div class="tags-select" id="npTagsRow">
           <button class="tag-toggle" data-tag="core">CORE</button>
           <button class="tag-toggle" data-tag="ui">UI</button>
@@ -388,7 +490,7 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
           <button class="tag-toggle" data-tag="store">STORE</button>
           <button class="tag-toggle" data-tag="fix">BUG FIX</button>
         </div>
-        <textarea class="np-input" id="npBody" placeholder="Describe what you worked on. Be as detailed as you like…"></textarea>
+        <textarea class="np-input" id="npBody" placeholder="Describe what you worked on…"></textarea>
         <div class="np-actions">
           <button class="btn-publish" id="publishBtn" onclick="submitPost()"><i class="fas fa-rocket" style="margin-right:6px"></i>Publish</button>
           <button class="btn-cancel-np" onclick="togglePanel(false)">Cancel</button>
@@ -404,7 +506,6 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
         <button class="filter-btn" data-filter="fix">Bug Fix</button>
         <span class="post-count" id="postCount"></span>
       </div>
-
       <div class="posts-list" id="postsContainer"><div class="spinner"></div></div>
     </div>
 
@@ -441,84 +542,103 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
 
 <!-- SCRIPTS -->
 <script>
+// ── PAGE & DIALOG ─────────────────────────
+let dialogDismissed = false;
+
 function showPage(name){
-  document.getElementById('mainPage').classList.toggle('active',name==='main');
-  document.getElementById('devlogPage').classList.toggle('active',name==='devlog');
-  document.getElementById('authBtn').style.display=name==='devlog'?'flex':'none';
-  document.getElementById('authMobile').style.display=name==='devlog'?'flex':'none';
-  window.scrollTo({top:0,behavior:'instant'});
+  document.getElementById('mainPage').classList.toggle('active', name==='main');
+  document.getElementById('devlogPage').classList.toggle('active', name==='devlog');
+  document.getElementById('authBtn').style.display = name==='devlog' ? 'flex' : 'none';
+  document.getElementById('authMobile').style.display = name==='devlog' ? 'flex' : 'none';
+  window.scrollTo({top:0, behavior:'instant'});
+  // Show dialog when entering devlog if not logged in and not dismissed
+  if(name==='devlog' && !window._firebaseUser && !dialogDismissed){
+    setTimeout(()=> document.getElementById('signinDialog').classList.add('open'), 400);
+  }
 }
+
+function dismissDialog(){
+  document.getElementById('signinDialog').classList.remove('open');
+  dialogDismissed = true;
+  // Show guest banner
+  const gb = document.getElementById('guestBanner');
+  if(gb && !window._firebaseUser) gb.style.display = 'flex';
+}
+
+window.dismissDialog = dismissDialog;
+
+// ── MOBILE NAV ────────────────────────────
 function toggleMobileNav(){
   document.getElementById('mobileNav').classList.toggle('open');
   document.getElementById('hamburger').classList.toggle('open');
-  document.body.style.overflow=document.getElementById('mobileNav').classList.contains('open')?'hidden':'';
+  document.body.style.overflow = document.getElementById('mobileNav').classList.contains('open') ? 'hidden' : '';
 }
 function closeMobileNav(){
   document.getElementById('mobileNav').classList.remove('open');
   document.getElementById('hamburger').classList.remove('open');
-  document.body.style.overflow='';
+  document.body.style.overflow = '';
 }
-window.closeMobileNav=closeMobileNav;
+window.closeMobileNav = closeMobileNav;
 
-// Lightbox
-window.openLightbox=src=>{ document.getElementById('lightbox-img').src=src; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow='hidden'; };
-window.closeLightbox=()=>{ document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; };
+// ── LIGHTBOX ──────────────────────────────
+window.openLightbox = src => { document.getElementById('lightbox-img').src=src; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow='hidden'; };
+window.closeLightbox = () => { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; };
 
-// Image select — compress + store as base64
-window.selectedImageBase64=null;
-window.handleImageSelect=e=>{
-  const file=e.target.files[0]; if(!file) return;
-  if(file.size>2*1024*1024){ showToast('Image too large — max 2MB','error'); return; }
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    // Compress via canvas
-    const img=new Image();
-    img.onload=()=>{
-      const MAX=1200;
-      let w=img.width,h=img.height;
+// ── IMAGE HANDLER ─────────────────────────
+window.selectedImageBase64 = null;
+window.handleImageSelect = e => {
+  const file = e.target.files[0]; if(!file) return;
+  if(file.size > 2*1024*1024){ showToast('Image too large — max 2MB','error'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX=1200; let w=img.width, h=img.height;
       if(w>MAX){ h=Math.round(h*MAX/w); w=MAX; }
-      const canvas=document.createElement('canvas');
-      canvas.width=w; canvas.height=h;
+      const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
       canvas.getContext('2d').drawImage(img,0,0,w,h);
-      // Quality 0.75 keeps it under ~300KB for most screenshots
-      window.selectedImageBase64=canvas.toDataURL('image/jpeg',0.75);
-      document.getElementById('imgPreview').src=window.selectedImageBase64;
-      document.getElementById('uploadHint').style.display='none';
-      document.getElementById('imgPreviewWrap').style.display='block';
+      window.selectedImageBase64 = canvas.toDataURL('image/jpeg',0.75);
+      document.getElementById('imgPreview').src = window.selectedImageBase64;
+      document.getElementById('uploadHint').style.display = 'none';
+      document.getElementById('imgPreviewWrap').style.display = 'block';
     };
-    img.src=ev.target.result;
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
 };
-window.removeImage=e=>{
+window.removeImage = e => {
   e.stopPropagation();
-  window.selectedImageBase64=null;
-  document.getElementById('imgFileInput').value='';
-  document.getElementById('imgPreview').src='';
-  document.getElementById('uploadHint').style.display='block';
-  document.getElementById('imgPreviewWrap').style.display='none';
+  window.selectedImageBase64 = null;
+  document.getElementById('imgFileInput').value = '';
+  document.getElementById('imgPreview').src = '';
+  document.getElementById('uploadHint').style.display = 'block';
+  document.getElementById('imgPreviewWrap').style.display = 'none';
 };
 
-document.addEventListener('DOMContentLoaded',()=>{
-  document.documentElement.style.overflowY='auto';
-  document.body.style.overflowY='auto';
-  const hdr=document.getElementById('hdr');
-  window.addEventListener('scroll',()=>hdr.classList.toggle('scrolled',window.scrollY>50));
-  const splash=document.getElementById('splash');
+// ── ORIGINAL SITE JS ─────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.documentElement.style.overflowY = 'auto';
+  document.body.style.overflowY = 'auto';
+  const hdr = document.getElementById('hdr');
+  window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', window.scrollY > 50));
+  const splash = document.getElementById('splash');
   if(splash){ const hide=()=>{ splash.classList.add('hidden'); setTimeout(()=>splash.remove(),300); }; splash.addEventListener('animationend',hide,{once:true}); setTimeout(hide,3200); }
-  const faders=document.querySelectorAll('.fade-in');
-  const reveal=()=>faders.forEach(f=>{ if(f.getBoundingClientRect().top<window.innerHeight-80) f.classList.add('show'); });
-  window.addEventListener('scroll',reveal); reveal();
-  const taglineEl=document.getElementById('tagline');
+  const faders = document.querySelectorAll('.fade-in');
+  const reveal = () => faders.forEach(f => { if(f.getBoundingClientRect().top < window.innerHeight-80) f.classList.add('show'); });
+  window.addEventListener('scroll', reveal); reveal();
+  const taglineEl = document.getElementById('tagline');
   if(taglineEl){ const lines=['Built for gamers, professionals, and everyday users','One OS. Every workflow.','Windows apps. Linux power.','Designed for the future']; let i=0; taglineEl.textContent=lines[0]; setInterval(()=>{ taglineEl.textContent=lines[++i%lines.length]; },2600); }
-  document.getElementById('npTagsRow').querySelectorAll('.tag-toggle').forEach(b=>b.addEventListener('click',()=>b.classList.toggle('selected')));
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active'); window.currentFilter=btn.dataset.filter; window.renderPosts&&window.renderPosts();
+  document.getElementById('npTagsRow').querySelectorAll('.tag-toggle').forEach(b => b.addEventListener('click', () => b.classList.toggle('selected')));
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active'); window.currentFilter = btn.dataset.filter; window.renderPosts && window.renderPosts();
     });
   });
 });
+
+function showToast(msg, type){ const t=document.getElementById("toast"); t.textContent=msg; t.className="show "+type; clearTimeout(window._tt); window._tt=setTimeout(()=>t.className="",3500); }
+window.showToast = showToast;
 </script>
 
 <!-- FIREBASE -->
@@ -527,57 +647,91 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const ADMIN="beeta.main@gmail.com";
-const app=initializeApp({apiKey:"AIzaSyDGm7GLAJpGrfMu37I5qEhVsKVYByZ_a6c",authDomain:"beetaos-dev-log.firebaseapp.com",projectId:"beetaos-dev-log",storageBucket:"beetaos-dev-log.firebasestorage.app",messagingSenderId:"887435194919",appId:"1:887435194919:web:ac28dfead1be21d820d402"});
-const auth=getAuth(app), db=getFirestore(app), gp=new GoogleAuthProvider();
+const ADMIN = "beeta.main@gmail.com";
+const app = initializeApp({apiKey:"AIzaSyDGm7GLAJpGrfMu37I5qEhVsKVYByZ_a6c",authDomain:"beetaos-dev-log.firebaseapp.com",projectId:"beetaos-dev-log",storageBucket:"beetaos-dev-log.firebasestorage.app",messagingSenderId:"887435194919",appId:"1:887435194919:web:ac28dfead1be21d820d402"});
+const auth = getAuth(app), db = getFirestore(app), gp = new GoogleAuthProvider();
 let user=null, isAdmin=false, allPosts=[];
-window.currentFilter="all";
+window.currentFilter = "all";
 
-window.handleAuth=async()=>{
+// ── SEND LOGIN NOTIFICATION EMAIL ─────────
+async function sendLoginEmail(u){
+  // Uses Formspree to email you when someone logs in
+  try{
+    await fetch("https://formspree.io/f/mdkqlogb",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body:JSON.stringify({
+        _subject:`🔔 New Login — Beeta OS Dev Log`,
+        name: u.displayName || "Unknown",
+        email: u.email,
+        message:`A user just signed in to the Beeta OS Dev Log.\n\nName: ${u.displayName}\nEmail: ${u.email}\nTime: ${new Date().toLocaleString()}\n\n— Beeta Technologies`
+      })
+    });
+  } catch(e){ console.log("Email notify failed:", e); }
+}
+
+// ── AUTH ─────────────────────────────────
+window.handleAuth = async () => {
   if(user){ await signOut(auth); showToast("Signed out","success"); }
-  else{ try{ await signInWithPopup(auth,gp); }catch(e){ showToast(e.message,"error"); } }
+  else{ try{ await signInWithPopup(auth, gp); } catch(e){ showToast(e.message,"error"); } }
 };
 
-onAuthStateChanged(auth,u=>{
-  user=u; isAdmin=u?.email===ADMIN;
-  const ab=document.getElementById("authBtn"), am=document.getElementById("authMobile");
+const notifiedUsers = new Set(); // don't spam email on re-renders
+
+onAuthStateChanged(auth, u => {
+  user = u; isAdmin = u?.email === ADMIN;
+  window._firebaseUser = u;
+
+  const ab = document.getElementById("authBtn");
+  const am = document.getElementById("authMobile");
+  const gb = document.getElementById("guestBanner");
+  const dialog = document.getElementById("signinDialog");
+
   if(u){
-    const n=u.displayName.split(" ")[0], cr=isAdmin?"👑 ":"";
-    ab.innerHTML=`<img src="${u.photoURL}" referrerpolicy="no-referrer">${cr}${n} <span style="opacity:.4;font-size:11px">sign out</span>`;
-    if(am) am.innerHTML=`<img src="${u.photoURL}" referrerpolicy="no-referrer" style="width:22px;height:22px;border-radius:50%">${cr}${n} — Sign Out`;
+    // Close dialog, hide guest banner
+    dialog.classList.remove('open');
+    if(gb) gb.style.display = 'none';
+
+    // Send login notification email (once per session per user)
+    if(!notifiedUsers.has(u.uid) && u.email !== ADMIN){
+      notifiedUsers.add(u.uid);
+      sendLoginEmail(u);
+    }
+
+    const n = u.displayName.split(" ")[0], cr = isAdmin ? "👑 " : "";
+    ab.innerHTML = `<img src="${u.photoURL}" referrerpolicy="no-referrer">${cr}${n} <span style="opacity:.4;font-size:11px;margin-left:3px">sign out</span>`;
+    if(am) am.innerHTML = `<img src="${u.photoURL}" referrerpolicy="no-referrer" style="width:22px;height:22px;border-radius:50%;object-fit:cover">${cr}${n} — Sign Out`;
+    showToast(`Welcome, ${n}! 👋`,"success");
   } else {
-    ab.innerHTML=`<i class="fab fa-google"></i> Sign in`;
-    if(am) am.innerHTML=`<i class="fab fa-google"></i> Sign in with Google`;
+    ab.innerHTML = `<i class="fab fa-google"></i> Sign in`;
+    if(am) am.innerHTML = `<i class="fab fa-google"></i> Sign in with Google`;
+    // Show guest banner if dialog was already dismissed
+    if(gb && window.dialogDismissed) gb.style.display = 'flex';
   }
-  document.getElementById("openNewPostBtn").style.display=isAdmin?"inline-flex":"none";
+
+  document.getElementById("openNewPostBtn").style.display = isAdmin ? "inline-flex" : "none";
+  window.renderPosts && window.renderPosts();
 });
 
-window.togglePanel=show=>{
-  document.getElementById("newPostPanel").style.display=show?"block":"none";
-  document.getElementById("openNewPostBtn").style.display=show?"none":(isAdmin?"inline-flex":"none");
+// ── NEW POST ─────────────────────────────
+window.togglePanel = show => {
+  document.getElementById("newPostPanel").style.display = show ? "block" : "none";
+  document.getElementById("openNewPostBtn").style.display = show ? "none" : (isAdmin ? "inline-flex" : "none");
 };
 
-window.submitPost=async()=>{
+window.submitPost = async () => {
   if(!isAdmin) return;
-  const title=document.getElementById("npTitle").value.trim();
-  const body=document.getElementById("npBody").value.trim();
-  const tags=[...document.querySelectorAll("#npTagsRow .tag-toggle.selected")].map(b=>b.dataset.tag);
+  const title = document.getElementById("npTitle").value.trim();
+  const body  = document.getElementById("npBody").value.trim();
+  const tags  = [...document.querySelectorAll("#npTagsRow .tag-toggle.selected")].map(b=>b.dataset.tag);
   if(!title||!body){ showToast("Title and body are required","error"); return; }
-
-  // Check base64 size — Firestore doc limit is 1MB
-  const imageBase64=window.selectedImageBase64||null;
-  if(imageBase64){
-    const sizeKB=Math.round((imageBase64.length * 3/4)/1024);
-    if(sizeKB>900){ showToast(`Image is ${sizeKB}KB — please compress it below 900KB using squoosh.app`,"error"); return; }
-  }
-
-  const btn=document.getElementById("publishBtn");
+  const imageBase64 = window.selectedImageBase64 || null;
+  if(imageBase64){ const sizeKB=Math.round((imageBase64.length*3/4)/1024); if(sizeKB>900){ showToast(`Image ${sizeKB}KB — compress below 900KB at squoosh.app`,"error"); return; } }
+  const btn = document.getElementById("publishBtn");
   btn.disabled=true; btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Publishing…`;
-
   try{
     await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:imageBase64,commentCount:0,createdAt:serverTimestamp()});
-    document.getElementById("npTitle").value="";
-    document.getElementById("npBody").value="";
+    document.getElementById("npTitle").value=""; document.getElementById("npBody").value="";
     document.querySelectorAll("#npTagsRow .tag-toggle.selected").forEach(b=>b.classList.remove("selected"));
     window.removeImage({stopPropagation:()=>{}});
     window.togglePanel(false);
@@ -586,94 +740,104 @@ window.submitPost=async()=>{
   btn.disabled=false; btn.innerHTML=`<i class="fas fa-rocket" style="margin-right:6px"></i>Publish`;
 };
 
-window.deletePost=async id=>{
+window.deletePost = async id => {
   if(!isAdmin||!confirm("Delete this post?")) return;
   try{ await deleteDoc(doc(db,"posts",id)); showToast("Deleted","success"); }
   catch(e){ showToast(e.message,"error"); }
 };
 
-onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc")),snap=>{
-  allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
+// ── LIVE POSTS ────────────────────────────
+onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc")), snap => {
+  allPosts = snap.docs.map(d=>({id:d.id,...d.data()}));
   window.renderPosts(); updateStats(); renderTimeline();
 });
 
-window.renderPosts=()=>{
-  const c=document.getElementById("postsContainer");
-  const list=window.currentFilter==="all"?allPosts:allPosts.filter(p=>p.tags?.includes(window.currentFilter));
-  document.getElementById("postCount").textContent=list.length+" update"+(list.length!==1?"s":"");
+window.renderPosts = () => {
+  const c = document.getElementById("postsContainer");
+  const list = window.currentFilter==="all" ? allPosts : allPosts.filter(p=>p.tags?.includes(window.currentFilter));
+  document.getElementById("postCount").textContent = list.length+" update"+(list.length!==1?"s":"");
   if(!list.length){ c.innerHTML=`<div class="empty-state"><i class="fas fa-satellite-dish"></i>${allPosts.length===0?"No posts yet — check back soon!":"No posts with this tag."}</div>`; return; }
   c.innerHTML="";
-  list.forEach((p,i)=>{
-    const el=document.createElement("div");
+  list.forEach((p,i) => {
+    const el = document.createElement("div");
     el.className="post-card"; el.id="post-"+p.id; el.style.animationDelay=(i*0.06)+"s";
-    const d=p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}):"Just now";
-    const tg=(p.tags||[]).map(t=>`<span class="ptag ${t}">${t.toUpperCase()}</span>`).join("");
-    const cc=p.commentCount||0;
-    // Image: use base64 directly — no CORS, instant display
-    const imgHtml=p.imageBase64
-      ?`<div class="post-img-wrap" onclick="openLightbox('${p.imageBase64}')"><img src="${p.imageBase64}" alt="Post screenshot" loading="lazy"></div>`
-      :"";
+    const d = p.createdAt?.toDate ? p.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "Just now";
+    const tg = (p.tags||[]).map(t=>`<span class="ptag ${t}">${t.toUpperCase()}</span>`).join("");
+    const cc = p.commentCount||0;
+    const imgHtml = p.imageBase64 ? `<div class="post-img-wrap" onclick="openLightbox('${p.imageBase64}')"><img src="${p.imageBase64}" alt="Post screenshot" loading="lazy"></div>` : "";
+
+    // Comment section — locked for guests, open for signed-in
+    const commentSection = user
+      ? `<div class="post-comments">
+          <button class="comments-toggle" onclick="openComments(this,'${p.id}')">
+            <i class="fas fa-comment-dots"></i>
+            <span id="cc-${p.id}">${cc} comment${cc!==1?"s":""}</span> &amp; suggestions
+            <i class="fas fa-chevron-down arr"></i>
+          </button>
+          <div class="comments-panel" id="cp-${p.id}">
+            <div id="cl-${p.id}"><div class="spinner"></div></div>
+            <div class="comment-form">
+              <h4><i class="fas fa-lightbulb" style="margin-right:5px"></i>Leave a Comment or Suggestion</h4>
+              <div class="cf-row">
+                <input class="cf-input" id="cfn-${p.id}" type="text" placeholder="Your name" maxlength="40" value="${esc(user.displayName||'')}">
+                <select class="cf-input" id="cft-${p.id}">
+                  <option value="suggestion">💡 Suggestion</option>
+                  <option value="issue">🐛 Found an Issue</option>
+                  <option value="praise">⭐ General Feedback</option>
+                </select>
+              </div>
+              <textarea class="cf-input" id="cfc-${p.id}" placeholder="Share your thoughts, report a bug, or suggest an improvement…" rows="3"></textarea>
+              <button class="cf-submit" onclick="postComment('${p.id}',this)"><i class="fas fa-paper-plane" style="margin-right:5px"></i>Post Comment</button>
+            </div>
+          </div>
+        </div>`
+      : `<div class="locked-comments" onclick="handleAuth()">
+          <i class="fas fa-lock lock"></i>
+          <p><span id="cc-${p.id}">${cc} comment${cc!==1?"s":""}</span> &amp; suggestions — sign in to read &amp; reply</p>
+          <span class="sign-in-inline"><i class="fab fa-google" style="margin-right:4px"></i>Sign in</span>
+        </div>`;
+
     el.innerHTML=`
       <div class="post-header"><div class="post-tags">${tg}</div><span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:4px;opacity:.4"></i>${d}</span></div>
       <h2 class="post-title">${esc(p.title)}</h2>
       <div class="post-body">${esc(p.body)}</div>
       ${imgHtml}
       ${isAdmin?`<button class="del-btn" onclick="deletePost('${p.id}')"><i class="fas fa-trash" style="margin-right:4px"></i>Delete post</button>`:""}
-      <div class="post-comments">
-        <button class="comments-toggle" onclick="openComments(this,'${p.id}')">
-          <i class="fas fa-comment-dots"></i>
-          <span id="cc-${p.id}">${cc} comment${cc!==1?"s":""}</span> &amp; suggestions
-          <i class="fas fa-chevron-down arr"></i>
-        </button>
-        <div class="comments-panel" id="cp-${p.id}">
-          <div id="cl-${p.id}"><div class="spinner"></div></div>
-          <div class="comment-form">
-            <h4><i class="fas fa-lightbulb" style="margin-right:5px"></i>Leave a Comment or Suggestion</h4>
-            <div class="cf-row">
-              <input class="cf-input" id="cfn-${p.id}" type="text" placeholder="Your name (optional)" maxlength="40">
-              <select class="cf-input" id="cft-${p.id}">
-                <option value="suggestion">💡 Suggestion</option>
-                <option value="issue">🐛 Found an Issue</option>
-                <option value="praise">⭐ General Feedback</option>
-              </select>
-            </div>
-            <textarea class="cf-input" id="cfc-${p.id}" placeholder="Share your thoughts, report a bug, or suggest an improvement…" rows="3"></textarea>
-            <button class="cf-submit" onclick="postComment('${p.id}',this)"><i class="fas fa-paper-plane" style="margin-right:5px"></i>Post Comment</button>
-          </div>
-        </div>
-      </div>`;
+      ${commentSection}`;
     c.appendChild(el);
   });
 };
 
-const opened=new Set();
-window.openComments=(btn,pid)=>{
+// ── COMMENTS ─────────────────────────────
+const opened = new Set();
+window.openComments = (btn, pid) => {
   btn.classList.toggle("open");
-  const panel=document.getElementById("cp-"+pid);
+  const panel = document.getElementById("cp-"+pid);
   panel.classList.toggle("open");
-  if(panel.classList.contains("open")&&!opened.has(pid)){
+  if(panel.classList.contains("open") && !opened.has(pid)){
     opened.add(pid);
-    onSnapshot(query(collection(db,"posts",pid,"comments"),orderBy("createdAt","asc")),snap=>{
-      const cl=document.getElementById("cl-"+pid); if(!cl) return;
+    onSnapshot(query(collection(db,"posts",pid,"comments"),orderBy("createdAt","asc")), snap => {
+      const cl = document.getElementById("cl-"+pid); if(!cl) return;
       if(snap.empty){ cl.innerHTML=`<p style="font-size:13px;color:#4a5070">No comments yet — be the first!</p>`; return; }
-      cl.innerHTML=snap.docs.map(d=>{ const c=d.data(); const dt=c.createdAt?.toDate?c.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric"}):"";
+      cl.innerHTML = snap.docs.map(d => { const c=d.data(); const dt=c.createdAt?.toDate?c.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric"}):"";
         return `<div class="dl-comment"><div class="dl-comment-top"><span><span class="dl-commenter">${esc(c.name||"Anonymous")}</span><span class="ctb ${c.type}">${c.type}</span></span><span class="dl-comment-date">${dt}</span></div><p class="dl-comment-text">${esc(c.text)}</p></div>`;
       }).join("");
-      const cc=document.getElementById("cc-"+pid); if(cc) cc.textContent=snap.size+" comment"+(snap.size!==1?"s":"");
+      const cc = document.getElementById("cc-"+pid); if(cc) cc.textContent=snap.size+" comment"+(snap.size!==1?"s":"");
     });
   }
 };
 
-window.postComment=async(pid,btn)=>{
-  const txt=document.getElementById("cfc-"+pid).value.trim();
+window.postComment = async (pid, btn) => {
+  if(!user){ handleAuth(); return; }
+  const txt = document.getElementById("cfc-"+pid).value.trim();
   if(!txt){ document.getElementById("cfc-"+pid).style.borderColor="rgba(255,100,100,.5)"; setTimeout(()=>document.getElementById("cfc-"+pid).style.borderColor="",1200); return; }
-  const name=document.getElementById("cfn-"+pid).value.trim()||(user?user.displayName:"Anonymous");
-  const type=document.getElementById("cft-"+pid).value;
+  const name = document.getElementById("cfn-"+pid).value.trim() || user.displayName || "Anonymous";
+  const type = document.getElementById("cft-"+pid).value;
   btn.disabled=true; btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:5px"></i>Posting…`;
   try{
-    await addDoc(collection(db,"posts",pid,"comments"),{name,type,text:txt,createdAt:serverTimestamp(),uid:user?.uid||null});
+    await addDoc(collection(db,"posts",pid,"comments"),{name,type,text:txt,createdAt:serverTimestamp(),uid:user.uid,userEmail:user.email});
     await updateDoc(doc(db,"posts",pid),{commentCount:increment(1)});
-    document.getElementById("cfc-"+pid).value=""; document.getElementById("cfn-"+pid).value="";
+    document.getElementById("cfc-"+pid).value="";
     btn.innerHTML=`<i class="fas fa-check" style="margin-right:5px"></i>Posted!`; btn.style.background="linear-gradient(135deg,#06d6a0,#048a81)";
     setTimeout(()=>{ btn.innerHTML=`<i class="fas fa-paper-plane" style="margin-right:5px"></i>Post Comment`; btn.style.background=""; btn.disabled=false; },2000);
     showToast("Comment posted!","success");
@@ -681,17 +845,17 @@ window.postComment=async(pid,btn)=>{
 };
 
 function renderTimeline(){
-  const tl=document.getElementById("sideTimeline"); if(!allPosts.length){ tl.innerHTML=`<div style="font-size:12px;color:#4a5070">No posts yet</div>`; return; }
-  tl.innerHTML=allPosts.slice(0,5).map((p,i)=>{ const d=p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric"}):"";
+  const tl = document.getElementById("sideTimeline");
+  if(!allPosts.length){ tl.innerHTML=`<div style="font-size:12px;color:#4a5070">No posts yet</div>`; return; }
+  tl.innerHTML = allPosts.slice(0,5).map((p,i) => { const d=p.createdAt?.toDate?p.createdAt.toDate().toLocaleDateString("en-US",{month:"short",day:"numeric"}):"";
     return `<div class="tl-item" onclick="document.getElementById('post-${p.id}')?.scrollIntoView({behavior:'smooth',block:'start'})"><div class="tl-dot ${i===0?"active":""}"></div><div><div class="tl-title">${esc(p.title)}</div><div class="tl-date">${d}</div></div></div>`;
   }).join("");
 }
 function updateStats(){
-  document.getElementById("statPosts").textContent=allPosts.length;
-  document.getElementById("statComments").textContent=allPosts.reduce((a,p)=>a+(p.commentCount||0),0);
+  document.getElementById("statPosts").textContent = allPosts.length;
+  document.getElementById("statComments").textContent = allPosts.reduce((a,p)=>a+(p.commentCount||0),0);
 }
 function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-window.showToast=(msg,type)=>{ const t=document.getElementById("toast"); t.textContent=msg; t.className="show "+type; clearTimeout(window._tt); window._tt=setTimeout(()=>t.className="",3500); };
 </script>
 </body>
 </html>
