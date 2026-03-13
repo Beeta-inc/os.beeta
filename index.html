@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin"/>
+  <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp"/>
   <title>Beeta OS</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -855,25 +857,33 @@ document.getElementById("videoFileInput").addEventListener("change", async e=>{
 });
 
 async function compressVideo(file){
-  // Dynamically load FFmpeg only when needed
-  const { createFFmpeg, fetchFile } = await import("https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js");
-  const ffmpeg = createFFmpeg({ log: false,
-    progress: ({ratio})=>{
-      const pct = Math.round(ratio*100);
-      document.getElementById("videoProgressFill").style.width = pct+"%";
-      document.getElementById("videoProgressLabel").textContent = `Compressing… ${pct}%`;
-    }
+  // Load FFmpeg 0.12 which is browser-independent
+  const { FFmpeg } = await import("https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js");
+  const { fetchFile, toBlobURL } = await import("https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js");
+
+  const ffmpeg = new FFmpeg();
+  ffmpeg.on("progress", ({progress})=>{
+    const pct = Math.round(progress*100);
+    document.getElementById("videoProgressFill").style.width = pct+"%";
+    document.getElementById("videoProgressLabel").textContent = `Compressing… ${pct}%`;
   });
+
   document.getElementById("videoProgressLabel").textContent = "Loading FFmpeg…";
-  await ffmpeg.load();
-  ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
+
+  // Load with blob URLs so it works in all browsers (no COOP/COEP needed)
+  const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
+  await ffmpeg.load({
+    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+  });
+
   document.getElementById("videoProgressLabel").textContent = "Compressing…";
-  // Compress: scale down, lower bitrate to target ~80MB
-  await ffmpeg.run("-i","input.mp4","-vcodec","libx264","-crf","28","-preset","fast","-acodec","aac","-b:a","128k","output.mp4");
-  const data = ffmpeg.FS("readFile","output.mp4");
-  ffmpeg.FS("unlink","input.mp4");
-  ffmpeg.FS("unlink","output.mp4");
-  return new File([data.buffer],"compressed.mp4",{type:"video/mp4"});
+  await ffmpeg.writeFile("input.mp4", await fetchFile(file));
+  await ffmpeg.exec(["-i","input.mp4","-vcodec","libx264","-crf","28","-preset","fast","-acodec","aac","-b:a","128k","output.mp4"]);
+  const data = await ffmpeg.readFile("output.mp4");
+  await ffmpeg.deleteFile("input.mp4");
+  await ffmpeg.deleteFile("output.mp4");
+  return new File([data.buffer], "compressed.mp4", {type:"video/mp4"});
 }
 
 document.getElementById("removeVideoBtn").addEventListener("click", e=>{
