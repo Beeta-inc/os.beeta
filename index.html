@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Beeta OS</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init("-InbwqJBBvPTtPjkk");</script>
   <style>
 :root{--bg:#070812;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.12);--accent1:#5ee7ff;--accent2:#9b6cff;--accent3:#ff6bd6}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',sans-serif}
@@ -745,6 +747,11 @@ async function saveUsername(){
     toast(`Username @${val} saved! Welcome 🎉`, "success");
     updateAuthUI(user);
     renderPosts();
+    // Send welcome email to new user
+    emailjs.send("service_3iomr58", "template_cos8qwd", {
+      to_email: user.email,
+      username: "@"+val
+    }).catch(()=>{});
   }catch(e){
     toast("Error: "+e.message,"error");
     btn.disabled=false; btn.innerHTML=`<i class="fas fa-check" style="margin-right:7px"></i>Set Username & Continue`;
