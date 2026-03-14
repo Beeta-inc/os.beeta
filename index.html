@@ -864,7 +864,7 @@ async function compressVideo(file, limitBytes){
   const { createFFmpeg, fetchFile } = await import("https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js");
   const ffmpeg = createFFmpeg({
     log: false,
-    corePath: "https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js",
+    corePath: "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js",
     progress: ({ratio})=>{
       const pct = Math.round(Math.min(ratio,1)*100);
       document.getElementById("videoProgressFill").style.width = pct+"%";
