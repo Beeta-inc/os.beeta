@@ -283,7 +283,7 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
   #splash img{width:64px!important;height:64px!important}
   .devlog-hero{padding:100px 20px 40px!important}
   .devlog-hero h1{font-size:34px!important}
-  .devlog-body{padding:28px 20px 60px!important;grid-template-columns:1fr!important;gap:28px!important}
+  .devlog-body{padding:28px 20px 80px!important;grid-template-columns:1fr!important;gap:28px!important}
   .sidebar{position:static!important}
   .cf-row{grid-template-columns:1fr!important}
   .post-header{flex-direction:column;gap:7px}
@@ -821,17 +821,11 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
   const btn = document.getElementById("publishBtn");
   btn.disabled=true; btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Publishing…`;
   try{
-    let videoUrl = null;
-    if(selectedVideoFile){
-      btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Uploading video…`;
-      videoUrl = await uploadVideo(selectedVideoFile);
-    }
-    await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:img64,videoUrl,commentCount:0,createdAt:serverTimestamp()});
+    await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:img64,commentCount:0,createdAt:serverTimestamp()});
     document.getElementById("npTitle").value="";
     document.getElementById("npBody").value="";
     document.querySelectorAll("#npTagsRow .tag-toggle.selected").forEach(b=>b.classList.remove("selected"));
     document.getElementById("removeImgBtn").click();
-    if(selectedVideoFile) document.getElementById("removeVideoBtn").click();
     document.getElementById("newPostPanel").style.display = "none";
     document.getElementById("openNewPostBtn").style.display = "inline-flex";
     toast("Post published! 🚀","success");
@@ -1021,7 +1015,7 @@ async function uploadVideo(file){
       if(ev.lengthComputable){
         const pct = Math.round(ev.loaded/ev.total*100);
         document.getElementById("videoProgressFill").style.width = pct+"%";
-        document.getElementById("videoProgressLabel").textContent = `Uploading video… ${pct}%`;
+        document.getElementById("videoProgressLabel").textContent = `Uploading… ${pct}%`;
       }
     };
     xhr.onload = ()=>{
