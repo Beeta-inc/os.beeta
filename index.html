@@ -860,50 +860,64 @@ document.getElementById("videoFileInput").addEventListener("change", async e=>{
 });
 
 async function compressVideo(file, limitBytes){
-  // Use single-threaded FFmpeg core (no Worker needed, works everywhere)
-  const { createFFmpeg, fetchFile } = await import("https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js");
-  const ffmpeg = createFFmpeg({
-    log: false,
-    corePath: "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js",
-    progress: ({ratio})=>{
-      const pct = Math.round(Math.min(ratio,1)*100);
-      document.getElementById("videoProgressFill").style.width = pct+"%";
-      document.getElementById("videoProgressLabel").textContent = `Compressing… ${pct}%`;
-    }
+  // Uses built-in MediaRecorder API — no external libraries, no WASM, works everywhere
+  return new Promise((resolve, reject)=>{
+    const video = document.createElement("video");
+    video.src = URL.createObjectURL(file);
+    video.muted = true;
+
+    video.onloadedmetadata = ()=>{
+      const canvas = document.createElement("canvas");
+      // Scale down resolution to help reduce file size
+      const MAX_DIM = 1280;
+      let w = video.videoWidth, h = video.videoHeight;
+      if(w > MAX_DIM){ h = Math.round(h * MAX_DIM / w); w = MAX_DIM; }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+
+      // Pick best supported codec
+      const mimeType = ["video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"]
+        .find(m => MediaRecorder.isTypeSupported(m)) || "video/webm";
+
+      // Start with a reasonable bitrate, will retry lower if still too big
+      const targetBits = Math.min(2_000_000, Math.floor((limitBytes * 8) / Math.max(video.duration, 1) * 0.85));
+
+      const stream = canvas.captureStream(30);
+      const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: targetBits });
+      const chunks = [];
+
+      recorder.ondataavailable = e=>{ if(e.data.size>0) chunks.push(e.data); };
+
+      recorder.onstop = ()=>{
+        URL.revokeObjectURL(video.src);
+        const blob = new Blob(chunks, {type: mimeType});
+        const outFile = new File([blob], "compressed.webm", {type: mimeType});
+        resolve(outFile);
+      };
+
+      recorder.onerror = e=> reject(e.error);
+
+      // Draw each frame onto canvas in sync with video playback
+      let rafId;
+      const drawFrame = ()=>{
+        if(video.paused || video.ended){ recorder.stop(); return; }
+        ctx.drawImage(video, 0, 0, w, h);
+        // Update progress bar
+        const pct = Math.round((video.currentTime / video.duration) * 100);
+        document.getElementById("videoProgressFill").style.width = pct+"%";
+        document.getElementById("videoProgressLabel").textContent = `Compressing… ${pct}%`;
+        rafId = requestAnimationFrame(drawFrame);
+      };
+
+      video.onended = ()=>{ cancelAnimationFrame(rafId); recorder.stop(); };
+
+      recorder.start(100);
+      video.play();
+      drawFrame();
+    };
+
+    video.onerror = ()=> reject(new Error("Could not load video for compression"));
   });
-  document.getElementById("videoProgressLabel").textContent = "Loading FFmpeg…";
-  await ffmpeg.load();
-
-  ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
-
-  // Start at CRF 28, increase by 4 each attempt until under limit or CRF 51
-  let crf = 28;
-  let result = null;
-
-  while(crf <= 51){
-    document.getElementById("videoProgressLabel").textContent = `Compressing… (CRF ${crf})`;
-    document.getElementById("videoProgressFill").style.width = "0%";
-
-    try{ ffmpeg.FS("unlink","output.mp4"); }catch(_){}
-
-    await ffmpeg.run(
-      "-i","input.mp4",
-      "-vcodec","libx264","-crf",String(crf),"-preset","ultrafast",
-      "-acodec","aac","-b:a","96k",
-      "output.mp4"
-    );
-
-    const data = ffmpeg.FS("readFile","output.mp4");
-    result = new File([data.buffer], "compressed.mp4", {type:"video/mp4"});
-
-    if(result.size <= limitBytes) break;
-    crf += 4;
-  }
-
-  try{ ffmpeg.FS("unlink","input.mp4"); }catch(_){}
-  try{ ffmpeg.FS("unlink","output.mp4"); }catch(_){}
-
-  return result;
 }
 
 document.getElementById("removeVideoBtn").addEventListener("click", e=>{
