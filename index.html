@@ -825,15 +825,23 @@ document.getElementById("videoFileInput").addEventListener("change", async e=>{
   const file = e.target.files[0]; if(!file) return;
   if(!isAdmin){ toast("Only admin can upload videos","error"); return; }
 
-  if(file.size > 100*1024*1024){
+  const LIMIT = 100 * 1024 * 1024; // 100 MB hard limit
+
+  if(file.size > LIMIT){
     const mb = (file.size/1024/1024).toFixed(1);
-    toast(`Video is ${mb}MB — compressing…`, "info");
+    toast(`Video is ${mb}MB — compressing to under 100MB…`, "info");
     document.getElementById("videoProgress").style.display = "block";
     document.getElementById("videoProgressFill").style.width = "0%";
     document.getElementById("videoProgressLabel").textContent = "Loading compressor…";
     try{
-      selectedVideoFile = await compressVideo(file);
-      toast(`Compressed to ${(selectedVideoFile.size/1024/1024).toFixed(1)}MB!`, "success");
+      selectedVideoFile = await compressVideo(file, LIMIT);
+      const finalMb = (selectedVideoFile.size/1024/1024).toFixed(1);
+      if(selectedVideoFile.size > LIMIT){
+        toast(`Could not compress below 100MB (${finalMb}MB). Try a shorter clip.`, "error");
+        document.getElementById("videoProgress").style.display = "none";
+        return;
+      }
+      toast(`Compressed to ${finalMb}MB ✓`, "success");
     } catch(err){
       toast("Compression failed: "+err.message, "error");
       document.getElementById("videoProgress").style.display = "none";
@@ -851,7 +859,7 @@ document.getElementById("videoFileInput").addEventListener("change", async e=>{
   toast(`Video ready — ${(selectedVideoFile.size/1024/1024).toFixed(1)}MB`, "info");
 });
 
-async function compressVideo(file){
+async function compressVideo(file, limitBytes){
   // Use single-threaded FFmpeg core (no Worker needed, works everywhere)
   const { createFFmpeg, fetchFile } = await import("https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js");
   const ffmpeg = createFFmpeg({
@@ -865,13 +873,37 @@ async function compressVideo(file){
   });
   document.getElementById("videoProgressLabel").textContent = "Loading FFmpeg…";
   await ffmpeg.load();
-  document.getElementById("videoProgressLabel").textContent = "Compressing…";
+
   ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
-  await ffmpeg.run("-i","input.mp4","-vcodec","libx264","-crf","28","-preset","ultrafast","-acodec","aac","-b:a","96k","output.mp4");
-  const data = ffmpeg.FS("readFile","output.mp4");
-  ffmpeg.FS("unlink","input.mp4");
-  ffmpeg.FS("unlink","output.mp4");
-  return new File([data.buffer], "compressed.mp4", {type:"video/mp4"});
+
+  // Start at CRF 28, increase by 4 each attempt until under limit or CRF 51
+  let crf = 28;
+  let result = null;
+
+  while(crf <= 51){
+    document.getElementById("videoProgressLabel").textContent = `Compressing… (CRF ${crf})`;
+    document.getElementById("videoProgressFill").style.width = "0%";
+
+    try{ ffmpeg.FS("unlink","output.mp4"); }catch(_){}
+
+    await ffmpeg.run(
+      "-i","input.mp4",
+      "-vcodec","libx264","-crf",String(crf),"-preset","ultrafast",
+      "-acodec","aac","-b:a","96k",
+      "output.mp4"
+    );
+
+    const data = ffmpeg.FS("readFile","output.mp4");
+    result = new File([data.buffer], "compressed.mp4", {type:"video/mp4"});
+
+    if(result.size <= limitBytes) break;
+    crf += 4;
+  }
+
+  try{ ffmpeg.FS("unlink","input.mp4"); }catch(_){}
+  try{ ffmpeg.FS("unlink","output.mp4"); }catch(_){}
+
+  return result;
 }
 
 document.getElementById("removeVideoBtn").addEventListener("click", e=>{
