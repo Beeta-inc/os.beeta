@@ -748,10 +748,18 @@ async function saveUsername(){
     updateAuthUI(user);
     renderPosts();
     // Send welcome email to new user
+    const welcomeEmail = user.email;
+    const welcomeUsername = "@"+val;
     emailjs.send("service_3iomr58", "template_cos8qwd", {
-      to_email: user.email,
-      username: "@"+val
-    }).catch(()=>{});
+      to_email: welcomeEmail,
+      username: welcomeUsername,
+      reply_to: "beeta.main@gmail.com"
+    }).then(()=>{
+      toast("Welcome email sent! 📬","success");
+    }).catch(err=>{
+      console.error("EmailJS error:", err);
+      toast("Email failed: "+JSON.stringify(err),"error");
+    });
   }catch(e){
     toast("Error: "+e.message,"error");
     btn.disabled=false; btn.innerHTML=`<i class="fas fa-check" style="margin-right:7px"></i>Set Username & Continue`;
