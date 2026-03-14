@@ -298,8 +298,6 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
   .np-actions{flex-direction:column}
   .btn-publish,.btn-cancel-np{width:100%;text-align:center}
 }
-
-/* VIDEO */
 .video-upload-area{border:2px dashed rgba(155,108,255,.25);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:11px;background:rgba(155,108,255,.03);position:relative;overflow:hidden}
 .video-upload-area:hover{border-color:rgba(155,108,255,.5);background:rgba(155,108,255,.06)}
 .video-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -468,10 +466,7 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
           <button class="tag-toggle" data-tag="fix">BUG FIX</button>
         </div>
         <textarea class="np-input" id="npBody" placeholder="Describe what you worked on…"></textarea>
-        <div class="video-upload-area">
-          <input type="file" accept="video/mp4,video/webm" id="videoFileInput">
-          <div id="videoUploadHint"><i class="fas fa-video" style="font-size:22px;color:var(--accent2);opacity:.5;margin-bottom:7px;display:block"></i><p style="font-size:13px;color:#6a7090">Click to attach a video (optional)</p><small style="font-size:11px;color:#3a4060">MP4, WebM · auto-compressed on upload</small></div>
-        </div>
+        <div class="video-upload-area"><input type="file" accept="video/mp4,video/webm" id="videoFileInput"><div id="videoUploadHint"><i class="fas fa-video" style="font-size:22px;color:var(--accent2);opacity:.5;margin-bottom:7px;display:block"></i><p style="font-size:13px;color:#6a7090">Click to attach a video (optional)</p><small style="font-size:11px;color:#3a4060">MP4 · auto-compressed on upload</small></div></div>
         <div class="video-progress" id="videoProgress"><div class="video-progress-bar"><div class="video-progress-fill" id="videoProgressFill"></div></div><div class="video-progress-label" id="videoProgressLabel">Uploading…</div></div>
         <div class="video-preview-wrap" id="videoPreviewWrap"><video id="videoPreview" controls></video><button class="remove-video" id="removeVideoBtn"><i class="fas fa-times"></i> Remove</button></div>
         <div class="np-actions">
@@ -821,11 +816,17 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
   const btn = document.getElementById("publishBtn");
   btn.disabled=true; btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Publishing…`;
   try{
-    await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:img64,commentCount:0,createdAt:serverTimestamp()});
+    let videoUrl = null;
+    if(selectedVideoFile){
+      btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Uploading video…`;
+      videoUrl = await uploadVideo(selectedVideoFile);
+    }
+    await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:img64,videoUrl,commentCount:0,createdAt:serverTimestamp()});
     document.getElementById("npTitle").value="";
     document.getElementById("npBody").value="";
     document.querySelectorAll("#npTagsRow .tag-toggle.selected").forEach(b=>b.classList.remove("selected"));
     document.getElementById("removeImgBtn").click();
+    if(selectedVideoFile) document.getElementById("removeVideoBtn").click();
     document.getElementById("newPostPanel").style.display = "none";
     document.getElementById("openNewPostBtn").style.display = "inline-flex";
     toast("Post published! 🚀","success");
@@ -980,7 +981,6 @@ function updateStats(){
 const CLOUDINARY_CLOUD = "drf7oope0";
 const CLOUDINARY_PRESET = "Beeta dev post";
 let selectedVideoFile = null;
-
 document.getElementById("videoFileInput").addEventListener("change", e=>{
   const file = e.target.files[0]; if(!file) return;
   if(!isAdmin){ toast("Only admin can upload videos","error"); return; }
@@ -990,7 +990,6 @@ document.getElementById("videoFileInput").addEventListener("change", e=>{
   document.getElementById("videoPreviewWrap").style.display = "block";
   toast(`Video selected — ${(file.size/1024/1024).toFixed(1)}MB`, "info");
 });
-
 document.getElementById("removeVideoBtn").addEventListener("click", e=>{
   e.stopPropagation();
   selectedVideoFile = null;
@@ -1000,7 +999,6 @@ document.getElementById("removeVideoBtn").addEventListener("click", e=>{
   document.getElementById("videoPreviewWrap").style.display = "none";
   document.getElementById("videoProgress").style.display = "none";
 });
-
 async function uploadVideo(file){
   return new Promise((resolve, reject)=>{
     const fd = new FormData();
