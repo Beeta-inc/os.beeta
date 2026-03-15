@@ -1001,11 +1001,17 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
     toast("Post published! 🚀","success");
     crossPostToNeTuArk(title, body, tags);
     // Notify all registered users about new post
+    const postContent = body;
     fetch("https://beeta-email.beeta-main.workers.dev/", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({ type:"newpost", title, body })
-    }).then(()=>toast("Users notified! 📬","success")).catch(()=>{});
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "newpost", title: title, body: postContent })
+    }).then(r => r.json())
+      .then(d => {
+        if(d.ok) toast(`Users notified! ${d.sent} emails sent 📬`, "success");
+        else toast("Notify failed: " + (d.error || "unknown error"), "error");
+      })
+      .catch(err => toast("Notify error: " + err.message, "error"));
   }catch(e){ toast("Error: "+e.message,"error"); }
   btn.disabled=false; btn.innerHTML=`<i class="fas fa-rocket" style="margin-right:6px"></i>Publish`;
 });
