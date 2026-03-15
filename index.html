@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Beeta OS</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" onload="emailjs.init('-InbwqJBBvPTtPjkk')"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init("-InbwqJBBvPTtPjkk");</script>
   <style>
 :root{--bg:#070812;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.12);--accent1:#5ee7ff;--accent2:#9b6cff;--accent3:#ff6bd6}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',sans-serif}
@@ -1005,7 +1006,6 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
     document.getElementById("newPostPanel").style.display = "none";
     document.getElementById("openNewPostBtn").style.display = "inline-flex";
     toast("Post published! 🚀","success");
-    // Cross-post to NeTuArk
     crossPostToNeTuArk(title, body, tags);
   }catch(e){ toast("Error: "+e.message,"error"); }
   btn.disabled=false; btn.innerHTML=`<i class="fas fa-rocket" style="margin-right:6px"></i>Publish`;
@@ -1016,23 +1016,12 @@ async function crossPostToNeTuArk(title, body, tags){
   try{
     const { NeTuArk } = await import("https://ntabys-backend.onrender.com/sdk/index.js");
     const netu = NeTuArk.instance;
-    netu.init({ username: "beeta", debug: false, alerts: false });
-
-    const tagLine = tags&&tags.length ? `[${tags.map(t=>t.toUpperCase()).join(" · ")}]` : "";
-    const htmlContent = `
-      <h2>${title}</h2>
-      ${tagLine ? `<p><strong>${tagLine}</strong></p>` : ""}
-      <p>${body.replace(/
-/g,"<br>")}</p>
-      <p><em>— Posted on <a href="https://beetaos.pages.dev">Beeta OS Dev Log</a></em></p>
-    `;
-
-    await netu.post({ text: htmlContent, type: "blog" });
+    netu.init({ username:"beeta", debug:false, alerts:false });
+    const tagLine = tags&&tags.length?`[${tags.map(t=>t.toUpperCase()).join(" · ")}]`:"";
+    const htmlContent = `<h2>${title}</h2>${tagLine?`<p><strong>${tagLine}</strong></p>`:""}<p>${body.replace(/\n/g,"<br>")}</p><p><em>— Posted on <a href="https://beetaos.pages.dev">Beeta OS Dev Log</a></em></p>`;
+    await netu.post({ text:htmlContent, type:"blog" });
     toast("Cross-posted to NeTuArk! 🌐","success");
-  } catch(e){
-    console.warn("NeTuArk cross-post failed:", e);
-    // Fail silently — don't disrupt the main publish flow
-  }
+  }catch(e){ console.warn("NeTuArk cross-post failed:",e); }
 }
 
 /* ── LIVE POSTS ───────────────────────── */
