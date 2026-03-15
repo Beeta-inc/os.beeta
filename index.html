@@ -6,6 +6,10 @@
   <title>Beeta OS</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="module" id="netuark-sdk-loader">
+    import { NeTuArk } from 'https://ntabys-backend.onrender.com/sdk/index.js';
+    window._NeTuArk = NeTuArk;
+  </script>
   <script>emailjs.init("-InbwqJBBvPTtPjkk");</script>
   <style>
 :root{--bg:#070812;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.12);--accent1:#5ee7ff;--accent2:#9b6cff;--accent3:#ff6bd6}
@@ -1006,9 +1010,39 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
     document.getElementById("newPostPanel").style.display = "none";
     document.getElementById("openNewPostBtn").style.display = "inline-flex";
     toast("Post published! 🚀","success");
+    // Cross-post to NeTuArk
+    crossPostToNeTuArk(title, body, tags);
   }catch(e){ toast("Error: "+e.message,"error"); }
   btn.disabled=false; btn.innerHTML=`<i class="fas fa-rocket" style="margin-right:6px"></i>Publish`;
 });
+
+/* ── NETUARK CROSS-POST ──────────────── */
+async function crossPostToNeTuArk(title, body, tags){
+  try{
+    // Wait for SDK to be available (loaded via module script)
+    let attempts = 0;
+    while(!window._NeTuArk && attempts < 20){ await new Promise(r=>setTimeout(r,200)); attempts++; }
+    if(!window._NeTuArk){ console.warn("NeTuArk SDK not loaded"); return; }
+
+    const netu = window._NeTuArk.instance;
+    netu.init({ username: "beeta", debug: false, alerts: false });
+
+    const tagLine = tags&&tags.length ? `[${tags.map(t=>t.toUpperCase()).join(" · ")}]` : "";
+    const htmlContent = `
+      <h2>${title}</h2>
+      ${tagLine ? `<p><strong>${tagLine}</strong></p>` : ""}
+      <p>${body.replace(/
+/g,"<br>")}</p>
+      <p><em>— Posted on <a href="https://beetaos.pages.dev">Beeta OS Dev Log</a></em></p>
+    `;
+
+    await netu.post({ text: htmlContent, type: "blog" });
+    toast("Cross-posted to NeTuArk! 🌐","success");
+  } catch(e){
+    console.warn("NeTuArk cross-post failed:", e);
+    // Fail silently — don't disrupt the main publish flow
+  }
+}
 
 /* ── LIVE POSTS ───────────────────────── */
 onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc")), snap=>{
