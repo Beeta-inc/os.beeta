@@ -997,7 +997,7 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
       btn.innerHTML=`<i class="fas fa-spinner fa-spin" style="margin-right:6px"></i>Uploading video…`;
       videoUrl = await uploadVideoToCloudinary(selectedVideoFile);
     }
-    await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:img64,videoUrl,commentCount:0,createdAt:serverTimestamp()});
+    const docRef = await addDoc(collection(db,"posts"),{title,body,tags,imageBase64:img64,videoUrl,commentCount:0,createdAt:serverTimestamp()});
     document.getElementById("npTitle").value="";
     document.getElementById("npBody").value="";
     document.querySelectorAll("#npTagsRow .tag-toggle.selected").forEach(b=>b.classList.remove("selected"));
@@ -1010,7 +1010,7 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
     fetch("https://beeta-email.beeta-main.workers.dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "newpost", title: title, body: postContent })
+      body: JSON.stringify({ type: "newpost", title: title, body: postContent, postId: docRef.id })
     }).then(r => r.json())
       .then(d => {
         if(d.ok) toast(`Users notified! ${d.sent} emails sent 📬`, "success");
