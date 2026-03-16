@@ -999,8 +999,6 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
     document.getElementById("newPostPanel").style.display = "none";
     document.getElementById("openNewPostBtn").style.display = "inline-flex";
     toast("Post published! 🚀","success");
-    crossPostToNeTuArk(title, body, tags);
-    // Notify all registered users about new post
     const postContent = body;
     fetch("https://beeta-email.beeta-main.workers.dev/", {
       method: "POST",
