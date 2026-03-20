@@ -545,7 +545,6 @@ textarea.cf-input{resize:vertical;min-height:68px;margin-bottom:9px}
      ALL SCRIPTS — single module block
 ════════════════════════════════════════ -->
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
-import { NeTuArk } from 'https://ntabys-backend.onrender.com/sdk/index.js';
 import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -573,19 +572,6 @@ let user = null, isAdmin = false, currentUsername = null;
 let allPosts = [], currentFilter = "all", dialogDismissed = false;
 const notifiedUsers = new Set();
 const openedComments = new Set();
-
-/* ── NETUARK ───────────────────────────── */
-const netu = new NeTuArk({ username: "beeta", debug: false, alerts: false });
-async function crossPostToNeTuArk(title, body, tags) {
-  try {
-    const tagLine = tags && tags.length ? `[${tags.map(t=>t.toUpperCase()).join("] [")}]` : "";
-    const text = `<h2>${title}</h2><p>${body.replace(/
-/g,"<br>")}</p>${tagLine ? `<p><small>${tagLine}</small></p>` : ""}<p><small><a href="https://beetaos.pages.dev">Read on Beeta OS Dev Log</a></small></p>`;
-    const result = await netu.post({ text, type: "blog" });
-    if(result.success) toast("Shared on NeTuArk!", "success");
-    else console.warn("NeTuArk post failed:", result.error);
-  } catch(e) { console.warn("NeTuArk error:", e.message); }
-}
 
 /* ── TOAST ────────────────────────────── */
 function toast(msg, type="info"){
@@ -1020,7 +1006,6 @@ document.getElementById("publishBtn").addEventListener("click", async ()=>{
     document.getElementById("newPostPanel").style.display = "none";
     document.getElementById("openNewPostBtn").style.display = "inline-flex";
     toast("Post published! 🚀","success");
-    crossPostToNeTuArk(title, body, tags);
     const postContent = body;
     fetch("https://beeta-email.beeta-main.workers.dev/", {
       method: "POST",
