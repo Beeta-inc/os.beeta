@@ -27,6 +27,7 @@ Depends:
     pulseaudio-utils | pipewire-pulse,
 Recommends:
     mako | dunst,
+    mpvpaper,
     grim,
     slurp,
     wl-clipboard,

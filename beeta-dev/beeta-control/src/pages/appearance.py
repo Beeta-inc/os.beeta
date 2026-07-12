@@ -70,6 +70,9 @@ class AppearancePage(Gtk.Box):
         # ── Live Preview ──
         self._build_preview()
 
+        # ── Live Wallpaper ──
+        self._build_wallpaper_card()
+
         # ── Adaptive Nature Mode ──
         self._build_nature_card()
 
@@ -153,6 +156,105 @@ class AppearancePage(Gtk.Box):
 
         self._preview = preview
         self.append(preview)
+
+    def _build_wallpaper_card(self) -> None:
+        """Build the Live Wallpaper configuration card."""
+        card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        card.add_css_class('settings-card')
+
+        card_title = Gtk.Label(label='LIVE WALLPAPER')
+        card_title.add_css_class('card-title')
+        card_title.set_halign(Gtk.Align.START)
+        card.append(card_title)
+
+        desc = Gtk.Label(
+            label='Set animated video backgrounds using mpvpaper'
+        )
+        desc.add_css_class('card-row-sublabel')
+        desc.set_halign(Gtk.Align.START)
+        desc.set_margin_bottom(16)
+        card.append(desc)
+        
+        # Enable Switch Row
+        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        row.add_css_class('card-row')
+        
+        lbl_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        lbl_box.set_hexpand(True)
+        main_lbl = Gtk.Label(label='Enable Live Background')
+        main_lbl.add_css_class('card-row-label')
+        main_lbl.set_halign(Gtk.Align.START)
+        sub_lbl = Gtk.Label(label='Plays a video loop on your desktop')
+        sub_lbl.add_css_class('card-row-sublabel')
+        sub_lbl.set_halign(Gtk.Align.START)
+        lbl_box.append(main_lbl)
+        lbl_box.append(sub_lbl)
+        row.append(lbl_box)
+        
+        enable_switch = Gtk.Switch()
+        enable_switch.set_valign(Gtk.Align.CENTER)
+        enable_switch.set_active(self._config.get_bool('Desktop', 'live_wallpaper', False))
+        def on_switch_changed(switch, pspec):
+            self._config.set('Desktop', 'live_wallpaper', 'true' if switch.get_active() else 'false')
+        enable_switch.connect('notify::active', on_switch_changed)
+        row.append(enable_switch)
+        
+        card.append(row)
+        card.append(self._make_separator())
+        
+        # File Picker Row
+        file_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        file_row.add_css_class('card-row')
+        
+        path_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        path_box.set_hexpand(True)
+        path_lbl = Gtk.Label(label='Video File')
+        path_lbl.add_css_class('card-row-label')
+        path_lbl.set_halign(Gtk.Align.START)
+        
+        current_path = self._config.get('Desktop', 'live_wallpaper_path', 'None selected')
+        self.path_val_lbl = Gtk.Label(label=current_path)
+        self.path_val_lbl.add_css_class('card-row-sublabel')
+        self.path_val_lbl.set_halign(Gtk.Align.START)
+        self.path_val_lbl.set_ellipsize(gi.repository.Pango.EllipsizeMode.MIDDLE)
+        
+        path_box.append(path_lbl)
+        path_box.append(self.path_val_lbl)
+        file_row.append(path_box)
+        
+        btn = Gtk.Button(label='Choose...')
+        btn.set_valign(Gtk.Align.CENTER)
+        def on_choose_clicked(button):
+            dialog = Gtk.FileDialog()
+            dialog.set_title("Select Live Wallpaper Video")
+            
+            # Use FileFilter
+            filter = Gtk.FileFilter()
+            filter.set_name("Video Files")
+            filter.add_mime_type("video/mp4")
+            filter.add_mime_type("video/webm")
+            filter.add_mime_type("video/x-matroska")
+            filters = gi.repository.Gio.ListStore.new(Gtk.FileFilter)
+            filters.append(filter)
+            dialog.set_filters(filters)
+            
+            def on_file_selected(dialog, result):
+                try:
+                    file = dialog.open_finish(result)
+                    if file:
+                        path = file.get_path()
+                        self.path_val_lbl.set_text(path)
+                        self._config.set('Desktop', 'live_wallpaper_path', path)
+                except gi.repository.GLib.Error:
+                    pass
+            
+            dialog.open(self.get_root(), None, on_file_selected)
+            
+        btn.connect('clicked', on_choose_clicked)
+        file_row.append(btn)
+        
+        card.append(file_row)
+        self.append(card)
 
     def _build_nature_card(self) -> None:
         """Build the Adaptive Nature mode selector card."""

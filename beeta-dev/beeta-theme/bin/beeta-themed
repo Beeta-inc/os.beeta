@@ -48,6 +48,9 @@ class ThemeDaemon:
         
         self.last_state = None
         self.last_tier = None
+        
+        self.wallpaper_process = None
+        self.last_wallpaper_config = None
 
     def _load_template(self, rel_path: str, theme_dir: Path) -> str:
         """Load template from theme dir, fallback to source tree."""
@@ -187,6 +190,40 @@ class ThemeDaemon:
             # wayfire-ipc might not be available or Wayfire not running
             pass
 
+    def _manage_wallpaper(self) -> None:
+        """Manage live wallpaper using mpvpaper."""
+        live_enabled = self.config.get_bool('Desktop', 'live_wallpaper', False)
+        wallpaper_path = self.config.get('Desktop', 'live_wallpaper_path', '')
+
+        current_config = (live_enabled, wallpaper_path)
+        if current_config == self.last_wallpaper_config:
+            return
+            
+        self.last_wallpaper_config = current_config
+        
+        # Kill existing wallpaper process
+        if self.wallpaper_process:
+            try:
+                self.wallpaper_process.terminate()
+                self.wallpaper_process.wait(timeout=2)
+            except Exception:
+                pass
+            self.wallpaper_process = None
+            
+        if live_enabled and wallpaper_path and Path(wallpaper_path).exists():
+            print(f"[beeta-themed] Starting live wallpaper: {wallpaper_path}")
+            # Ensure wayland socket is available for mpvpaper
+            wayland_display = os.environ.get("WAYLAND_DISPLAY", "wayland-0")
+            # -o "loop" tells mpv to loop the video. "*" means all outputs.
+            try:
+                self.wallpaper_process = subprocess.Popen(
+                    ['mpvpaper', '-o', 'loop', '*', wallpaper_path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+            except FileNotFoundError:
+                print("[beeta-themed] Warning: mpvpaper not installed. Cannot set live background.")
+
     def run(self) -> None:
         """Main loop."""
         print("[beeta-themed] Starting theme daemon...")
@@ -202,6 +239,7 @@ class ThemeDaemon:
                 break
             
             self.update_theme()
+            self._manage_wallpaper()
 
 
 def signal_handler(sig, frame):
