@@ -1,0 +1,288 @@
+/*
+ * ═══════════════════════════════════════════════════════════════
+ * BeetaGlass — GTK3 Compatibility Theme
+ * Copyright (C) 2023-2026 Beeta Technologies Inc.
+ *
+ * Provides the same glass aesthetic for legacy GTK3 applications.
+ * GTK3 doesn't support all GTK4 CSS features, so this is a
+ * simplified version that maintains visual consistency.
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+@define-color theme_bg_color          #080a18;
+@define-color theme_fg_color          #eef1ff;
+@define-color theme_base_color        #0e1024;
+@define-color theme_text_color        #eef1ff;
+@define-color theme_selected_bg_color #5ee7ff;
+@define-color theme_selected_fg_color #080a18;
+
+@define-color borders                 rgba(255, 255, 255, 0.08);
+@define-color unfocused_borders       rgba(255, 255, 255, 0.05);
+
+@define-color warning_color           #ffd166;
+@define-color error_color             #ff6b6b;
+@define-color success_color           #06d6a0;
+@define-color link_color              #5ee7ff;
+
+* {
+    -GtkWidget-link-color: #5ee7ff;
+    -GtkWidget-visited-link-color: #9b6cff;
+    font-family: "Inter", "Cantarell", sans-serif;
+    outline: none;
+}
+
+/* Window */
+.background,
+window {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+
+/* Headerbar */
+.titlebar,
+headerbar {
+    background-color: rgba(18, 20, 45, 0.72);
+    border-bottom: 1px solid @borders;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
+    padding: 0 6px;
+    min-height: 42px;
+    color: @theme_fg_color;
+}
+
+.titlebar .title,
+headerbar .title {
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* Buttons */
+button,
+.button {
+    background-color: rgba(238, 241, 255, 0.06);
+    color: @theme_fg_color;
+    border: 1px solid @borders;
+    border-radius: 10px;
+    padding: 6px 16px;
+    font-weight: 600;
+    min-height: 28px;
+    transition: all 200ms ease;
+}
+
+button:hover {
+    background-color: rgba(238, 241, 255, 0.1);
+}
+
+button:active {
+    background-color: rgba(238, 241, 255, 0.14);
+}
+
+button.suggested-action {
+    background-color: @theme_selected_bg_color;
+    color: @theme_bg_color;
+    border: none;
+    font-weight: 700;
+}
+
+button.destructive-action {
+    background-color: rgba(255, 107, 107, 0.15);
+    color: @error_color;
+    border-color: rgba(255, 107, 107, 0.3);
+}
+
+/* Entry */
+entry,
+.entry {
+    background-color: rgba(238, 241, 255, 0.04);
+    color: @theme_fg_color;
+    border: 1px solid @borders;
+    border-radius: 10px;
+    padding: 8px 14px;
+    caret-color: @theme_selected_bg_color;
+}
+
+entry:focus {
+    border-color: rgba(94, 231, 255, 0.5);
+    box-shadow: 0 0 0 2px rgba(94, 231, 255, 0.15);
+}
+
+/* Switch */
+switch {
+    min-width: 48px;
+    min-height: 26px;
+    border-radius: 13px;
+    background-color: rgba(238, 241, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+switch:checked {
+    background-color: @theme_selected_bg_color;
+    border-color: rgba(94, 231, 255, 0.4);
+}
+
+switch slider {
+    min-width: 22px;
+    min-height: 22px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+/* Scale */
+scale trough {
+    background-color: rgba(238, 241, 255, 0.08);
+    border-radius: 3px;
+    min-height: 6px;
+}
+
+scale trough highlight {
+    background-color: @theme_selected_bg_color;
+    border-radius: 3px;
+}
+
+scale slider {
+    min-width: 20px;
+    min-height: 20px;
+    border-radius: 50%;
+    background-color: @theme_fg_color;
+}
+
+/* Check / Radio */
+check,
+.check {
+    border-radius: 6px;
+    background-color: rgba(238, 241, 255, 0.06);
+    border: 1.5px solid rgba(238, 241, 255, 0.2);
+}
+
+check:checked {
+    background-color: @theme_selected_bg_color;
+    border-color: transparent;
+    color: @theme_bg_color;
+}
+
+radio,
+.radio {
+    border-radius: 50%;
+    background-color: rgba(238, 241, 255, 0.06);
+    border: 1.5px solid rgba(238, 241, 255, 0.2);
+}
+
+radio:checked {
+    background-color: @theme_selected_bg_color;
+    border-color: transparent;
+}
+
+/* Scrollbar */
+scrollbar slider {
+    min-width: 6px;
+    min-height: 40px;
+    border-radius: 3px;
+    background-color: rgba(238, 241, 255, 0.15);
+}
+
+scrollbar slider:hover {
+    background-color: rgba(238, 241, 255, 0.25);
+}
+
+/* Progressbar */
+progressbar trough {
+    background-color: rgba(238, 241, 255, 0.06);
+    border-radius: 3px;
+}
+
+progressbar trough progress {
+    background-color: @theme_selected_bg_color;
+    border-radius: 3px;
+}
+
+/* Notebook */
+notebook > header > tabs > tab {
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    color: rgba(238, 241, 255, 0.65);
+}
+
+notebook > header > tabs > tab:checked {
+    background-color: rgba(94, 231, 255, 0.12);
+    color: @theme_selected_bg_color;
+}
+
+notebook > stack {
+    background-color: rgba(14, 16, 36, 1.0);
+    border: 1px solid @borders;
+    border-radius: 12px;
+}
+
+/* List */
+list,
+.view {
+    background-color: transparent;
+    color: @theme_fg_color;
+}
+
+list row,
+.view row {
+    border-radius: 10px;
+}
+
+list row:selected,
+.view row:selected {
+    background-color: rgba(94, 231, 255, 0.12);
+}
+
+/* Menu */
+menu,
+.menu {
+    background-color: rgba(22, 24, 50, 0.95);
+    border: 1px solid @borders;
+    border-radius: 14px;
+    padding: 6px;
+}
+
+menuitem,
+.menuitem {
+    padding: 8px 14px;
+    border-radius: 8px;
+}
+
+menuitem:hover {
+    background-color: rgba(94, 231, 255, 0.1);
+}
+
+/* Separator */
+separator {
+    background-color: @borders;
+    min-height: 1px;
+}
+
+/* Tooltip */
+tooltip,
+.tooltip {
+    background-color: rgba(22, 24, 50, 1.0);
+    border: 1px solid @borders;
+    border-radius: 10px;
+    color: @theme_fg_color;
+}
+
+/* Dialog */
+dialog,
+messagedialog {
+    background-color: @theme_bg_color;
+}
+
+/* Treeview */
+treeview,
+.view {
+    background-color: transparent;
+}
+
+treeview:selected {
+    background-color: rgba(94, 231, 255, 0.15);
+}
+
+/* Calendar */
+calendar {
+    background-color: @theme_base_color;
+    border: 1px solid @borders;
+    border-radius: 14px;
+}

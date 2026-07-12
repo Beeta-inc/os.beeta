@@ -31,6 +31,11 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
+# Theme Environment Variables
+export GTK_THEME="BeetaGlass"
+export QT_STYLE_OVERRIDE="kvantum"
+export KVANTUM_THEME="BeetaGlass"
+
 mkdir -p "$XDG_CONFIG_HOME/beeta"
 mkdir -p "$XDG_DATA_HOME/beeta-shell"
 mkdir -p "$XDG_CACHE_HOME/beeta"
@@ -47,6 +52,7 @@ fi
 
 COMPOSITOR_PID=0
 SHELL_PID=0
+THEME_DAEMON_PID=0
 
 cleanup() {
     echo "[beeta-session] Shutting down..."
@@ -56,6 +62,13 @@ cleanup() {
         echo "[beeta-session] Stopping Beeta Shell (PID $SHELL_PID)..."
         kill -TERM "$SHELL_PID" 2>/dev/null || true
         wait "$SHELL_PID" 2>/dev/null || true
+    fi
+
+    # Stop the theme daemon
+    if [ "$THEME_DAEMON_PID" -ne 0 ] && kill -0 "$THEME_DAEMON_PID" 2>/dev/null; then
+        echo "[beeta-session] Stopping Theme Daemon (PID $THEME_DAEMON_PID)..."
+        kill -TERM "$THEME_DAEMON_PID" 2>/dev/null || true
+        wait "$THEME_DAEMON_PID" 2>/dev/null || true
     fi
 
     # Then stop the compositor
@@ -135,6 +148,19 @@ echo "[beeta-session] Wayland display: $WAYLAND_DISPLAY"
 
 # Small delay for compositor to fully initialize
 sleep 1
+
+echo "[beeta-session] Starting Theme Daemon..."
+if command -v beeta-themed &>/dev/null; then
+    beeta-themed &
+    THEME_DAEMON_PID=$!
+    echo "[beeta-session] Theme Daemon started (PID $THEME_DAEMON_PID)"
+else
+    # Fallback to dev path
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    "$SCRIPT_DIR/../beeta-theme/bin/beeta-themed" &
+    THEME_DAEMON_PID=$!
+    echo "[beeta-session] Theme Daemon started (PID $THEME_DAEMON_PID)"
+fi
 
 echo "[beeta-session] Starting Beeta Shell..."
 beeta-shell &

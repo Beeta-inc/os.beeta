@@ -1,0 +1,10 @@
+[Icon Theme]
+Name=BeetaGlass
+Comment=Beeta OS Glass Desktop Theme — Adaptive Nature™
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=BeetaGlass
+IconTheme=Adwaita
+CursorTheme=Adwaita
+ButtonLayout=close,minimize,maximize:
