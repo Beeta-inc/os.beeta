@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+# Beeta Desktop Environment — Debian Build Rules
+# Uses Meson build system
+
+export DH_VERBOSE = 1
+
+%:
+	dh $@ --buildsystem=meson

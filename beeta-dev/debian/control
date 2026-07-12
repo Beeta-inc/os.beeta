@@ -1,0 +1,54 @@
+Source: beeta-desktop
+Section: x11
+Priority: optional
+Maintainer: Beeta Technologies Inc. <dev@beetaos.com>
+Build-Depends:
+    debhelper-compat (= 13),
+    meson (>= 0.60.0),
+    ninja-build,
+    python3 (>= 3.11),
+Standards-Version: 4.6.0
+Homepage: https://github.com/Beeta-inc/os.beeta
+Vcs-Git: https://github.com/Beeta-inc/os.beeta.git
+Rules-Requires-Root: no
+
+Package: beeta-desktop
+Architecture: all
+Depends:
+    ${misc:Depends},
+    python3 (>= 3.11),
+    python3-gi,
+    python3-gi-cairo,
+    gir1.2-gtk-4.0,
+    gir1.2-gtk4layershell-1.0,
+    wayfire | labwc,
+    dbus,
+    pulseaudio-utils | pipewire-pulse,
+Recommends:
+    mako | dunst,
+    grim,
+    slurp,
+    wl-clipboard,
+    xdg-desktop-portal-gtk,
+    xdg-desktop-portal-wlr,
+    polkit-gnome,
+    pipewire,
+    wireplumber,
+    upower,
+    network-manager,
+Suggests:
+    gnome-terminal,
+    nautilus,
+    firefox,
+    gnome-calculator,
+    gnome-control-center,
+Description: Beeta Desktop Environment
+ A modern, context-aware Linux desktop environment featuring:
+  - Glass UI with backdrop blur (Liquid Glass™)
+  - Beeta Adaptive Nature™: environment-aware theming that responds
+    to time of day, weather, battery state, and performance mode
+  - Beeta Adaptive Motion™: performance-aware animation quality
+  - Live Center: dynamic status hub showing media, timers, downloads
+  - Desktop/Focus state transitions with auto-hiding bottom bar
+  - Wayfire compositor with kawase blur
+  - GTK4 panels using Wayland layer-shell protocol

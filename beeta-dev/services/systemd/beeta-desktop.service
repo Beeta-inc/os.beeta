@@ -1,0 +1,44 @@
+[Unit]
+Description=Beeta Desktop Environment
+Documentation=https://github.com/Beeta-inc/os.beeta
+After=systemd-user-sessions.service
+After=dbus.service
+After=systemd-logind.service
+Wants=dbus.service
+Conflicts=getty@tty1.service gdm.service sddm.service lightdm.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/beeta-session
+User=beeta
+PAMName=login
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+
+# Environment
+Environment=XDG_SESSION_TYPE=wayland
+Environment=XDG_CURRENT_DESKTOP=Beeta
+Environment=GDK_BACKEND=wayland
+
+# Restart on failure with delay
+Restart=on-failure
+RestartSec=3
+
+# Resource limits
+LimitNOFILE=65536
+MemoryMax=4G
+
+# Security hardening (non-root service)
+ProtectSystem=strict
+ReadWritePaths=/home /tmp /run
+PrivateTmp=true
+
+[Install]
+WantedBy=graphical.target
+Alias=display-manager.service

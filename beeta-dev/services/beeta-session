@@ -1,0 +1,148 @@
+#!/bin/bash
+# ═══════════════════════════════════════════════════════════════
+# Beeta Desktop Session — Session Startup Script
+# Copyright (C) 2023-2026 Beeta Technologies Inc.
+# Licensed under GNU General Public License v3.0
+#
+# This script starts the complete Beeta Desktop Environment:
+#   1. Sets up the Wayland/D-Bus environment
+#   2. Starts the Wayfire compositor
+#   3. Starts the Beeta Shell (GTK4 panels)
+#   4. Handles graceful shutdown
+#
+# Installed to: /usr/bin/beeta-session
+# Called by: systemd service or display manager
+# ═══════════════════════════════════════════════════════════════
+
+set -euo pipefail
+
+# ── Environment Setup ────────────────────────────────────────────
+
+export XDG_CURRENT_DESKTOP="Beeta"
+export XDG_SESSION_TYPE="wayland"
+export XDG_SESSION_DESKTOP="beeta"
+export DESKTOP_SESSION="beeta"
+export GDK_BACKEND="wayland"
+
+# Ensure XDG directories exist
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+
+mkdir -p "$XDG_CONFIG_HOME/beeta"
+mkdir -p "$XDG_DATA_HOME/beeta-shell"
+mkdir -p "$XDG_CACHE_HOME/beeta"
+mkdir -p "$XDG_STATE_HOME/beeta"
+
+# ── D-Bus Session Bus ────────────────────────────────────────────
+
+if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+    eval "$(dbus-launch --sh-syntax --exit-with-session)"
+    export DBUS_SESSION_BUS_ADDRESS
+fi
+
+# ── PID Tracking ─────────────────────────────────────────────────
+
+COMPOSITOR_PID=0
+SHELL_PID=0
+
+cleanup() {
+    echo "[beeta-session] Shutting down..."
+
+    # Stop the shell first
+    if [ "$SHELL_PID" -ne 0 ] && kill -0 "$SHELL_PID" 2>/dev/null; then
+        echo "[beeta-session] Stopping Beeta Shell (PID $SHELL_PID)..."
+        kill -TERM "$SHELL_PID" 2>/dev/null || true
+        wait "$SHELL_PID" 2>/dev/null || true
+    fi
+
+    # Then stop the compositor
+    if [ "$COMPOSITOR_PID" -ne 0 ] && kill -0 "$COMPOSITOR_PID" 2>/dev/null; then
+        echo "[beeta-session] Stopping compositor (PID $COMPOSITOR_PID)..."
+        kill -TERM "$COMPOSITOR_PID" 2>/dev/null || true
+        wait "$COMPOSITOR_PID" 2>/dev/null || true
+    fi
+
+    echo "[beeta-session] Session ended."
+    exit 0
+}
+
+trap cleanup SIGTERM SIGINT SIGHUP EXIT
+
+# ── Wayfire Compositor Config ────────────────────────────────────
+
+WAYFIRE_CONFIG="/etc/beeta/wayfire.ini"
+if [ ! -f "$WAYFIRE_CONFIG" ]; then
+    # Fallback to user config
+    WAYFIRE_CONFIG="$XDG_CONFIG_HOME/beeta/wayfire.ini"
+fi
+if [ ! -f "$WAYFIRE_CONFIG" ]; then
+    # Fallback to development path
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    WAYFIRE_CONFIG="$SCRIPT_DIR/../beeta-compositor/wayfire.ini"
+fi
+
+# ── Start Compositor ─────────────────────────────────────────────
+
+echo "[beeta-session] Starting Wayfire compositor..."
+echo "[beeta-session] Config: $WAYFIRE_CONFIG"
+
+if command -v wayfire &>/dev/null; then
+    wayfire -c "$WAYFIRE_CONFIG" &
+    COMPOSITOR_PID=$!
+    echo "[beeta-session] Wayfire started (PID $COMPOSITOR_PID)"
+elif command -v labwc &>/dev/null; then
+    echo "[beeta-session] Wayfire not found, falling back to labwc..."
+    labwc &
+    COMPOSITOR_PID=$!
+    echo "[beeta-session] labwc started (PID $COMPOSITOR_PID)"
+else
+    echo "[beeta-session] Error: No supported Wayland compositor found." >&2
+    echo "[beeta-session] Please install wayfire or labwc." >&2
+    exit 1
+fi
+
+# Wait for compositor to be ready (Wayland socket must appear)
+echo "[beeta-session] Waiting for compositor..."
+TIMEOUT=10
+COUNTER=0
+while [ ! -e "$XDG_RUNTIME_DIR/wayland-0" ] && \
+      [ ! -e "$XDG_RUNTIME_DIR/wayland-1" ]; do
+    sleep 0.5
+    COUNTER=$((COUNTER + 1))
+    if [ "$COUNTER" -ge "$((TIMEOUT * 2))" ]; then
+        echo "[beeta-session] Error: Compositor did not start in ${TIMEOUT}s." >&2
+        exit 1
+    fi
+    # Check if compositor crashed
+    if ! kill -0 "$COMPOSITOR_PID" 2>/dev/null; then
+        echo "[beeta-session] Error: Compositor exited prematurely." >&2
+        exit 1
+    fi
+done
+
+# Find the Wayland socket
+if [ -e "$XDG_RUNTIME_DIR/wayland-1" ]; then
+    export WAYLAND_DISPLAY="wayland-1"
+elif [ -e "$XDG_RUNTIME_DIR/wayland-0" ]; then
+    export WAYLAND_DISPLAY="wayland-0"
+fi
+echo "[beeta-session] Wayland display: $WAYLAND_DISPLAY"
+
+# ── Start Shell Panels ───────────────────────────────────────────
+
+# Small delay for compositor to fully initialize
+sleep 1
+
+echo "[beeta-session] Starting Beeta Shell..."
+beeta-shell &
+SHELL_PID=$!
+echo "[beeta-session] Beeta Shell started (PID $SHELL_PID)"
+
+# ── Wait for Compositor ──────────────────────────────────────────
+
+# The session lives as long as the compositor runs
+echo "[beeta-session] Beeta Desktop Environment is running."
+wait "$COMPOSITOR_PID" 2>/dev/null || true

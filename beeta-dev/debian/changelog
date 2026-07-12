@@ -1,0 +1,14 @@
+beeta-desktop (0.1.0-1) unstable; urgency=medium
+
+  * Initial release of Beeta Desktop Environment
+  * GTK4 + Wayland layer-shell panels (top bar + bottom bar)
+  * Beeta Adaptive Nature™ context-aware theming engine
+  * Beeta Adaptive Motion™ performance-aware animation engine
+  * Live Center dynamic status hub with MPRIS media integration
+  * Desktop / Focus state management with auto-hiding bottom bar
+  * Quick Settings popover with system controls
+  * Fullscreen app launcher with search and categories
+  * Wayfire compositor configuration with Liquid Glass™ blur
+  * Systemd service for graphical.target
+
+ -- Beeta Technologies Inc. <dev@beetaos.com>  Sat, 12 Jul 2026 17:00:00 +0530

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Beeta Desktop
+Comment=Beeta OS Desktop Environment
+Exec=/usr/bin/beeta-session
+Type=Application
+DesktopNames=Beeta
