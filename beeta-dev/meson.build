@@ -24,6 +24,7 @@ py_install = python.find_installation('python3', required: true)
 subdir('beeta-shell')
 subdir('beeta-control')
 subdir('beeta-theme')
+subdir('beeta-lock')
 
 # ── Session Files ────────────────────────────────────────────────
 

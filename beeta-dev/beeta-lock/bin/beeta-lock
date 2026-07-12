@@ -1,0 +1,20 @@
+#!/bin/bash
+# ═══════════════════════════════════════════════════════════════
+# Beeta Lock Screen Launcher
+# Copyright (C) 2023-2026 Beeta Technologies Inc.
+# Licensed under GNU General Public License v3.0
+# ═══════════════════════════════════════════════════════════════
+
+# Determine execution mode (development vs installed)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEV_MAIN="$SCRIPT_DIR/../src/main.py"
+INSTALLED_MAIN="/usr/share/beeta-lock/src/main.py"
+
+if [ -f "$DEV_MAIN" ]; then
+    exec python3 "$DEV_MAIN" "$@"
+elif [ -f "$INSTALLED_MAIN" ]; then
+    exec python3 "$INSTALLED_MAIN" "$@"
+else
+    echo "Error: Cannot find Beeta Lock entry point."
+    exit 1
+fi
