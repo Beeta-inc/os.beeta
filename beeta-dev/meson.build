@@ -22,6 +22,7 @@ py_install = python.find_installation('python3', required: true)
 # ── Subdirectories ───────────────────────────────────────────────
 
 subdir('beeta-shell')
+subdir('beeta-control')
 
 # ── Session Files ────────────────────────────────────────────────
 
