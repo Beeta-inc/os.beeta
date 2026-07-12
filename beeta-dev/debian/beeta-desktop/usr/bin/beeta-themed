@@ -1,0 +1,260 @@
+# -*- coding: utf-8 -*-
+# Beeta Desktop Environment
+# Copyright (C) 2023-2026 Beeta Technologies Inc.
+# Licensed under GNU General Public License v3.0
+
+"""Beeta Theme Daemon (beeta-themed).
+
+This daemon runs in the background and listens for configuration changes
+or system events (time of day, weather, battery). When Adaptive Nature™
+requires a color shift, this daemon:
+1. Regenerates the system-wide GTK4 and GTK3 CSS files by replacing [ADAPTIVE] tokens.
+2. Informs running GTK apps to reload the theme.
+3. Updates Wayfire's blur settings if Adaptive Motion™ tier changes.
+"""
+
+import os
+import sys
+import time
+import signal
+import threading
+import subprocess
+from pathlib import Path
+
+# Add shell config to path
+_src_dir = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(_src_dir / 'beeta-shell'))
+from src.config import BeetaConfig
+from src.adaptive_nature import AdaptiveNature, NatureState
+from src.adaptive_motion import AdaptiveMotion, MotionTier
+
+_RUNNING = True
+
+
+class ThemeDaemon:
+    def __init__(self):
+        self.config = BeetaConfig()
+        self.nature = AdaptiveNature(self.config)
+        self.motion = AdaptiveMotion(self.config)
+        
+        # Determine theme paths
+        self.local_theme_dir = Path(os.environ.get('XDG_DATA_HOME', str(Path.home() / '.local' / 'share'))) / 'themes' / 'BeetaGlass'
+        self.system_theme_dir = Path('/usr/share/themes/BeetaGlass')
+        
+        self.theme_dir = self.local_theme_dir if os.access(self.local_theme_dir.parent, os.W_OK) else self.system_theme_dir
+        
+        self.gtk4_template = self._load_template('gtk-4.0/gtk.css.template', self.theme_dir)
+        self.gtk3_template = self._load_template('gtk-3.0/gtk.css.template', self.theme_dir)
+        
+        self.last_state = None
+        self.last_tier = None
+        
+        self.wallpaper_process = None
+        self.last_wallpaper_config = None
+
+    def _load_template(self, rel_path: str, theme_dir: Path) -> str:
+        """Load template from theme dir, fallback to source tree."""
+        # Check installed theme
+        installed_path = theme_dir / rel_path
+        if installed_path.exists():
+            return installed_path.read_text()
+            
+        # Check source tree (for dev/testing)
+        src_path = Path(__file__).parent.parent / rel_path
+        if src_path.exists():
+            return src_path.read_text()
+            
+        # If neither template exists, but the target css exists, use it as template
+        css_path = Path(__file__).parent.parent / rel_path.replace('.template', '')
+        if css_path.exists():
+            print(f"Warning: template {rel_path} not found. Using current {css_path.name} as template.")
+            return css_path.read_text()
+            
+        return ""
+
+    def _generate_css(self, template: str, state: NatureState, tier: MotionTier, is_gtk4: bool) -> str:
+        """Replace tokens in the CSS template."""
+        if not template:
+            return ""
+            
+        # Motion duration mapping
+        durations = {
+            MotionTier.POWER_SAVER: "150ms",
+            MotionTier.BALANCED: "300ms",
+            MotionTier.PERFORMANCE: "400ms"
+        }
+        motion_dur = durations.get(tier, "300ms")
+
+        # In GTK4, we use @define-color. In GTK3, it's the same.
+        # We find the token lines and replace them.
+        
+        replacements = {
+            'beeta_accent': state.accent_rgba,
+            'beeta_accent_dim': state.accent_rgba.replace('1.0)', '0.5)'),
+            'beeta_accent_bg': state.accent_rgba.replace('1.0)', '0.08)'),
+            'beeta_bg_deep': state.bg_deep,
+            'beeta_bg_surface': state.bg_surface,
+            'beeta_bg_elevated': state.bg_elevated,
+            'beeta_bg_card': state.bg_card,
+            'beeta_glass': state.glass_bg,
+            'beeta_glass_border': state.glass_border,
+            '_motion_dur': motion_dur
+        }
+
+        # For GTK3, colors are sometimes hardcoded in HEX, but our templates use rgba tokens
+        # We will do a simple string replace for our specific tokens defined in the header.
+        
+        out_lines = []
+        for line in template.splitlines():
+            if '@define-color' in line:
+                for token, value in replacements.items():
+                    if f'@define-color {token} ' in line or f'@define-color {token}\t' in line:
+                        # Extract the part before the value
+                        parts = line.split(token, 1)
+                        if len(parts) == 2:
+                            # Retain spacing
+                            prefix = f"{parts[0]}{token}"
+                            out_lines.append(f"{prefix.ljust(35)} {value};")
+                            break
+                else:
+                    out_lines.append(line)
+            else:
+                out_lines.append(line)
+
+        return '\n'.join(out_lines)
+
+    def update_theme(self) -> None:
+        """Regenerate theme files and reload apps."""
+        state = self.nature.get_current_state()
+        tier = self.motion.get_current_tier()
+
+        # Only update if something actually changed
+        state_key = (state.accent_rgba, state.bg_deep, state.glass_bg)
+        if state_key == self.last_state and tier == self.last_tier:
+            return
+            
+        self.last_state = state_key
+        self.last_tier = tier
+        
+        print(f"[beeta-themed] Theme update triggered. Tier: {tier.name}")
+
+        # Ensure local dir exists (so we can write without sudo)
+        gtk4_dir = self.local_theme_dir / 'gtk-4.0'
+        gtk3_dir = self.local_theme_dir / 'gtk-3.0'
+        gtk4_dir.mkdir(parents=True, exist_ok=True)
+        gtk3_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Write GTK4
+        gtk4_css = self._generate_css(self.gtk4_template, state, tier, True)
+        if gtk4_css:
+            (gtk4_dir / 'gtk.css').write_text(gtk4_css)
+            
+        # Write GTK3
+        gtk3_css = self._generate_css(self.gtk3_template, state, tier, False)
+        if gtk3_css:
+            (gtk3_dir / 'gtk.css').write_text(gtk3_css)
+            
+        # Notify Wayfire to update blur radius based on MotionTier
+        self._update_wayfire_blur(tier)
+        
+        # (A real implementation would use XSettings daemon or gsettings to force reload)
+        # For our standalone environment, Wayfire/GTK picks up gsettings changes if we toggle the theme name.
+        # This is a bit of a hack to force apps to reload CSS.
+        try:
+            subprocess.run(['gsettings', 'set', 'org.gnome.desktop.interface', 'gtk-theme', 'Adwaita'], check=False)
+            subprocess.run(['gsettings', 'set', 'org.gnome.desktop.interface', 'gtk-theme', 'BeetaGlass'], check=False)
+        except Exception:
+            pass
+
+    def _update_wayfire_blur(self, tier: MotionTier) -> None:
+        """Update Wayfire's blur radius."""
+        try:
+            from wayfire.ipc import WayfireSocket
+            sock = WayfireSocket()
+            
+            radius = 20
+            if tier == MotionTier.POWER_SAVER:
+                radius = 8
+            elif tier == MotionTier.PERFORMANCE:
+                radius = 28
+                
+            msg = {
+                "method": "core/set_config_option",
+                "data": {
+                    "option": "blur/kawase_offset",
+                    "value": str(radius)
+                }
+            }
+            sock.send_json(msg)
+        except Exception as e:
+            # wayfire-ipc might not be available or Wayfire not running
+            pass
+
+    def _manage_wallpaper(self) -> None:
+        """Manage live wallpaper using mpvpaper."""
+        live_enabled = self.config.get_bool('Desktop', 'live_wallpaper', False)
+        wallpaper_path = self.config.get('Desktop', 'live_wallpaper_path', '')
+
+        current_config = (live_enabled, wallpaper_path)
+        if current_config == self.last_wallpaper_config:
+            return
+            
+        self.last_wallpaper_config = current_config
+        
+        # Kill existing wallpaper process
+        if self.wallpaper_process:
+            try:
+                self.wallpaper_process.terminate()
+                self.wallpaper_process.wait(timeout=2)
+            except Exception:
+                pass
+            self.wallpaper_process = None
+            
+        if live_enabled and wallpaper_path and Path(wallpaper_path).exists():
+            print(f"[beeta-themed] Starting live wallpaper: {wallpaper_path}")
+            # Ensure wayland socket is available for mpvpaper
+            wayland_display = os.environ.get("WAYLAND_DISPLAY", "wayland-0")
+            # -o "loop" tells mpv to loop the video. "*" means all outputs.
+            try:
+                self.wallpaper_process = subprocess.Popen(
+                    ['mpvpaper', '-o', 'loop', '*', wallpaper_path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+            except FileNotFoundError:
+                print("[beeta-themed] Warning: mpvpaper not installed. Cannot set live background.")
+
+    def run(self) -> None:
+        """Main loop."""
+        print("[beeta-themed] Starting theme daemon...")
+        
+        # Initial apply
+        self.update_theme()
+        
+        while _RUNNING:
+            # Adaptive nature checks every minute, motion can change instantly on battery.
+            # A 10-second poll is reasonable for this daemon.
+            time.sleep(10)
+            if not _RUNNING:
+                break
+            
+            self.update_theme()
+            self._manage_wallpaper()
+
+
+def signal_handler(sig, frame):
+    global _RUNNING
+    print("\n[beeta-themed] Shutting down...")
+    _RUNNING = False
+
+
+def main():
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    daemon = ThemeDaemon()
+    daemon.run()
+
+
+if __name__ == '__main__':
+    main()

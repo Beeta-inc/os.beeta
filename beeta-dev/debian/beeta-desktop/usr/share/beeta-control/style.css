@@ -1,0 +1,683 @@
+/*
+ * ═══════════════════════════════════════════════════════════════
+ * Beeta Control Panel — Glass UI Theme
+ * Copyright (C) 2023-2026 Beeta Technologies Inc.
+ * Licensed under GNU General Public License v3.0
+ *
+ * Every surface is glass. Every interaction is smooth.
+ * This is what makes the Control Panel addictive.
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+
+
+/* ══════════════════════════════════════════════════════════════
+   TOKENS
+   ══════════════════════════════════════════════════════════════ */
+
+@define-color beeta_accent_primary   rgba(94, 231, 255, 1.0);
+@define-color beeta_accent_secondary rgba(155, 108, 255, 1.0);
+@define-color beeta_accent_tertiary  rgba(255, 107, 214, 1.0);
+
+@define-color beeta_bg_deep          rgba(8, 10, 24, 1.0);
+@define-color beeta_bg_surface       rgba(14, 16, 36, 1.0);
+@define-color beeta_glass_bg         rgba(18, 20, 45, 0.75);
+@define-color beeta_glass_border     rgba(255, 255, 255, 0.08);
+@define-color beeta_glass_shadow     rgba(0, 0, 0, 0.5);
+
+@define-color beeta_text_primary     rgba(238, 241, 255, 1.0);
+@define-color beeta_text_secondary   rgba(238, 241, 255, 0.65);
+@define-color beeta_text_muted       rgba(238, 241, 255, 0.35);
+
+@define-color beeta_success          rgba(6, 214, 160, 1.0);
+@define-color beeta_warning          rgba(255, 209, 102, 1.0);
+@define-color beeta_danger           rgba(255, 107, 107, 1.0);
+
+
+/* ══════════════════════════════════════════════════════════════
+   GLOBAL
+   ══════════════════════════════════════════════════════════════ */
+
+* {
+    font-family: "Inter", "Cantarell", sans-serif;
+}
+
+window {
+    background-color: @beeta_bg_deep;
+    color: @beeta_text_primary;
+}
+
+/* Hide default GTK decoration */
+headerbar {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    min-height: 0;
+    padding: 0;
+}
+
+windowcontrols {
+    margin: 10px;
+}
+
+windowcontrols > button {
+    min-width: 12px;
+    min-height: 12px;
+    padding: 0;
+    margin: 0 3px;
+    border-radius: 50%;
+    border: none;
+}
+
+windowcontrols > button.close {
+    background: @beeta_danger;
+}
+
+windowcontrols > button.minimize {
+    background: @beeta_warning;
+}
+
+windowcontrols > button.maximize {
+    background: @beeta_success;
+}
+
+windowcontrols > button:hover {
+    opacity: 0.8;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   SIDEBAR NAVIGATION
+   ══════════════════════════════════════════════════════════════ */
+
+.sidebar {
+    background-color: @beeta_bg_surface;
+    border-right: 1px solid @beeta_glass_border;
+    min-width: 240px;
+    padding: 0;
+}
+
+.sidebar-header {
+    padding: 28px 20px 20px 20px;
+    border-bottom: 1px solid alpha(@beeta_glass_border, 0.5);
+    margin-bottom: 8px;
+}
+
+.sidebar-logo-text {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: @beeta_text_primary;
+}
+
+.sidebar-logo-sub {
+    font-size: 11px;
+    font-weight: 600;
+    color: @beeta_text_muted;
+    letter-spacing: 2px;
+    margin-top: 2px;
+}
+
+/* Navigation items */
+.nav-item {
+    padding: 10px 16px;
+    margin: 2px 8px;
+    border-radius: 12px;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all 250ms cubic-bezier(0.2, 0.8, 0.2, 1.0);
+    min-height: 40px;
+}
+
+.nav-item:hover {
+    background-color: alpha(@beeta_text_primary, 0.04);
+    border-color: alpha(@beeta_glass_border, 0.3);
+}
+
+.nav-item.active {
+    background: linear-gradient(135deg, alpha(@beeta_accent_primary, 0.12), alpha(@beeta_accent_secondary, 0.08));
+    border-color: alpha(@beeta_accent_primary, 0.25);
+    box-shadow: 0 0 20px alpha(@beeta_accent_primary, 0.08);
+}
+
+.nav-icon {
+    font-size: 18px;
+    min-width: 28px;
+    color: @beeta_text_muted;
+    transition: all 250ms ease;
+}
+
+.nav-item:hover .nav-icon {
+    color: @beeta_text_secondary;
+}
+
+.nav-item.active .nav-icon {
+    color: @beeta_accent_primary;
+}
+
+.nav-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: @beeta_text_secondary;
+    margin-left: 12px;
+    transition: all 250ms ease;
+}
+
+.nav-item:hover .nav-label {
+    color: @beeta_text_primary;
+}
+
+.nav-item.active .nav-label {
+    color: @beeta_text_primary;
+}
+
+.nav-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: alpha(@beeta_text_muted, 0.6);
+    letter-spacing: 2px;
+    padding: 12px 20px 4px 20px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   CONTENT AREA
+   ══════════════════════════════════════════════════════════════ */
+
+.content-area {
+    padding: 32px 40px;
+    background-color: @beeta_bg_deep;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: @beeta_text_primary;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.page-subtitle {
+    font-size: 13px;
+    font-weight: 500;
+    color: @beeta_text_muted;
+    margin-bottom: 28px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   SETTINGS CARDS — The core UI pattern
+   ══════════════════════════════════════════════════════════════ */
+
+.settings-card {
+    background-color: @beeta_glass_bg;
+    border: 1px solid @beeta_glass_border;
+    border-radius: 18px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 24px alpha(black, 0.15);
+    transition: all 250ms ease;
+}
+
+.settings-card:hover {
+    border-color: alpha(@beeta_glass_border, 1.5);
+    box-shadow: 0 6px 32px alpha(black, 0.2);
+}
+
+.card-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: @beeta_text_muted;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
+}
+
+.card-row {
+    padding: 8px 0;
+}
+
+.card-row-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: @beeta_text_primary;
+}
+
+.card-row-sublabel {
+    font-size: 11px;
+    font-weight: 500;
+    color: @beeta_text_muted;
+    margin-top: 2px;
+}
+
+/* Separator between card rows */
+.card-separator {
+    min-height: 1px;
+    background-color: alpha(@beeta_glass_border, 0.5);
+    margin: 8px 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   MODE SELECTOR (Radio-pill pattern)
+   ══════════════════════════════════════════════════════════════ */
+
+.mode-selector {
+    background-color: alpha(@beeta_text_primary, 0.04);
+    border-radius: 14px;
+    padding: 4px;
+    border: 1px solid alpha(@beeta_glass_border, 0.3);
+}
+
+.mode-btn {
+    border-radius: 11px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: @beeta_text_muted;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: all 250ms cubic-bezier(0.2, 0.8, 0.2, 1.0);
+    min-height: 36px;
+}
+
+.mode-btn:hover {
+    color: @beeta_text_secondary;
+    background: alpha(@beeta_text_primary, 0.03);
+}
+
+.mode-btn.active {
+    background: linear-gradient(135deg, alpha(@beeta_accent_primary, 0.18), alpha(@beeta_accent_secondary, 0.12));
+    color: @beeta_accent_primary;
+    border-color: alpha(@beeta_accent_primary, 0.3);
+    box-shadow: 0 4px 16px alpha(@beeta_accent_primary, 0.15);
+}
+
+.mode-btn-icon {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.mode-btn-label {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.mode-btn-desc {
+    font-size: 9px;
+    font-weight: 500;
+    color: @beeta_text_muted;
+    margin-top: 2px;
+}
+
+.mode-btn.active .mode-btn-desc {
+    color: alpha(@beeta_accent_primary, 0.7);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   SLIDERS
+   ══════════════════════════════════════════════════════════════ */
+
+.beeta-slider trough {
+    min-height: 6px;
+    border-radius: 3px;
+    background-color: alpha(@beeta_text_primary, 0.08);
+}
+
+.beeta-slider trough highlight {
+    background: linear-gradient(to right, @beeta_accent_primary, @beeta_accent_secondary);
+    border-radius: 3px;
+    min-height: 6px;
+}
+
+.beeta-slider slider {
+    min-width: 20px;
+    min-height: 20px;
+    border-radius: 50%;
+    background-color: @beeta_text_primary;
+    box-shadow: 0 2px 10px alpha(black, 0.35), 0 0 0 2px alpha(@beeta_accent_primary, 0.2);
+    transition: all 200ms ease;
+}
+
+.beeta-slider slider:hover {
+    box-shadow: 0 2px 12px alpha(black, 0.4), 0 0 0 3px alpha(@beeta_accent_primary, 0.35);
+}
+
+.slider-value {
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: @beeta_accent_primary;
+    min-width: 48px;
+    margin-left: 12px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   SWITCHES / TOGGLES
+   ══════════════════════════════════════════════════════════════ */
+
+switch {
+    min-width: 48px;
+    min-height: 26px;
+    border-radius: 13px;
+    background-color: alpha(@beeta_text_primary, 0.1);
+    border: 1px solid alpha(@beeta_glass_border, 0.5);
+    transition: all 300ms cubic-bezier(0.2, 0.8, 0.2, 1.0);
+}
+
+switch:checked {
+    background: linear-gradient(135deg, @beeta_accent_primary, @beeta_accent_secondary);
+    border-color: alpha(@beeta_accent_primary, 0.4);
+    box-shadow: 0 0 16px alpha(@beeta_accent_primary, 0.3);
+}
+
+switch slider {
+    min-width: 22px;
+    min-height: 22px;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 2px 6px alpha(black, 0.25);
+    margin: 1px;
+    transition: all 300ms cubic-bezier(0.2, 0.8, 0.2, 1.0);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   DROPDOWNS
+   ══════════════════════════════════════════════════════════════ */
+
+dropdown {
+    border-radius: 10px;
+    padding: 6px 12px;
+    background-color: alpha(@beeta_text_primary, 0.06);
+    border: 1px solid @beeta_glass_border;
+    color: @beeta_text_primary;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 34px;
+    transition: all 200ms ease;
+}
+
+dropdown:hover {
+    border-color: alpha(@beeta_accent_primary, 0.3);
+}
+
+dropdown > popover > contents {
+    background-color: alpha(@beeta_bg_surface, 0.95);
+    border: 1px solid @beeta_glass_border;
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 12px 48px @beeta_glass_shadow;
+}
+
+dropdown > popover > contents > row {
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: all 150ms ease;
+}
+
+dropdown > popover > contents > row:hover {
+    background-color: alpha(@beeta_accent_primary, 0.1);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   BUTTONS
+   ══════════════════════════════════════════════════════════════ */
+
+.beeta-btn {
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid transparent;
+    transition: all 200ms ease;
+    min-height: 38px;
+}
+
+.beeta-btn-primary {
+    background: linear-gradient(135deg, @beeta_accent_primary, @beeta_accent_secondary);
+    color: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 4px 16px alpha(@beeta_accent_primary, 0.3);
+}
+
+.beeta-btn-primary:hover {
+    box-shadow: 0 6px 24px alpha(@beeta_accent_primary, 0.45);
+}
+
+.beeta-btn-secondary {
+    background: alpha(@beeta_text_primary, 0.06);
+    color: @beeta_text_primary;
+    border-color: @beeta_glass_border;
+}
+
+.beeta-btn-secondary:hover {
+    background: alpha(@beeta_text_primary, 0.1);
+    border-color: alpha(@beeta_accent_primary, 0.3);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   LIVE PREVIEW PANEL
+   ══════════════════════════════════════════════════════════════ */
+
+.preview-panel {
+    background: linear-gradient(135deg, @beeta_bg_surface, @beeta_bg_deep);
+    border: 1px solid @beeta_glass_border;
+    border-radius: 18px;
+    padding: 20px;
+    min-height: 120px;
+    box-shadow: inset 0 1px 0 alpha(white, 0.03);
+    transition: all 500ms ease;
+}
+
+.preview-bar {
+    background-color: alpha(@beeta_glass_bg, 0.8);
+    border: 1px solid alpha(@beeta_glass_border, 0.5);
+    border-radius: 8px;
+    padding: 6px 14px;
+    min-height: 24px;
+}
+
+.preview-dot {
+    min-width: 6px;
+    min-height: 6px;
+    border-radius: 50%;
+    background-color: alpha(@beeta_text_primary, 0.2);
+    margin: 0 3px;
+}
+
+.preview-dot.active {
+    background-color: @beeta_accent_primary;
+    box-shadow: 0 0 6px alpha(@beeta_accent_primary, 0.4);
+}
+
+.preview-time {
+    font-size: 10px;
+    font-weight: 700;
+    color: @beeta_text_primary;
+}
+
+.preview-orb {
+    min-width: 24px;
+    min-height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, @beeta_accent_primary, @beeta_accent_secondary);
+}
+
+.preview-dock-icon {
+    min-width: 20px;
+    min-height: 20px;
+    border-radius: 6px;
+    background-color: alpha(@beeta_text_primary, 0.12);
+    margin: 0 3px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   COLOR SWATCHES
+   ══════════════════════════════════════════════════════════════ */
+
+.color-swatch {
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    margin: 4px;
+    transition: all 200ms ease;
+    box-shadow: 0 2px 8px alpha(black, 0.2);
+}
+
+.color-swatch:hover {
+    border-color: alpha(white, 0.3);
+    box-shadow: 0 4px 16px alpha(black, 0.3);
+}
+
+.color-swatch.selected {
+    border-color: white;
+    box-shadow: 0 0 0 2px @beeta_accent_primary, 0 4px 16px alpha(@beeta_accent_primary, 0.3);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   ABOUT PAGE
+   ══════════════════════════════════════════════════════════════ */
+
+.about-logo {
+    font-size: 64px;
+    margin-bottom: 8px;
+}
+
+.about-name {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, @beeta_accent_primary, @beeta_accent_secondary);
+    -gtk-icon-palette: success @beeta_accent_primary;
+    color: @beeta_accent_primary;
+}
+
+.about-version {
+    font-size: 14px;
+    font-weight: 600;
+    color: @beeta_text_muted;
+    margin-top: 4px;
+}
+
+.about-tagline {
+    font-size: 13px;
+    font-weight: 500;
+    color: @beeta_text_secondary;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+.about-info-row {
+    padding: 10px 0;
+}
+
+.about-info-key {
+    font-size: 12px;
+    font-weight: 600;
+    color: @beeta_text_muted;
+    min-width: 140px;
+}
+
+.about-info-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: @beeta_text_primary;
+}
+
+.about-trademark {
+    font-size: 10px;
+    font-weight: 600;
+    color: alpha(@beeta_text_muted, 0.5);
+    letter-spacing: 0.5px;
+    margin-top: 24px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   BATTERY PAGE
+   ══════════════════════════════════════════════════════════════ */
+
+.battery-gauge {
+    min-width: 120px;
+    min-height: 120px;
+    margin-right: 24px;
+}
+
+.battery-level-text {
+    font-size: 36px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: @beeta_text_primary;
+}
+
+.battery-status-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: @beeta_success;
+}
+
+.battery-status-text.discharging {
+    color: @beeta_text_secondary;
+}
+
+.battery-status-text.low {
+    color: @beeta_danger;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   NETWORK PAGE
+   ══════════════════════════════════════════════════════════════ */
+
+.network-item {
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: alpha(@beeta_text_primary, 0.03);
+    border: 1px solid alpha(@beeta_glass_border, 0.3);
+    margin-bottom: 6px;
+    transition: all 200ms ease;
+}
+
+.network-item:hover {
+    background: alpha(@beeta_text_primary, 0.06);
+    border-color: alpha(@beeta_accent_primary, 0.2);
+}
+
+.network-item.connected {
+    border-color: alpha(@beeta_success, 0.3);
+    background: alpha(@beeta_success, 0.05);
+}
+
+.network-ssid {
+    font-size: 14px;
+    font-weight: 600;
+    color: @beeta_text_primary;
+}
+
+.network-status {
+    font-size: 11px;
+    font-weight: 500;
+    color: @beeta_text_muted;
+}
+
+.network-item.connected .network-status {
+    color: @beeta_success;
+}
+
+.signal-bar {
+    min-width: 3px;
+    border-radius: 2px;
+    background-color: alpha(@beeta_text_primary, 0.15);
+    margin: 0 1px;
+}
+
+.signal-bar.filled {
+    background-color: @beeta_accent_primary;
+}

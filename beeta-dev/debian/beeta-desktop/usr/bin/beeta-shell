@@ -1,0 +1,59 @@
+#!/bin/bash
+# ═══════════════════════════════════════════════════════════════
+# Beeta Desktop Shell — Launch Script
+# Copyright (C) 2023-2026 Beeta Technologies Inc.
+# Licensed under GNU General Public License v3.0
+#
+# Starts the Beeta Shell GTK4 panel application.
+# This script is installed to /usr/bin/beeta-shell
+# ═══════════════════════════════════════════════════════════════
+
+set -euo pipefail
+
+# Ensure Wayland environment
+export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-Beeta}"
+export XDG_SESSION_TYPE="${XDG_SESSION_TYPE:-wayland}"
+export GDK_BACKEND="${GDK_BACKEND:-wayland}"
+
+# Ensure GI typelibs can be found
+export GI_TYPELIB_PATH="${GI_TYPELIB_PATH:-/usr/lib/x86_64-linux-gnu/girepository-1.0}"
+
+# Find the Python module location
+BEETA_SHELL_DIR=""
+
+# Check development path (relative to this script)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [ -f "${SCRIPT_DIR}/src/main.py" ]; then
+    BEETA_SHELL_DIR="${SCRIPT_DIR}/src"
+    export PYTHONPATH="${SCRIPT_DIR}/src:${PYTHONPATH:-}"
+fi
+
+# Check system install path
+if [ -z "${BEETA_SHELL_DIR}" ] && [ -d "/usr/lib/beeta-shell" ]; then
+    BEETA_SHELL_DIR="/usr/lib/beeta-shell"
+    export PYTHONPATH="/usr/lib/beeta-shell:${PYTHONPATH:-}"
+fi
+
+# Check local install path
+if [ -z "${BEETA_SHELL_DIR}" ] && [ -d "${HOME}/.local/lib/beeta-shell" ]; then
+    BEETA_SHELL_DIR="${HOME}/.local/lib/beeta-shell"
+    export PYTHONPATH="${HOME}/.local/lib/beeta-shell:${PYTHONPATH:-}"
+fi
+
+if [ -z "${BEETA_SHELL_DIR}" ]; then
+    echo "[beeta-shell] Error: Could not find Beeta Shell module." >&2
+    echo "[beeta-shell] Searched: ${SCRIPT_DIR}/src, /usr/lib/beeta-shell, ~/.local/lib/beeta-shell" >&2
+    exit 1
+fi
+
+echo "[beeta-shell] Starting from: ${BEETA_SHELL_DIR}"
+echo "[beeta-shell] GDK_BACKEND=${GDK_BACKEND}"
+echo "[beeta-shell] XDG_CURRENT_DESKTOP=${XDG_CURRENT_DESKTOP}"
+
+# Launch the shell
+exec python3 -c "
+import sys
+sys.path.insert(0, '${BEETA_SHELL_DIR}/..')
+from src.main import main
+sys.exit(main())
+" "$@"

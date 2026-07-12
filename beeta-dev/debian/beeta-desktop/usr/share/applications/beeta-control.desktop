@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Beeta Control
+GenericName=Settings
+Comment=Beeta OS Desktop Environment Settings
+Exec=beeta-control
+Icon=preferences-system
+Type=Application
+Categories=Settings;System;
+Keywords=settings;preferences;control;panel;appearance;display;sound;network;battery;
+StartupNotify=true

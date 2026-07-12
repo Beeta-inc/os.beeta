@@ -1,0 +1,44 @@
+#!/bin/bash
+# ═══════════════════════════════════════════════════════════════
+# Beeta Control Panel — Launch Script
+# Copyright (C) 2023-2026 Beeta Technologies Inc.
+# Licensed under GNU General Public License v3.0
+# ═══════════════════════════════════════════════════════════════
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+if [ -f "${SCRIPT_DIR}/src/main.py" ]; then
+    export PYTHONPATH="${SCRIPT_DIR}/..:${PYTHONPATH:-}"
+    exec python3 -c "
+import sys
+sys.path.insert(0, '${SCRIPT_DIR}/..')
+from beeta_control_import import main
+sys.exit(main())
+" "$@" 2>/dev/null || exec python3 -c "
+import sys, os
+sys.path.insert(0, '${SCRIPT_DIR}/..')
+os.chdir('${SCRIPT_DIR}/..')
+from beeta_control_run import run
+" "$@" 2>/dev/null || exec python3 -c "
+import sys, importlib.util
+sys.path.insert(0, '${SCRIPT_DIR}')
+sys.path.insert(0, '${SCRIPT_DIR}/..')
+spec = importlib.util.spec_from_file_location('main', '${SCRIPT_DIR}/src/main.py')
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+sys.exit(mod.main())
+" "$@"
+elif [ -d "/usr/lib/beeta-control" ]; then
+    export PYTHONPATH="/usr/lib:${PYTHONPATH:-}"
+    exec python3 -c "
+import sys
+sys.path.insert(0, '/usr/lib')
+from beeta_control.src.main import main
+sys.exit(main())
+" "$@"
+else
+    echo "[beeta-control] Error: Could not find Beeta Control Panel module." >&2
+    exit 1
+fi
