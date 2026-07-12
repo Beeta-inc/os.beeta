@@ -4,13 +4,8 @@ set -e
 
 case "$1" in
     remove|purge)
-        # Stop and disable the service before removal
-        if command -v systemctl &>/dev/null; then
-            echo "[beeta-desktop] Stopping beeta-desktop.service..."
-            systemctl stop beeta-desktop.service 2>/dev/null || true
-            systemctl disable beeta-desktop.service 2>/dev/null || true
-            systemctl daemon-reload
-        fi
+        # Clean up cache files
+        rm -rf /var/cache/beeta-theme 2>/dev/null || true
         ;;
 esac
 

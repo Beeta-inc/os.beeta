@@ -4,21 +4,6 @@ set -e
 
 case "$1" in
     configure)
-        # Enable the Beeta Desktop systemd service
-        if command -v systemctl &>/dev/null; then
-            echo "[beeta-desktop] Enabling beeta-desktop.service..."
-            systemctl daemon-reload
-
-            # Don't auto-disable other display managers here.
-            # Let the user/installer handle that explicitly.
-            echo "[beeta-desktop] To use Beeta as your desktop environment:"
-            echo "  sudo systemctl disable gdm.service    # (if using GDM)"
-            echo "  sudo systemctl enable beeta-desktop.service"
-            echo "  sudo reboot"
-            echo ""
-            echo "Or select 'Beeta Desktop' from your display manager login screen."
-        fi
-
         # Set executable permissions
         chmod +x /usr/bin/beeta-session 2>/dev/null || true
         chmod +x /usr/bin/beeta-shell 2>/dev/null || true

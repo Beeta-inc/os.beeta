@@ -10,7 +10,7 @@ Conflicts=getty@tty1.service gdm.service sddm.service lightdm.service
 [Service]
 Type=simple
 ExecStart=/usr/bin/beeta-session
-User=noywrit
+User=%i
 PAMName=login
 TTYPath=/dev/tty1
 TTYReset=yes
@@ -41,4 +41,3 @@ PrivateTmp=true
 
 [Install]
 WantedBy=graphical.target
-Alias=display-manager.service

@@ -28,7 +28,7 @@ f4a516c3da8cb5dadf17085b1e87fda7  usr/lib/beeta-shell/src/dock.py
 20b7818f3d15fd63684796d82325b7fc  usr/lib/beeta-shell/src/system_tray.py
 f5e0f617c89af810d064e77dee25875e  usr/lib/beeta-shell/src/topbar.py
 1a5ada02f54c9786f1966ec7b7b21fda  usr/lib/beeta-shell/src/workspace.py
-427faf7c5d6efe9c07a4db1f3d0784be  usr/lib/systemd/system/beeta-desktop.service
+8fe54ab5d7e1d240df86bdc08c855ea5  usr/lib/systemd/system/beeta-desktop@.service
 2cb95ea19dac934fd686427dfb530f6e  usr/share/Kvantum/BeetaGlass/BeetaGlass.kvconfig
 6b66f923f8df4533070793fb48ea219a  usr/share/Kvantum/BeetaGlass/BeetaGlass.svg
 75907b2a7da0cf94aaf504cd15db45ed  usr/share/applications/beeta-control.desktop

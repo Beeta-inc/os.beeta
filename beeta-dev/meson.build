@@ -43,7 +43,7 @@ install_data(
 
 # Install systemd service
 install_data(
-    'services/systemd/beeta-desktop.service',
+    'services/systemd/beeta-desktop@.service',
     install_dir: join_paths(get_option('prefix'), 'lib', 'systemd', 'system'),
 )
 
