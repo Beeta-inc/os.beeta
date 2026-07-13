@@ -4,14 +4,14 @@ Binary: beeta-desktop
 Architecture: all
 Version: 0.1.0-1
 Checksums-Md5:
- 24018a0b4459637b31a399acf05fd1ef 71896 beeta-desktop_0.1.0-1_all.deb
+ 232a3c8ac40f350f79e593b5b208ff54 72076 beeta-desktop_0.1.0-1_all.deb
 Checksums-Sha1:
- 1773f9a91366b58fa188635b680c5c33b46e066d 71896 beeta-desktop_0.1.0-1_all.deb
+ c508adefcab12824ba01fbe075d25c5e52e9957e 72076 beeta-desktop_0.1.0-1_all.deb
 Checksums-Sha256:
- 81fc2362cedfc6575e6dc2b7f3efd1279dd99d296ce9f589366bb911895f2568 71896 beeta-desktop_0.1.0-1_all.deb
+ 4a360ca68e412abaad2bf1b8f8e1ef2fac98bd80267fe4ec43afb8dd24f0978f 72076 beeta-desktop_0.1.0-1_all.deb
 Build-Origin: Ubuntu
 Build-Architecture: amd64
-Build-Date: Mon, 13 Jul 2026 17:11:29 +0530
+Build-Date: Mon, 13 Jul 2026 17:20:50 +0530
 Build-Tainted-By:
  usr-local-has-configs
  usr-local-has-libraries

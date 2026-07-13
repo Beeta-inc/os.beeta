@@ -41,6 +41,7 @@ if TYPE_CHECKING:
 
 from .dock import Dock
 from .launcher import Launcher
+from .weather_renderer import PhysicsWeatherWidget
 
 
 # Bottom bar height in pixels
@@ -315,19 +316,18 @@ class BottomBar:
 
         # Weather widget text col
         weather_text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self._weather_temp_label = Gtk.Label(label='31°C')
+        self._weather_temp_label = Gtk.Label(label='--°C')
         self._weather_temp_label.add_css_class('bottombar-weather-temp')
         self._weather_temp_label.set_halign(Gtk.Align.END)
-        self._weather_desc_label = Gtk.Label(label='Sunny')
+        self._weather_desc_label = Gtk.Label(label='Loading...')
         self._weather_desc_label.add_css_class('bottombar-weather-desc')
         self._weather_desc_label.set_halign(Gtk.Align.END)
         weather_text.append(self._weather_temp_label)
         weather_text.append(self._weather_desc_label)
         
         weather_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        self._weather_icon_label = Gtk.Image.new_from_icon_name('weather-clear-symbolic')
-        self._weather_icon_label.set_pixel_size(24)
-        weather_box.append(self._weather_icon_label)
+        self._weather_widget = PhysicsWeatherWidget(adaptive_motion=self._motion, width=28, height=28)
+        weather_box.append(self._weather_widget)
         weather_box.append(weather_text)
         
         right_content.append(weather_box)
@@ -397,9 +397,12 @@ class BottomBar:
                 self._temperature = float(temp)
                 self._weather_temp_label.set_text(f'{int(temp)}°C')
 
-            self._weather_icon = self._code_to_emoji(code)
             self._weather_condition = self._code_to_condition(code)
-            self._weather_icon_label.set_text(self._weather_icon)
+            self._weather_desc_label.set_text(self._weather_condition.title())
+            
+            # Feed condition to the physics widget
+            if hasattr(self, '_weather_widget'):
+                self._weather_widget.set_condition(self._weather_condition)
 
             # Feed weather data to Adaptive Nature
             if self._temperature is not None:

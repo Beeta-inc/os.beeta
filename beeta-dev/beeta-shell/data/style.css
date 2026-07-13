@@ -526,6 +526,16 @@ window {
 
 .bottombar-pill {
     padding: 8px 12px;
+    transition: all 300ms cubic-bezier(0.2, 0.8, 0.2, 1.0);
+    border: 1px solid alpha(white, 0.12);
+    box-shadow: inset 0 1px 0 alpha(white, 0.15), 0 8px 24px alpha(black, 0.2);
+}
+
+.bottombar-pill:hover {
+    background-color: alpha(@beeta_glass_bg, 0.85);
+    border: 1px solid alpha(white, 0.2);
+    box-shadow: inset 0 1px 0 alpha(white, 0.2), 0 12px 32px alpha(black, 0.3);
+    transform: translateY(-2px);
 }
 
 .dock-pill {
@@ -790,9 +800,17 @@ tooltip {
 /* ── Desktop Widgets ──────────────────────────────────────────── */
 
 .desktop-widget {
-    background-color: alpha(@beeta_bg_primary, 0.5);
+    background-color: alpha(@beeta_bg_primary, 0.45);
     padding: 20px;
-    box-shadow: inset 0 1px 0 alpha(white, 0.15), 0 8px 24px @beeta_glass_shadow;
+    border: 1px solid alpha(white, 0.12);
+    box-shadow: inset 0 1px 0 alpha(white, 0.15), 0 12px 32px alpha(black, 0.25);
+    transition: all 300ms cubic-bezier(0.2, 0.8, 0.2, 1.0);
+}
+
+.desktop-widget:hover {
+    background-color: alpha(@beeta_bg_primary, 0.55);
+    border: 1px solid alpha(white, 0.2);
+    box-shadow: inset 0 1px 0 alpha(white, 0.2), 0 16px 48px alpha(black, 0.35);
 }
 
 .widget-title {
@@ -812,47 +830,51 @@ tooltip {
     font-size: 48px;
     font-weight: 300;
     color: white;
+    text-shadow: 0 4px 16px alpha(black, 0.2);
 }
 
 .sys-ring {
     font-size: 11px;
     font-weight: 500;
     color: white;
-    border: 4px solid alpha(white, 0.1);
+    border: 4px solid alpha(white, 0.05);
     border-radius: 50%;
     padding: 12px;
     min-width: 48px;
     min-height: 48px;
+    transition: all 300ms ease;
 }
 
-.ring-cpu {
-    border-top-color: #3b82f6; /* Blue */
+.sys-ring:hover {
+    background-color: alpha(white, 0.05);
+    transform: scale(1.05);
 }
 
-.ring-ram {
-    border-top-color: #a855f7; /* Purple */
-}
+.ring-cpu { border-top-color: #3b82f6; }
+.ring-ram { border-top-color: #a855f7; }
+.ring-gpu { border-top-color: #06b6d4; }
+.ring-disk { border-top-color: #f97316; }
 
-.ring-gpu {
-    border-top-color: #06b6d4; /* Cyan */
-}
-
-.ring-disk {
-    border-top-color: #f97316; /* Orange */
+@keyframes ai-glow {
+    0% { box-shadow: 0 0 8px alpha(#3b82f6, 0.2); }
+    50% { box-shadow: 0 0 24px alpha(#3b82f6, 0.6); }
+    100% { box-shadow: 0 0 8px alpha(#3b82f6, 0.2); }
 }
 
 .widget-ai-btn {
-    background-color: alpha(white, 0.1);
-    border: 1px solid alpha(white, 0.1);
+    background: linear-gradient(135deg, alpha(#3b82f6, 0.2), alpha(#a855f7, 0.2));
+    border: 1px solid alpha(white, 0.15);
     box-shadow: none;
     border-radius: 16px;
     padding: 12px;
     color: white;
-    transition: all 200ms ease;
+    transition: all 300ms cubic-bezier(0.2, 0.8, 0.2, 1.0);
+    animation: ai-glow 3s infinite alternate;
 }
 
 .widget-ai-btn:hover {
-    background-color: alpha(white, 0.2);
+    background: linear-gradient(135deg, alpha(#3b82f6, 0.4), alpha(#a855f7, 0.4));
+    border: 1px solid alpha(white, 0.3);
 }
 
 

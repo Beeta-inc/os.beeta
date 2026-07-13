@@ -2,14 +2,19 @@
 # Beeta Desktop Environment
 
 from __future__ import annotations
+import json
 import os
 import threading
 import time
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 
 import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Gtk4LayerShell', '1.0')
 from gi.repository import Gtk, Gtk4LayerShell, GLib, Gio
+
+from .weather_renderer import PhysicsWeatherWidget
 
 class DesktopWidgets:
     """Spawns desktop widgets on the bottom layer."""
@@ -44,6 +49,9 @@ class DesktopWidgets:
         self._running = True
         self._stats_thread = threading.Thread(target=self._monitor_stats, daemon=True)
         self._stats_thread.start()
+        
+        # Start weather updates
+        self._start_weather_updates()
 
     def _build_content(self) -> None:
         container = Gtk.CenterBox()
@@ -66,15 +74,14 @@ class DesktopWidgets:
         weather_card.append(greet)
         
         temp_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        icon = Gtk.Image.new_from_icon_name('weather-clear-symbolic')
-        icon.set_pixel_size(48)
-        temp_lbl = Gtk.Label(label='31°')
-        temp_lbl.add_css_class('widget-temp-large')
-        desc_lbl = Gtk.Label(label='Sunny\nKolkata, India')
-        desc_lbl.add_css_class('widget-sub')
-        temp_row.append(icon)
-        temp_row.append(temp_lbl)
-        temp_row.append(desc_lbl)
+        self._weather_widget = PhysicsWeatherWidget(adaptive_motion=self._app.adaptive_motion if hasattr(self._app, 'adaptive_motion') else None, width=72, height=72)
+        self._temp_lbl = Gtk.Label(label='--°')
+        self._temp_lbl.add_css_class('widget-temp-large')
+        self._desc_lbl = Gtk.Label(label='Loading...\nKolkata, India')
+        self._desc_lbl.add_css_class('widget-sub')
+        temp_row.append(self._weather_widget)
+        temp_row.append(self._temp_lbl)
+        temp_row.append(self._desc_lbl)
         weather_card.append(temp_row)
         
         left_box.append(weather_card)
@@ -205,3 +212,64 @@ class DesktopWidgets:
         self._ram_lbl.set_text(f'RAM\n{ram}%')
         self._gpu_lbl.set_text(f'GPU\n35%')
         self._disk_lbl.set_text(f'Disk\n62%')
+
+    def _start_weather_updates(self) -> None:
+        """Start periodic weather data fetching."""
+        self._fetch_weather()
+        GLib.timeout_add_seconds(30 * 60, self._periodic_weather_fetch)
+
+    def _periodic_weather_fetch(self) -> bool:
+        self._fetch_weather()
+        return GLib.SOURCE_CONTINUE
+
+    def _fetch_weather(self) -> None:
+        """Fetch weather data from Open-Meteo in a background thread."""
+        config = getattr(self._app, 'config', None)
+        if not config:
+            return
+            
+        lat = config.weather_latitude
+        lon = config.weather_longitude
+        
+        if lat is None or lon is None:
+            return
+
+        api_url = config.get('Weather', 'api_url', 'https://api.open-meteo.com/v1/forecast')
+
+        def _do_fetch() -> dict | None:
+            try:
+                url = f'{api_url}?latitude={lat}&longitude={lon}&current=temperature_2m,weather_code&timezone=auto'
+                req = Request(url, headers={'User-Agent': 'BeetaOS/1.0'})
+                with urlopen(req, timeout=10) as resp:
+                    return json.loads(resp.read().decode('utf-8'))
+            except (URLError, Exception):
+                return None
+
+        def _on_result(data: dict | None) -> None:
+            if data is None:
+                return
+            current = data.get('current', {})
+            temp = current.get('temperature_2m')
+            code = current.get('weather_code', 0)
+
+            if temp is not None:
+                self._temp_lbl.set_text(f'{int(temp)}°')
+
+            # We can map code to condition here using a small dict or simplified logic
+            condition = self._get_condition_from_code(code)
+            self._desc_lbl.set_text(f'{condition.title()}\nKolkata, India')
+            self._weather_widget.set_condition(condition)
+
+        def _worker():
+            result = _do_fetch()
+            GLib.idle_add(lambda: _on_result(result) or False)
+
+        threading.Thread(target=_worker, daemon=True).start()
+        
+    def _get_condition_from_code(self, code: int) -> str:
+        if code <= 1: return 'clear'
+        if code <= 3: return 'cloudy'
+        if code in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82): return 'rainy'
+        if code in (71, 73, 75, 77, 85, 86): return 'snowy'
+        if code >= 95: return 'stormy'
+        return 'cloudy'
