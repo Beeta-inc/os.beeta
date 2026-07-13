@@ -101,6 +101,9 @@ class TopBar:
         # Reserve space for the bar
         Gtk4LayerShell.set_exclusive_zone(self._window, _BAR_HEIGHT)
 
+        # Force window to stretch to full width
+        self._window.set_default_size(9999, _BAR_HEIGHT)
+
         # Build content
         self._build_content()
 
@@ -163,6 +166,8 @@ class TopBar:
         """Build the three-section top bar layout."""
         # Main container
         self._container = Gtk.CenterBox()
+        self._container.set_hexpand(True)
+        self._container.set_halign(Gtk.Align.FILL)
         self._container.add_css_class('glass-panel')
         self._container.add_css_class('topbar')
 

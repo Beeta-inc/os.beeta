@@ -1,0 +1,66 @@
+[beeta-shell] Starting from: /home/noywrit/os.beeta/beeta-dev/beeta-shell/src
+[beeta-shell] GDK_BACKEND=wayland
+[beeta-shell] XDG_CURRENT_DESKTOP=ubuntu:GNOME
+
+(-c:38867): Gtk-WARNING **: 16:05:32.723: Unknown key gtk-modules in /home/noywrit/.config/gtk-4.0/settings.ini
+it appears your Wayland compositor does not support the Session Lock protocol
+
+** (-c:38867): WARNING **: 16:05:32.951: Failed to initialize layer surface, it appears your Wayland compositor doesn't support Layer Shell
+
+** (-c:38867): WARNING **: 16:05:32.952: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:32.952: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:32.952: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:32.952: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:32.952: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:32.952: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.062: Failed to initialize layer surface, it appears your Wayland compositor doesn't support Layer Shell
+
+** (-c:38867): WARNING **: 16:05:33.062: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.062: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.062: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.062: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.062: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.062: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.062: Failed to initialize layer surface, it appears your Wayland compositor doesn't support Layer Shell
+
+** (-c:38867): WARNING **: 16:05:33.062: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: Failed to initialize layer surface, it appears your Wayland compositor doesn't support Layer Shell
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.063: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.064: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.064: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()
+
+** (-c:38867): WARNING **: 16:05:33.064: GtkWindow is not a layer surface. Make sure you called gtk_layer_init_for_window()

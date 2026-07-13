@@ -18,6 +18,10 @@ export GDK_BACKEND="${GDK_BACKEND:-wayland}"
 # Ensure GI typelibs can be found
 export GI_TYPELIB_PATH="${GI_TYPELIB_PATH:-/usr/lib/x86_64-linux-gnu/girepository-1.0}"
 
+# Fix GTK4 Layer Shell bug in Python (must preload before libwayland)
+export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libgtk4-layer-shell.so.0${LD_PRELOAD:+:$LD_PRELOAD}"
+
+
 # Find the Python module location
 BEETA_SHELL_DIR=""
 

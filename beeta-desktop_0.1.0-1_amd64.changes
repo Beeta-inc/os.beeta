@@ -25,11 +25,11 @@ Changes:
    * Wayfire compositor configuration with Liquid Glass™ blur
    * Systemd service for graphical.target
 Checksums-Sha1:
- 818f029ac6b1c61d7982898a141412f7cab47a5c 69934 beeta-desktop_0.1.0-1_all.deb
- 6283c0d045428456ea8ee2d3d8ec73b38eaff168 7400 beeta-desktop_0.1.0-1_amd64.buildinfo
+ 1346dd84813a9440e74d827f636311ee6cab95fe 70050 beeta-desktop_0.1.0-1_all.deb
+ 52b77b1358d02d3a1c8ac4f01e14b634eb8dc2e0 7400 beeta-desktop_0.1.0-1_amd64.buildinfo
 Checksums-Sha256:
- 7b3efea4a3988b7c91faa765b364e62b0cd8baf3c29c0bbf6367e9fb66bc1648 69934 beeta-desktop_0.1.0-1_all.deb
- 4e4cb0f287ea3e514ff3565f486d06a794d1b9f7d8949cbaa9218f4d3b8ee51e 7400 beeta-desktop_0.1.0-1_amd64.buildinfo
+ 2e7d94d2c290e2307ce8c1eb92832f3f13ab6702344de53ef0f382a24efd0924 70050 beeta-desktop_0.1.0-1_all.deb
+ bf895186cc6c4ed8383ece93b9b18c0e6dceeafeadf047236930b1d2ac4ef982 7400 beeta-desktop_0.1.0-1_amd64.buildinfo
 Files:
- b9d2e99537ba93033448742995d247b9 69934 x11 optional beeta-desktop_0.1.0-1_all.deb
- 04ee681ac9c6b84091287a6983bf98bf 7400 x11 optional beeta-desktop_0.1.0-1_amd64.buildinfo
+ 4e7a455ed4adc0e917f0de6a13d3e038 70050 x11 optional beeta-desktop_0.1.0-1_all.deb
+ b1d644c018cfcb153d24647a990da85c 7400 x11 optional beeta-desktop_0.1.0-1_amd64.buildinfo

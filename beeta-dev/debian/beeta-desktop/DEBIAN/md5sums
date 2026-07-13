@@ -1,7 +1,7 @@
 2f22246e95eb54e6f24a91001cbb66df  usr/bin/beeta-control
 b065b122e59e3b9da2e0263b5fc5c889  usr/bin/beeta-lock
 b98bccefa12c8fd87fa8646be6d5c189  usr/bin/beeta-session
-503b4aa628d850fa24701b642880ca05  usr/bin/beeta-shell
+ac6c33b337078f71d34f0e70fefbef4b  usr/bin/beeta-shell
 25b3b04e0dfaa81d54f9e8cf7512f0ad  usr/bin/beeta-themed
 b37017d8348d88126b8601d88160b4db  usr/lib/beeta-control/src/__init__.py
 1460f7a3f3c9a21329de0af858383f83  usr/lib/beeta-control/src/main.py
@@ -18,7 +18,7 @@ a43aaa2044343ab5a85e9e8b9b94f54e  usr/lib/beeta-control/src/pages/sound.py
 b13f839227c7711f7eff8af8d9308dc7  usr/lib/beeta-shell/src/__init__.py
 4fa1ba6e2a5c469d1464858378fdbd23  usr/lib/beeta-shell/src/adaptive_motion.py
 8b3185eb2e9721917f88468b83bc247e  usr/lib/beeta-shell/src/adaptive_nature.py
-7e413521389ab15f81fbaec842608308  usr/lib/beeta-shell/src/bottombar.py
+f5564b6ed22d037c1d58e3db1d3c98fc  usr/lib/beeta-shell/src/bottombar.py
 a3605c30ab0bd537d7c868bdf6e36a7a  usr/lib/beeta-shell/src/config.py
 f4a516c3da8cb5dadf17085b1e87fda7  usr/lib/beeta-shell/src/dock.py
 36dde22df0aec0315d60dec7d6747cd8  usr/lib/beeta-shell/src/launcher.py
@@ -26,7 +26,7 @@ f4a516c3da8cb5dadf17085b1e87fda7  usr/lib/beeta-shell/src/dock.py
 82b00c127245386e4c1380dcb6ff1138  usr/lib/beeta-shell/src/main.py
 9d5e4734d31a05ee362e37630017033a  usr/lib/beeta-shell/src/states.py
 20b7818f3d15fd63684796d82325b7fc  usr/lib/beeta-shell/src/system_tray.py
-f5e0f617c89af810d064e77dee25875e  usr/lib/beeta-shell/src/topbar.py
+d914c4b9637cbf8ff0a6be44ab1159e2  usr/lib/beeta-shell/src/topbar.py
 1a5ada02f54c9786f1966ec7b7b21fda  usr/lib/beeta-shell/src/workspace.py
 8fe54ab5d7e1d240df86bdc08c855ea5  usr/lib/systemd/system/beeta-desktop@.service
 2cb95ea19dac934fd686427dfb530f6e  usr/share/Kvantum/BeetaGlass/BeetaGlass.kvconfig
@@ -41,7 +41,7 @@ d892744199fc1f971bbe6f6f6fc4d754  usr/share/beeta-lock/src/theme.py
 812376b8ffc8b4c985a3a3a3166f4f7f  usr/share/beeta-lock/src/ui.py
 986a4e04e8eccf50b02a3236c89415c9  usr/share/beeta-lock/style.css
 9892d73ab4b30bb64f89c7b55069f812  usr/share/beeta-shell/beeta.conf
-6bb79f045337dbb9b444a0bafbae451a  usr/share/beeta-shell/style.css
+167b54726872832aba9bdd77f36793e2  usr/share/beeta-shell/style.css
 83d6e1ad1b577bce0d439d6501c2b08e  usr/share/doc/beeta-desktop/changelog.Debian.gz
 93ffa3ffa9b4f6102e5cd2e44000d65b  usr/share/themes/BeetaGlass/gtk-3.0/gtk.css.template
 512d4310ae03d6e78913dbe6c496b823  usr/share/themes/BeetaGlass/gtk-4.0/gtk.css.template

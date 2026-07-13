@@ -107,10 +107,13 @@ class BottomBar:
             self._window, Gtk4LayerShell.Edge.RIGHT, True
         )
 
-        # Reserve space at the bottom
+        # Reserve space for the dock
         Gtk4LayerShell.set_exclusive_zone(self._window, _BAR_HEIGHT)
 
-        # Create the edge-hover detection window (invisible)
+        # Force window to stretch to full width
+        self._window.set_default_size(9999, _BAR_HEIGHT)
+
+        # Initialize edge interaction zone window (invisible)
         self._edge_window = Gtk.Window(application=app)
         self._edge_window.set_title('Beeta Edge Zone')
         self._edge_window.set_decorated(False)
@@ -245,6 +248,8 @@ class BottomBar:
     def _build_content(self) -> None:
         """Build the three-section bottom bar layout."""
         self._container = Gtk.CenterBox()
+        self._container.set_hexpand(True)
+        self._container.set_halign(Gtk.Align.FILL)
         self._container.add_css_class('glass-panel')
         self._container.add_css_class('bottombar')
 
