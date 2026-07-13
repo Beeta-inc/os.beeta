@@ -520,7 +520,17 @@ window {
 .bottombar {
     padding: 4px 16px;
     min-height: 56px;
+    background-color: transparent;
     transition: all 300ms cubic-bezier(0.2, 0.8, 0.2, 1.0);
+}
+
+.bottombar-pill {
+    padding: 8px 12px;
+}
+
+.dock-pill {
+    padding: 8px 16px;
+    border-radius: 32px;
 }
 
 .bottombar.hidden {
@@ -528,6 +538,30 @@ window {
     opacity: 0;
 }
 
+.bottombar-weather-temp {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.bottombar-weather-desc {
+    font-size: 10px;
+    color: @beeta_text_secondary;
+}
+
+.ai-button {
+    background: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 50%;
+    padding: 8px;
+    transition: all 300ms ease;
+}
+
+.ai-button:hover {
+    background-color: alpha(white, 0.1);
+    box-shadow: 0 0 16px alpha(white, 0.2);
+}
 
 /* ── Beeta Orb (Launcher Button) ─────────────────────────────── */
 
@@ -785,11 +819,26 @@ tooltip {
     font-weight: 500;
     color: white;
     border: 4px solid alpha(white, 0.1);
-    border-top-color: @beeta_accent_primary;
     border-radius: 50%;
     padding: 12px;
     min-width: 48px;
     min-height: 48px;
+}
+
+.ring-cpu {
+    border-top-color: #3b82f6; /* Blue */
+}
+
+.ring-ram {
+    border-top-color: #a855f7; /* Purple */
+}
+
+.ring-gpu {
+    border-top-color: #06b6d4; /* Cyan */
+}
+
+.ring-disk {
+    border-top-color: #f97316; /* Orange */
 }
 
 .widget-ai-btn {

@@ -98,15 +98,22 @@ class DesktopWidgets:
         self._cpu_lbl = Gtk.Label(label='CPU\n0%')
         self._cpu_lbl.set_justify(Gtk.Justification.CENTER)
         self._cpu_lbl.add_css_class('sys-ring')
+        self._cpu_lbl.add_css_class('ring-cpu')
+        
         self._ram_lbl = Gtk.Label(label='RAM\n0%')
         self._ram_lbl.set_justify(Gtk.Justification.CENTER)
         self._ram_lbl.add_css_class('sys-ring')
+        self._ram_lbl.add_css_class('ring-ram')
+        
         self._gpu_lbl = Gtk.Label(label='GPU\n0%')
         self._gpu_lbl.set_justify(Gtk.Justification.CENTER)
         self._gpu_lbl.add_css_class('sys-ring')
+        self._gpu_lbl.add_css_class('ring-gpu')
+        
         self._disk_lbl = Gtk.Label(label='Disk\n0%')
         self._disk_lbl.set_justify(Gtk.Justification.CENTER)
         self._disk_lbl.add_css_class('sys-ring')
+        self._disk_lbl.add_css_class('ring-disk')
         
         rings_box.append(self._cpu_lbl)
         rings_box.append(self._ram_lbl)

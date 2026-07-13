@@ -41,7 +41,7 @@ d892744199fc1f971bbe6f6f6fc4d754  usr/share/beeta-lock/src/theme.py
 812376b8ffc8b4c985a3a3a3166f4f7f  usr/share/beeta-lock/src/ui.py
 986a4e04e8eccf50b02a3236c89415c9  usr/share/beeta-lock/style.css
 9892d73ab4b30bb64f89c7b55069f812  usr/share/beeta-shell/beeta.conf
-53f30f995197eb903acc527b58016116  usr/share/beeta-shell/style.css
+c4e5391db6c4cd5900e7a292c9d83098  usr/share/beeta-shell/style.css
 83d6e1ad1b577bce0d439d6501c2b08e  usr/share/doc/beeta-desktop/changelog.Debian.gz
 93ffa3ffa9b4f6102e5cd2e44000d65b  usr/share/themes/BeetaGlass/gtk-3.0/gtk.css.template
 512d4310ae03d6e78913dbe6c496b823  usr/share/themes/BeetaGlass/gtk-4.0/gtk.css.template
