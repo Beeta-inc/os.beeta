@@ -21,9 +21,9 @@ b13f839227c7711f7eff8af8d9308dc7  usr/lib/beeta-shell/src/__init__.py
 2f444e91db94f567732f599cad1f02e6  usr/lib/beeta-shell/src/bottombar.py
 a3605c30ab0bd537d7c868bdf6e36a7a  usr/lib/beeta-shell/src/config.py
 f4a516c3da8cb5dadf17085b1e87fda7  usr/lib/beeta-shell/src/dock.py
-3c8560ea812d464c51917d38a4339ac7  usr/lib/beeta-shell/src/launcher.py
+1f4f14069f7333a2244462d615698456  usr/lib/beeta-shell/src/launcher.py
 931db7169523633cd12df17e6015450b  usr/lib/beeta-shell/src/live_center.py
-e8322f5fae6cef704fd32742c7cd46bd  usr/lib/beeta-shell/src/main.py
+5e96b1a57d28afd8f13d1d73c66fa424  usr/lib/beeta-shell/src/main.py
 35ea9d52b912af52b793f11df7ae61eb  usr/lib/beeta-shell/src/states.py
 f0118da9b1f26bb96390d4b3df32bd89  usr/lib/beeta-shell/src/system_tray.py
 3d65952425e5003bd9ddfd2b67bf5829  usr/lib/beeta-shell/src/topbar.py

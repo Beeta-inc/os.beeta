@@ -17,7 +17,10 @@ presents them in a searchable, categorized grid.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from dataclasses import dataclass
+import shlex
+import subprocess
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 import gi
 gi.require_version('Gtk', '4.0')
@@ -294,33 +297,48 @@ class Launcher:
             btn = self._create_most_used_widget(app)
             self._most_used_box.append(btn)
             
-        # 2. Populate Categories
+        # 2. Populate Categories or Apps
         child = self._category_grid.get_first_child()
         while child:
             next_child = child.get_next_sibling()
             self._category_grid.remove(child)
             child = next_child
             
-        # Count apps per category
-        cat_counts = {c: 0 for c in _CATEGORY_ORDER if c != 'All'}
-        for app in self._all_apps:
-            if app.category in cat_counts:
-                cat_counts[app.category] += 1
-                
-        icons = {
-            'Development': 'applications-development-symbolic',
-            'Internet': 'applications-internet-symbolic',
-            'Media': 'applications-multimedia-symbolic',
-            'Office': 'applications-office-symbolic',
-            'System': 'applications-system-symbolic',
-            'Games': 'applications-games-symbolic',
-            'Utilities': 'applications-utilities-symbolic',
-            'Other': 'applications-other-symbolic'
-        }
-                
-        for cat, count in cat_counts.items():
-            btn = self._create_category_widget(cat, count, icons.get(cat, 'folder-symbolic'))
-            self._category_grid.append(btn)
+        if getattr(self, '_current_category', 'All') == 'All':
+            # Show Categories
+            cat_counts = {c: 0 for c in _CATEGORY_ORDER if c != 'All'}
+            for app in self._all_apps:
+                if app.category in cat_counts:
+                    cat_counts[app.category] += 1
+                    
+            icons = {
+                'Development': 'applications-development-symbolic',
+                'Internet': 'applications-internet-symbolic',
+                'Media': 'applications-multimedia-symbolic',
+                'Office': 'applications-office-symbolic',
+                'System': 'applications-system-symbolic',
+                'Games': 'applications-games-symbolic',
+                'Utilities': 'applications-utilities-symbolic',
+                'Other': 'applications-other-symbolic'
+            }
+                    
+            for cat, count in cat_counts.items():
+                if count > 0:
+                    btn = self._create_category_widget(cat, count, icons.get(cat, 'folder-symbolic'))
+                    self._category_grid.append(btn)
+        else:
+            # Show Apps for the selected category + Back button
+            back_btn = Gtk.Button(label='← Back to Categories')
+            back_btn.add_css_class('launcher-cat-btn')
+            back_btn.connect('clicked', lambda b: self._on_category_clicked(b, 'All'))
+            self._category_grid.append(back_btn)
+            
+            for app in self._all_apps:
+                if app.category == self._current_category:
+                    # We can reuse _create_most_used_widget for the grid item for now
+                    btn = self._create_most_used_widget(app)
+                    btn.add_css_class('launcher-cat-btn')
+                    self._category_grid.append(btn)
 
     def _create_most_used_widget(self, app: _AppEntry) -> Gtk.Button:
         btn = Gtk.Button()
@@ -358,6 +376,7 @@ class Launcher:
         
         box.append(text_col)
         btn.set_child(box)
+        btn.connect('clicked', lambda b: self._on_category_clicked(b, name))
         return btn
 
     # ── Internal: Event Handlers ─────────────────────────────────
@@ -387,8 +406,20 @@ class Launcher:
     ) -> None:
         """Launch the clicked application and close the launcher."""
         try:
-            context = Gdk.Display.get_default().get_app_launch_context()
-            app.app_info.launch([], context)
+            cmd = app.app_info.get_commandline()
+            if cmd:
+                # Strip desktop file placeholders like %U, %u, %F, %f
+                for ph in ['%U', '%u', '%F', '%f', '%c', '%k']:
+                    cmd = cmd.replace(ph, '')
+                # Split and spawn safely
+                args = shlex.split(cmd.strip())
+                if args:
+                    subprocess.Popen(args, start_new_session=True)
+                    print(f'[Launcher] Launched: {app.name}')
+            else:
+                # Fallback to standard context if no explicit commandline is provided
+                context = Gdk.Display.get_default().get_app_launch_context()
+                app.app_info.launch([], context)
         except Exception as e:
             print(f'[Launcher] Failed to launch {app.name}: {e}')
         self.hide()

@@ -144,8 +144,12 @@ class BeetaShell(Gtk.Application):
     def do_activate(self) -> None:
         """Application activation — create and show the shell panels."""
         
-        # Create Desktop Widgets
-        self.desktop_widgets = DesktopWidgets(app=self)
+        # Create Desktop Widgets based on config (default False per user request)
+        show_widgets = self.config.get_bool('Desktop', 'show_widgets', False) if self.config else False
+        if show_widgets:
+            self.desktop_widgets = DesktopWidgets(app=self)
+        else:
+            self.desktop_widgets = None
         
         # Create top bar
         self.topbar = TopBar(
@@ -252,6 +256,11 @@ class BeetaShell(Gtk.Application):
         self.add_action(action_escape)
         self.set_accels_for_action('app.escape', ['Escape'])
 
+        # Toggle Desktop Widgets
+        action_toggle_widgets = Gio.SimpleAction.new('toggle-desktop-widgets', None)
+        action_toggle_widgets.connect('activate', self._on_toggle_desktop_widgets)
+        self.add_action(action_toggle_widgets)
+
         # Ctrl+Alt+D → Toggle Desktop/Focus State (debug)
         action_toggle_state = Gio.SimpleAction.new('toggle-state', None)
         action_toggle_state.connect('activate', self._on_toggle_state)
@@ -267,6 +276,21 @@ class BeetaShell(Gtk.Application):
         self.set_accels_for_action(
             'app.lock-screen', ['<Super>l', '<Ctrl><Alt>l']
         )
+
+    def _on_toggle_desktop_widgets(self, action: Gio.SimpleAction, parameter: Optional[GLib.Variant]) -> None:
+        """Toggle the desktop widgets overlay (callable via D-Bus)."""
+        if self.desktop_widgets:
+            self.desktop_widgets._window.destroy()
+            self.desktop_widgets._running = False
+            self.desktop_widgets = None
+            print(f'[{_APP_NAME}] Desktop widgets disabled.')
+            if self.config:
+                self.config.set_bool('Desktop', 'show_widgets', False)
+        else:
+            self.desktop_widgets = DesktopWidgets(app=self)
+            print(f'[{_APP_NAME}] Desktop widgets enabled.')
+            if self.config:
+                self.config.set_bool('Desktop', 'show_widgets', True)
 
     def _on_toggle_launcher(
         self, action: Gio.SimpleAction, parameter: Optional[GLib.Variant]
