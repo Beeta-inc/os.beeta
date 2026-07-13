@@ -54,14 +54,14 @@ _ACTIVITY_PRIORITY = {
     'download': 4,
 }
 
-# Icons for each activity type
+# Icons for each activity type (Standard GTK Symbolic names)
 _ACTIVITY_ICONS = {
-    'media': '▶',
-    'timer': '⏳',
-    'download': '⬇',
-    'recording': '🎤',
-    'sharing': '🖥',
-    'rendering': '🎬',
+    'media': 'media-playback-start-symbolic',
+    'timer': 'alarm-symbolic',
+    'download': 'folder-download-symbolic',
+    'recording': 'media-record-symbolic',
+    'sharing': 'camera-video-symbolic',
+    'rendering': 'video-x-generic-symbolic',
 }
 
 
@@ -214,8 +214,9 @@ class LiveCenter(Gtk.Box):
             halign=Gtk.Align.CENTER,
             spacing=4,
         )
-        self._activity_icon = Gtk.Label()
+        self._activity_icon = Gtk.Image()
         self._activity_icon.add_css_class('live-center-icon')
+        self._activity_icon.set_pixel_size(14)
         self._activity_row.append(self._activity_icon)
 
         self._activity_title = Gtk.Label()
@@ -300,11 +301,11 @@ class LiveCenter(Gtk.Box):
         playing = activity.get('playing', True)
 
         # Icon + title row
-        icon_text = _ACTIVITY_ICONS.get(act_type, '●')
+        icon_name = _ACTIVITY_ICONS.get(act_type, 'dialog-information-symbolic')
         if act_type == 'media' and not playing:
-            icon_text = '⏸'
+            icon_name = 'media-playback-pause-symbolic'
 
-        self._activity_icon.set_text(icon_text)
+        self._activity_icon.set_from_icon_name(icon_name)
 
         # Set icon CSS class for coloring
         for cls in ('media', 'timer', 'download', 'recording', 'sharing'):
@@ -345,7 +346,7 @@ class LiveCenter(Gtk.Box):
 
         # Add clock card first
         clock_card = self._make_card(
-            icon='🕐',
+            icon='preferences-system-time-symbolic',
             title=datetime.now().strftime('%H:%M'),
             detail=datetime.now().strftime('%A, %B %d'),
             css_type='clock',
@@ -355,7 +356,7 @@ class LiveCenter(Gtk.Box):
         # Add activity cards
         for activity in self.activities:
             act_type = activity.get('type', '')
-            icon = _ACTIVITY_ICONS.get(act_type, '●')
+            icon = _ACTIVITY_ICONS.get(act_type, 'dialog-information-symbolic')
             title = activity.get('title', '')
             detail = activity.get('detail', '')
 
@@ -389,10 +390,11 @@ class LiveCenter(Gtk.Box):
         )
         card.add_css_class('live-center-card')
 
-        icon_label = Gtk.Label(label=icon)
-        icon_label.add_css_class('live-center-icon')
-        icon_label.add_css_class(css_type)
-        card.append(icon_label)
+        icon_image = Gtk.Image.new_from_icon_name(icon)
+        icon_image.set_pixel_size(16)
+        icon_image.add_css_class('live-center-icon')
+        icon_image.add_css_class(css_type)
+        card.append(icon_image)
 
         text_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,

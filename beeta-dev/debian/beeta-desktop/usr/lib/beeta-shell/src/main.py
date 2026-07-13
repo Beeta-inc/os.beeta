@@ -35,6 +35,7 @@ from .adaptive_nature import AdaptiveNature
 from .adaptive_motion import AdaptiveMotion
 from .topbar import TopBar
 from .bottombar import BottomBar
+from .lock_screen import LockScreen
 
 
 # Application metadata
@@ -90,6 +91,7 @@ class BeetaShell(Gtk.Application):
         adaptive_motion: AdaptiveMotion™ performance-aware animation engine.
         topbar: TopBar panel instance.
         bottombar: BottomBar panel instance.
+        lockscreen: LockScreen panel instance.
     """
 
     def __init__(self) -> None:
@@ -104,6 +106,7 @@ class BeetaShell(Gtk.Application):
         self.adaptive_motion: Optional[AdaptiveMotion] = None
         self.topbar: Optional[TopBar] = None
         self.bottombar: Optional[BottomBar] = None
+        self.lockscreen: Optional[LockScreen] = None
 
         self._data_dir: Optional[Path] = None
 
@@ -153,6 +156,12 @@ class BeetaShell(Gtk.Application):
             config=self.config,
             adaptive_motion=self.adaptive_motion,
             adaptive_nature=self.adaptive_nature,
+            state_manager=self.state_manager,
+        )
+
+        # Create lock screen overlay
+        self.lockscreen = LockScreen(
+            config=self.config,
             state_manager=self.state_manager,
         )
 
@@ -244,6 +253,14 @@ class BeetaShell(Gtk.Application):
         self.set_accels_for_action(
             'app.toggle-state', ['<Ctrl><Alt>d']
         )
+        
+        # Super+L → Lock Screen
+        action_lock = Gio.SimpleAction.new('lock-screen', None)
+        action_lock.connect('activate', self._on_lock_screen)
+        self.add_action(action_lock)
+        self.set_accels_for_action(
+            'app.lock-screen', ['<Super>l', '<Ctrl><Alt>l']
+        )
 
     def _on_toggle_launcher(
         self, action: Gio.SimpleAction, parameter: Optional[GLib.Variant]
@@ -283,9 +300,16 @@ class BeetaShell(Gtk.Application):
     def _on_toggle_state(
         self, action: Gio.SimpleAction, parameter: Optional[GLib.Variant]
     ) -> None:
-        """Handle Ctrl+Alt+D — toggle Desktop/Focus state (debug)."""
+        """Toggle Desktop/Focus State (for debugging)."""
         if self.state_manager:
             self.state_manager.toggle_state()
+            
+    def _on_lock_screen(
+        self, action: Gio.SimpleAction, parameter: Optional[GLib.Variant]
+    ) -> None:
+        """Trigger lock screen."""
+        if self.state_manager:
+            self.state_manager.set_state('locked')
 
     # ── Internal: Cross-component Wiring ─────────────────────────
 

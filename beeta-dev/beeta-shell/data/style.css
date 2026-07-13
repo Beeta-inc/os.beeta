@@ -120,47 +120,51 @@ window {
 /* ── Live Center ─────────────────────────────────────────────── */
 
 .live-center {
-    padding: 2px 16px;
-    border-radius: 8px;
-    background-color: alpha(@beeta_glass_bg, 0.4);
-    border: 1px solid alpha(@beeta_glass_border, 0.3);
+    padding: 6px 20px;
+    border-radius: 20px;
+    background-color: alpha(@beeta_glass_bg, 0.6);
+    /* Simulated inner border for machined glass look */
+    border: 1px solid alpha(white, 0.08);
+    box-shadow: inset 0 1px 0 alpha(white, 0.15), 0 8px 24px @beeta_glass_shadow;
     transition: all 200ms cubic-bezier(0.2, 0, 0, 1.0);
 }
 
 .live-center:hover {
-    background-color: alpha(@beeta_glass_bg, 0.8);
-    border-color: alpha(@beeta_glass_border, 0.6);
+    background-color: alpha(@beeta_glass_bg, 0.85);
+    border-color: alpha(white, 0.15);
 }
 
 .live-center-time {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 400;
     color: @beeta_text_primary;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
 }
 
 .live-center-day {
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 300;
     color: @beeta_text_secondary;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    margin-top: -2px;
 }
 
 .live-center-activity-title {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 500;
     color: @beeta_text_primary;
+    letter-spacing: 0.2px;
 }
 
 .live-center-activity-detail {
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 400;
     color: @beeta_text_secondary;
+    letter-spacing: 0.2px;
 }
 
 .live-center-icon {
-    font-size: 14px;
-    margin-right: 6px;
+    margin-right: 8px;
 }
 
 .live-center-icon.media {
@@ -235,17 +239,16 @@ window {
 /* ── System Tray ─────────────────────────────────────────────── */
 
 .system-tray {
-    padding: 0 4px;
+    padding: 0 8px;
 }
 
 .tray-icon {
-    min-width: 20px;
-    min-height: 20px;
-    padding: 4px 6px;
-    border-radius: 8px;
-    color: @beeta_text_secondary;
-    font-size: 13px;
-    transition: all 200ms ease;
+    min-width: 16px;
+    min-height: 16px;
+    padding: 6px 8px;
+    border-radius: 12px;
+    color: @beeta_text_primary;
+    transition: all 200ms cubic-bezier(0.2, 0, 0, 1.0);
 }
 
 .tray-icon:hover {

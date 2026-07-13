@@ -117,14 +117,14 @@ class StateManager(GObject.Object):
         """Transition to a new desktop state.
 
         Args:
-            state: Target state, either 'desktop' or 'focus'.
+            state: Target state, either 'desktop', 'focus', or 'locked'.
 
         Raises:
-            ValueError: If state is not 'desktop' or 'focus'.
+            ValueError: If state is invalid.
         """
-        if state not in ('desktop', 'focus'):
+        if state not in ('desktop', 'focus', 'locked'):
             raise ValueError(
-                f"Invalid state '{state}'. Must be 'desktop' or 'focus'."
+                f"Invalid state '{state}'. Must be 'desktop', 'focus', or 'locked'."
             )
 
         if state == self._current_state:
@@ -137,8 +137,8 @@ class StateManager(GObject.Object):
         self._cancel_edge_hover()
         self._cancel_dismiss()
 
-        # Reset temporary reveal when returning to desktop
-        if state == 'desktop':
+        # Reset temporary reveal when returning to desktop or locking
+        if state in ('desktop', 'locked'):
             self._bar_temporarily_visible = False
 
         self.emit('state-changed', state)

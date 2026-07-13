@@ -141,20 +141,23 @@ class SystemTray(Gtk.Box):
     def _build_indicators(self) -> None:
         """Create the tray indicator icons."""
         # Volume icon
-        self._volume_icon = Gtk.Label(label='🔊')
+        self._volume_icon = Gtk.Image.new_from_icon_name('audio-volume-high-symbolic')
+        self._volume_icon.set_pixel_size(16)
         self._volume_icon.add_css_class('tray-icon')
         self._volume_icon.set_tooltip_text('Volume')
         self.append(self._volume_icon)
 
         # Bluetooth icon
-        self._bt_icon = Gtk.Label(label='')
+        self._bt_icon = Gtk.Image.new_from_icon_name('bluetooth-active-symbolic')
+        self._bt_icon.set_pixel_size(16)
         self._bt_icon.add_css_class('tray-icon')
         self._bt_icon.set_tooltip_text('Bluetooth')
         self._bt_icon.set_visible(False)  # hidden until detected
         self.append(self._bt_icon)
 
         # Wi-Fi icon
-        self._wifi_icon = Gtk.Label(label='📶')
+        self._wifi_icon = Gtk.Image.new_from_icon_name('network-wireless-signal-excellent-symbolic')
+        self._wifi_icon.set_pixel_size(16)
         self._wifi_icon.add_css_class('tray-icon')
         self._wifi_icon.set_tooltip_text('Wi-Fi')
         self.append(self._wifi_icon)
@@ -162,11 +165,12 @@ class SystemTray(Gtk.Box):
         # Battery icon + percentage
         self._battery_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
-            spacing=2,
+            spacing=4,
             valign=Gtk.Align.CENTER,
         )
 
-        self._battery_icon = Gtk.Label(label='🔋')
+        self._battery_icon = Gtk.Image.new_from_icon_name('battery-full-symbolic')
+        self._battery_icon.set_pixel_size(16)
         self._battery_icon.add_css_class('tray-icon')
         self._battery_icon.add_css_class('battery-icon')
         self._battery_box.append(self._battery_icon)
@@ -379,7 +383,7 @@ class SystemTray(Gtk.Box):
 
         # Icon based on level and charging state
         if self._is_charging:
-            self._battery_icon.set_text('⚡')
+            self._battery_icon.set_from_icon_name('battery-full-charging-symbolic')
             self._battery_label.add_css_class('charging')
             self._battery_label.remove_css_class('low')
 
@@ -409,13 +413,13 @@ class SystemTray(Gtk.Box):
             self._battery_label.remove_css_class('charging')
 
             if level <= 10:
-                self._battery_icon.set_text('🪫')
+                self._battery_icon.set_from_icon_name('battery-empty-symbolic')
                 self._battery_label.add_css_class('low')
             elif level <= 20:
-                self._battery_icon.set_text('🔋')
+                self._battery_icon.set_from_icon_name('battery-low-symbolic')
                 self._battery_label.add_css_class('low')
             else:
-                self._battery_icon.set_text('🔋')
+                self._battery_icon.set_from_icon_name('battery-good-symbolic')
                 self._battery_label.remove_css_class('low')
 
         self._battery_label.set_text(f'{level}%')
@@ -437,30 +441,30 @@ class SystemTray(Gtk.Box):
         if self._wifi_connected:
             strength = self._wifi_strength
             if strength >= 75:
-                self._wifi_icon.set_text('📶')
+                self._wifi_icon.set_from_icon_name('network-wireless-signal-excellent-symbolic')
             elif strength >= 50:
-                self._wifi_icon.set_text('📶')
+                self._wifi_icon.set_from_icon_name('network-wireless-signal-good-symbolic')
             elif strength >= 25:
-                self._wifi_icon.set_text('📶')
+                self._wifi_icon.set_from_icon_name('network-wireless-signal-ok-symbolic')
             else:
-                self._wifi_icon.set_text('📶')
+                self._wifi_icon.set_from_icon_name('network-wireless-signal-weak-symbolic')
             self._wifi_icon.set_tooltip_text(
                 f'Wi-Fi: {self._wifi_ssid} ({strength}%)'
             )
         else:
-            self._wifi_icon.set_text('📡')
+            self._wifi_icon.set_from_icon_name('network-wireless-disconnected-symbolic')
             self._wifi_icon.set_tooltip_text('Wi-Fi: Disconnected')
 
     def _update_volume_display(self) -> None:
         """Refresh volume icon."""
         if self._volume_muted or self._volume_level == 0:
-            self._volume_icon.set_text('🔇')
+            self._volume_icon.set_from_icon_name('audio-volume-muted-symbolic')
         elif self._volume_level < 30:
-            self._volume_icon.set_text('🔈')
+            self._volume_icon.set_from_icon_name('audio-volume-low-symbolic')
         elif self._volume_level < 70:
-            self._volume_icon.set_text('🔉')
+            self._volume_icon.set_from_icon_name('audio-volume-medium-symbolic')
         else:
-            self._volume_icon.set_text('🔊')
+            self._volume_icon.set_from_icon_name('audio-volume-high-symbolic')
         self._volume_icon.set_tooltip_text(
             f'Volume: {self._volume_level}%'
             + (' (Muted)' if self._volume_muted else '')

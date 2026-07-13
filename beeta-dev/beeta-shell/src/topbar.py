@@ -168,7 +168,7 @@ class TopBar:
         self._container = Gtk.CenterBox()
         self._container.set_hexpand(True)
         self._container.set_halign(Gtk.Align.FILL)
-        self._container.add_css_class('glass-panel')
+        # Background intentionally transparent to allow floating elements
         self._container.add_css_class('topbar')
 
         # Apply motion tier CSS class
