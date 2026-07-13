@@ -120,17 +120,14 @@ class Launcher:
             self._window, Gtk4LayerShell.KeyboardMode.EXCLUSIVE
         )
 
-        # Cover entire screen
-        for edge in (
-            Gtk4LayerShell.Edge.TOP,
-            Gtk4LayerShell.Edge.BOTTOM,
-            Gtk4LayerShell.Edge.LEFT,
-            Gtk4LayerShell.Edge.RIGHT,
-        ):
-            Gtk4LayerShell.set_anchor(self._window, edge, True)
+        # Position above the start menu orb (bottom-left)
+        Gtk4LayerShell.set_anchor(self._window, Gtk4LayerShell.Edge.BOTTOM, True)
+        Gtk4LayerShell.set_anchor(self._window, Gtk4LayerShell.Edge.LEFT, True)
+        Gtk4LayerShell.set_margin(self._window, Gtk4LayerShell.Edge.BOTTOM, 80)
+        Gtk4LayerShell.set_margin(self._window, Gtk4LayerShell.Edge.LEFT, 24)
 
         # Don't reserve space
-        Gtk4LayerShell.set_exclusive_zone(self._window, -1)
+        Gtk4LayerShell.set_exclusive_zone(self._window, 0)
 
         # Build content
         self._build_content()
@@ -178,80 +175,61 @@ class Launcher:
 
     def _build_content(self) -> None:
         """Build the launcher layout."""
-        # Semi-transparent backdrop
-        backdrop = Gtk.Box(
-            orientation=Gtk.Orientation.VERTICAL,
-            valign=Gtk.Align.CENTER,
-            halign=Gtk.Align.CENTER,
-        )
-        backdrop.add_css_class('launcher-backdrop')
-
         # Main launcher panel
         panel = Gtk.Box(
-            orientation=Gtk.Orientation.VERTICAL,
-            spacing=0,
-        )
-        panel.add_css_class('launcher')
-        panel.set_size_request(650, 520)
-
-        # ── Search Bar ──
-        self._search_entry = Gtk.SearchEntry()
-        self._search_entry.set_placeholder_text(
-            'Search applications...'
-        )
-        self._search_entry.add_css_class('launcher-search')
-        self._search_entry.connect(
-            'search-changed', self._on_search_changed
-        )
-        panel.append(self._search_entry)
-
-        # ── Category Tabs ──
-        category_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
-            spacing=6,
-            margin_bottom=12,
+            spacing=24,
         )
-        self._category_buttons: dict[str, Gtk.Button] = {}
+        panel.add_css_class('glass-panel-rounded')
+        panel.add_css_class('launcher-panel')
+        panel.set_size_request(600, 400)
+        
+        # ── Left Pane: Most Used ──
+        left_pane = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        left_pane.set_size_request(200, -1)
+        left_title = Gtk.Label(label='Most Used')
+        left_title.add_css_class('launcher-section-title')
+        left_title.set_halign(Gtk.Align.START)
+        left_pane.append(left_title)
+        
+        # We will populate this in _filter_and_display or just grab the first 6 apps
+        self._most_used_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        left_pane.append(self._most_used_box)
+        
+        # All Apps link
+        all_apps_btn = Gtk.Button(label='All Applications →')
+        all_apps_btn.add_css_class('launcher-all-btn')
+        all_apps_btn.set_halign(Gtk.Align.START)
+        left_pane.append(all_apps_btn)
+        
+        # ── Right Pane: Categories ──
+        right_pane = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        right_pane.set_hexpand(True)
+        
+        right_title = Gtk.Label(label='Categories')
+        right_title.add_css_class('launcher-section-title')
+        right_title.set_halign(Gtk.Align.START)
+        right_pane.append(right_title)
+        
+        self._category_grid = Gtk.FlowBox()
+        self._category_grid.set_valign(Gtk.Align.START)
+        self._category_grid.set_max_children_per_line(2)
+        self._category_grid.set_min_children_per_line(2)
+        self._category_grid.set_column_spacing(12)
+        self._category_grid.set_row_spacing(12)
+        self._category_grid.set_homogeneous(True)
+        self._category_grid.set_selection_mode(Gtk.SelectionMode.NONE)
+        
+        right_pane.append(self._category_grid)
+        
+        panel.append(left_pane)
+        # Separator line
+        sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
+        sep.add_css_class('launcher-separator')
+        panel.append(sep)
+        panel.append(right_pane)
 
-        for cat in _CATEGORY_ORDER:
-            btn = Gtk.Button(label=cat)
-            btn.add_css_class('qs-mode-btn')
-            if cat == 'All':
-                btn.add_css_class('active')
-            btn.connect('clicked', self._on_category_clicked, cat)
-            category_box.append(btn)
-            self._category_buttons[cat] = btn
-
-        panel.append(category_box)
-
-        # ── App Grid (scrollable) ──
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_policy(
-            Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC
-        )
-        scroll.set_vexpand(True)
-        scroll.set_min_content_height(380)
-
-        self._app_grid = Gtk.FlowBox()
-        self._app_grid.set_valign(Gtk.Align.START)
-        self._app_grid.set_max_children_per_line(6)
-        self._app_grid.set_min_children_per_line(4)
-        self._app_grid.set_column_spacing(8)
-        self._app_grid.set_row_spacing(8)
-        self._app_grid.set_homogeneous(True)
-        self._app_grid.set_selection_mode(Gtk.SelectionMode.NONE)
-
-        scroll.set_child(self._app_grid)
-        panel.append(scroll)
-
-        backdrop.append(panel)
-
-        # Click outside to close
-        click_ctrl = Gtk.GestureClick()
-        click_ctrl.connect('released', self._on_backdrop_clicked)
-        backdrop.add_controller(click_ctrl)
-
-        self._window.set_child(backdrop)
+        self._window.set_child(panel)
 
     # ── Internal: App Loading ────────────────────────────────────
 
@@ -304,82 +282,83 @@ class Launcher:
         self._all_apps.sort(key=lambda a: a.name.lower())
 
     def _filter_and_display(self) -> None:
-        """Filter apps by current category and search, then display."""
-        search_text = self._search_entry.get_text().strip().lower()
-
-        # Clear current grid
-        child = self._app_grid.get_first_child()
+        """Populate the two-section layout."""
+        # 1. Populate Most Used (just grab top 8 for now)
+        child = self._most_used_box.get_first_child()
         while child:
             next_child = child.get_next_sibling()
-            self._app_grid.remove(child)
+            self._most_used_box.remove(child)
             child = next_child
-
-        # Filter
-        filtered: list[_AppEntry] = []
+            
+        for app in self._all_apps[:8]:
+            btn = self._create_most_used_widget(app)
+            self._most_used_box.append(btn)
+            
+        # 2. Populate Categories
+        child = self._category_grid.get_first_child()
+        while child:
+            next_child = child.get_next_sibling()
+            self._category_grid.remove(child)
+            child = next_child
+            
+        # Count apps per category
+        cat_counts = {c: 0 for c in _CATEGORY_ORDER if c != 'All'}
         for app in self._all_apps:
-            # Category filter
-            if (
-                self._current_category != 'All'
-                and app.category != self._current_category
-            ):
-                continue
+            if app.category in cat_counts:
+                cat_counts[app.category] += 1
+                
+        icons = {
+            'Development': 'applications-development-symbolic',
+            'Internet': 'applications-internet-symbolic',
+            'Media': 'applications-multimedia-symbolic',
+            'Office': 'applications-office-symbolic',
+            'System': 'applications-system-symbolic',
+            'Games': 'applications-games-symbolic',
+            'Utilities': 'applications-utilities-symbolic',
+            'Other': 'applications-other-symbolic'
+        }
+                
+        for cat, count in cat_counts.items():
+            btn = self._create_category_widget(cat, count, icons.get(cat, 'folder-symbolic'))
+            self._category_grid.append(btn)
 
-            # Search filter
-            if search_text and search_text not in app.keywords:
-                continue
-
-            filtered.append(app)
-
-        # Display
-        for app in filtered:
-            widget = self._create_app_widget(app)
-            self._app_grid.append(widget)
-
-    def _create_app_widget(self, app: _AppEntry) -> Gtk.Button:
-        """Create a single app icon button for the grid.
-
-        Args:
-            app: The app entry to display.
-
-        Returns:
-            Styled button widget.
-        """
-        button = Gtk.Button()
-        button.add_css_class('launcher-app')
-
-        box = Gtk.Box(
-            orientation=Gtk.Orientation.VERTICAL,
-            spacing=4,
-            valign=Gtk.Align.CENTER,
-            halign=Gtk.Align.CENTER,
-        )
-
+    def _create_most_used_widget(self, app: _AppEntry) -> Gtk.Button:
+        btn = Gtk.Button()
+        btn.add_css_class('launcher-mu-btn')
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         if app.icon:
-            image = Gtk.Image.new_from_gicon(app.icon)
-            image.set_pixel_size(48)
-            box.append(image)
-        else:
-            # Fallback icon
-            image = Gtk.Image.new_from_icon_name(
-                'application-x-executable'
-            )
-            image.set_pixel_size(48)
-            box.append(image)
-
-        name_label = Gtk.Label(label=app.name)
-        name_label.add_css_class('launcher-app-name')
-        name_label.set_ellipsize(Pango.EllipsizeMode.END)
-        name_label.set_max_width_chars(12)
-        name_label.set_halign(Gtk.Align.CENTER)
-        box.append(name_label)
-
-        button.set_child(box)
-        button.set_tooltip_text(app.name)
-
-        # Click to launch
-        button.connect('clicked', self._on_app_clicked, app)
-
-        return button
+            img = Gtk.Image.new_from_gicon(app.icon)
+            img.set_pixel_size(24)
+            box.append(img)
+        lbl = Gtk.Label(label=app.name)
+        lbl.set_ellipsize(Pango.EllipsizeMode.END)
+        box.append(lbl)
+        btn.set_child(box)
+        btn.connect('clicked', self._on_app_clicked, app)
+        return btn
+        
+    def _create_category_widget(self, name: str, count: int, icon_name: str) -> Gtk.Button:
+        btn = Gtk.Button()
+        btn.add_css_class('launcher-cat-btn')
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12, valign=Gtk.Align.CENTER)
+        
+        icon = Gtk.Image.new_from_icon_name(icon_name)
+        icon.set_pixel_size(32)
+        box.append(icon)
+        
+        text_col = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        title = Gtk.Label(label=name)
+        title.set_halign(Gtk.Align.START)
+        title.add_css_class('launcher-cat-title')
+        sub = Gtk.Label(label=f'{count} Apps')
+        sub.set_halign(Gtk.Align.START)
+        sub.add_css_class('launcher-cat-sub')
+        text_col.append(title)
+        text_col.append(sub)
+        
+        box.append(text_col)
+        btn.set_child(box)
+        return btn
 
     # ── Internal: Event Handlers ─────────────────────────────────
 

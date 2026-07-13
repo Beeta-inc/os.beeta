@@ -250,27 +250,34 @@ class BottomBar:
         self._container = Gtk.CenterBox()
         self._container.set_hexpand(True)
         self._container.set_halign(Gtk.Align.FILL)
-        self._container.add_css_class('glass-panel')
+        # Main background is transparent; the three boxes are the glass pills
         self._container.add_css_class('bottombar')
 
         # ── Left: Beeta Orb ──
         left_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             halign=Gtk.Align.START,
-            valign=Gtk.Align.CENTER,
-            margin_start=10,
+            valign=Gtk.Align.END,
+            margin_start=24,
+            margin_bottom=12,
         )
-
+        
+        left_pill = Gtk.Box()
+        left_pill.add_css_class('glass-panel-rounded')
+        left_pill.add_css_class('bottombar-pill')
+        
         orb = Gtk.Button()
         orb.add_css_class('beeta-orb')
-        orb.set_tooltip_text('Launcher (Super)')
+        orb.set_tooltip_text('Beeta Start Menu')
 
-        orb_icon = Gtk.Image.new_from_icon_name('view-app-grid-symbolic')
-        orb_icon.set_pixel_size(20)
+        # Mockup shows a glowing AI/Start ring for the orb, we'll use a custom icon
+        orb_icon = Gtk.Image.new_from_icon_name('system-search-symbolic')
+        orb_icon.set_pixel_size(24)
         orb.set_child(orb_icon)
         orb.connect('clicked', self._on_orb_clicked)
 
-        left_box.append(orb)
+        left_pill.append(orb)
+        left_box.append(left_pill)
         self._container.set_start_widget(left_box)
 
         # ── Center: Dock ──
@@ -278,43 +285,65 @@ class BottomBar:
         center_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             halign=Gtk.Align.CENTER,
-            valign=Gtk.Align.CENTER,
+            valign=Gtk.Align.END,
+            margin_bottom=12,
         )
-        center_box.append(self._dock)
+        center_pill = Gtk.Box()
+        center_pill.add_css_class('glass-panel-rounded')
+        center_pill.add_css_class('bottombar-pill')
+        center_pill.add_css_class('dock-pill')
+        center_pill.append(self._dock)
+        
+        center_box.append(center_pill)
         self._container.set_center_widget(center_box)
 
         # ── Right: Weather + AI ──
         right_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             halign=Gtk.Align.END,
-            valign=Gtk.Align.CENTER,
-            spacing=6,
-            margin_end=10,
+            valign=Gtk.Align.END,
+            margin_end=24,
+            margin_bottom=12,
         )
+        
+        right_pill = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        right_pill.add_css_class('glass-panel-rounded')
+        right_pill.add_css_class('bottombar-pill')
+        
+        # Upper row for Weather, lower row for Ask AI, wait mockup has them side by side.
+        right_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
 
-        # Weather widget
-        weather_box = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            spacing=4,
-        )
-        weather_box.add_css_class('weather-widget')
-
-        self._weather_icon_label = Gtk.Label(label='☀️')
-        self._weather_icon_label.add_css_class('weather-icon')
+        # Weather widget text col
+        weather_text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._weather_temp_label = Gtk.Label(label='31°C')
+        self._weather_temp_label.add_css_class('bottombar-weather-temp')
+        self._weather_temp_label.set_halign(Gtk.Align.END)
+        self._weather_desc_label = Gtk.Label(label='Sunny')
+        self._weather_desc_label.add_css_class('bottombar-weather-desc')
+        self._weather_desc_label.set_halign(Gtk.Align.END)
+        weather_text.append(self._weather_temp_label)
+        weather_text.append(self._weather_desc_label)
+        
+        weather_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        self._weather_icon_label = Gtk.Image.new_from_icon_name('weather-clear-symbolic')
+        self._weather_icon_label.set_pixel_size(24)
         weather_box.append(self._weather_icon_label)
-
-        self._weather_temp_label = Gtk.Label(label='--°C')
-        self._weather_temp_label.add_css_class('weather-temp')
-        weather_box.append(self._weather_temp_label)
-
-        right_box.append(weather_box)
+        weather_box.append(weather_text)
+        
+        right_content.append(weather_box)
 
         # AI button
-        ai_btn = Gtk.Button(label='🤖')
+        ai_btn = Gtk.Button()
         ai_btn.add_css_class('ai-button')
-        ai_btn.set_tooltip_text('Beeta AI')
+        ai_btn_img = Gtk.Image.new_from_icon_name('preferences-system-symbolic') # AI icon placeholder
+        ai_btn_img.set_pixel_size(24)
+        ai_btn.set_child(ai_btn_img)
+        ai_btn.set_tooltip_text('Ask Beeta AI')
         ai_btn.connect('clicked', self._on_ai_clicked)
-        right_box.append(ai_btn)
+        right_content.append(ai_btn)
+
+        right_pill.append(right_content)
+        right_box.append(right_pill)
 
         self._container.set_end_widget(right_box)
         self._window.set_child(self._container)

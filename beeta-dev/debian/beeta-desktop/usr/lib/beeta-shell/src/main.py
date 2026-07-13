@@ -32,10 +32,10 @@ from gi.repository import Gtk, Gtk4LayerShell, Gdk, GLib, Gio
 from .config import BeetaConfig
 from .states import StateManager
 from .adaptive_nature import AdaptiveNature
-from .adaptive_motion import AdaptiveMotion
 from .topbar import TopBar
 from .bottombar import BottomBar
 from .lock_screen import LockScreen
+from .desktop_widgets import DesktopWidgets
 
 
 # Application metadata
@@ -92,6 +92,7 @@ class BeetaShell(Gtk.Application):
         topbar: TopBar panel instance.
         bottombar: BottomBar panel instance.
         lockscreen: LockScreen panel instance.
+        desktop_widgets: DesktopWidgets instance.
     """
 
     def __init__(self) -> None:
@@ -107,6 +108,7 @@ class BeetaShell(Gtk.Application):
         self.topbar: Optional[TopBar] = None
         self.bottombar: Optional[BottomBar] = None
         self.lockscreen: Optional[LockScreen] = None
+        self.desktop_widgets: Optional[DesktopWidgets] = None
 
         self._data_dir: Optional[Path] = None
 
@@ -141,6 +143,10 @@ class BeetaShell(Gtk.Application):
 
     def do_activate(self) -> None:
         """Application activation — create and show the shell panels."""
+        
+        # Create Desktop Widgets
+        self.desktop_widgets = DesktopWidgets(app=self)
+        
         # Create top bar
         self.topbar = TopBar(
             app=self,

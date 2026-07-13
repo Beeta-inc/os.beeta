@@ -228,7 +228,7 @@ class LiveCenter(Gtk.Box):
 
         self._collapsed_box.append(self._activity_row)
 
-        # Activity detail (below icon row)
+        # Activity detail (below icon row for non-media)
         self._activity_detail = Gtk.Label()
         self._activity_detail.add_css_class('live-center-activity-detail')
         self._activity_detail.set_halign(Gtk.Align.CENTER)
@@ -236,6 +236,47 @@ class LiveCenter(Gtk.Box):
         self._activity_detail.set_max_width_chars(22)
         self._activity_detail.set_visible(False)
         self._collapsed_box.append(self._activity_detail)
+        
+        # Special Media Layout Box
+        self._media_box = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            spacing=12,
+            valign=Gtk.Align.CENTER,
+        )
+        self._media_box.set_visible(False)
+        
+        # Cover Art Placeholder
+        self._media_cover = Gtk.Image.new_from_icon_name('folder-music-symbolic')
+        self._media_cover.set_pixel_size(32)
+        self._media_cover.add_css_class('live-center-cover')
+        self._media_box.append(self._media_cover)
+        
+        # Text Column
+        media_text_col = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._media_title = Gtk.Label()
+        self._media_title.add_css_class('live-center-activity-title')
+        self._media_title.set_halign(Gtk.Align.START)
+        self._media_artist = Gtk.Label()
+        self._media_artist.add_css_class('live-center-activity-detail')
+        self._media_artist.set_halign(Gtk.Align.START)
+        media_text_col.append(self._media_title)
+        media_text_col.append(self._media_artist)
+        self._media_box.append(media_text_col)
+        
+        # Controls
+        media_controls = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        btn_prev = Gtk.Button(icon_name='media-skip-backward-symbolic')
+        btn_prev.add_css_class('live-center-media-btn')
+        self._btn_play = Gtk.Button(icon_name='media-playback-pause-symbolic')
+        self._btn_play.add_css_class('live-center-media-btn-primary')
+        btn_next = Gtk.Button(icon_name='media-skip-forward-symbolic')
+        btn_next.add_css_class('live-center-media-btn')
+        media_controls.append(btn_prev)
+        media_controls.append(self._btn_play)
+        media_controls.append(btn_next)
+        
+        self._media_box.append(media_controls)
+        self._collapsed_box.append(self._media_box)
 
         # Progress bar (for downloads/rendering)
         self._progress_bar = Gtk.ProgressBar()
@@ -286,6 +327,7 @@ class LiveCenter(Gtk.Box):
         self._detail_label.set_visible(True)
         self._activity_row.set_visible(False)
         self._activity_detail.set_visible(False)
+        self._media_box.set_visible(False)
         self._progress_bar.set_visible(False)
 
     def _show_activity_mode(self, activity: dict) -> None:
@@ -300,31 +342,39 @@ class LiveCenter(Gtk.Box):
         progress = activity.get('progress')
         playing = activity.get('playing', True)
 
-        # Icon + title row
-        icon_name = _ACTIVITY_ICONS.get(act_type, 'dialog-information-symbolic')
-        if act_type == 'media' and not playing:
-            icon_name = 'media-playback-pause-symbolic'
-
-        self._activity_icon.set_from_icon_name(icon_name)
-
-        # Set icon CSS class for coloring
-        for cls in ('media', 'timer', 'download', 'recording', 'sharing'):
-            self._activity_icon.remove_css_class(cls)
-        self._activity_icon.add_css_class(act_type)
-
-        self._activity_title.set_text(title)
-
-        # Hide clock, show activity
         self._clock_label.set_visible(False)
         self._detail_label.set_visible(False)
-        self._activity_row.set_visible(True)
 
-        # Detail text
-        if detail:
-            self._activity_detail.set_text(detail)
-            self._activity_detail.set_visible(True)
-        else:
+        if act_type == 'media':
+            # Use special media layout
+            self._activity_row.set_visible(False)
             self._activity_detail.set_visible(False)
+            self._media_box.set_visible(True)
+            self._media_title.set_text(title)
+            self._media_artist.set_text(detail)
+            
+            icon = 'media-playback-pause-symbolic' if playing else 'media-playback-start-symbolic'
+            self._btn_play.set_icon_name(icon)
+            
+        else:
+            # Standard layout
+            self._media_box.set_visible(False)
+            self._activity_row.set_visible(True)
+            
+            icon_name = _ACTIVITY_ICONS.get(act_type, 'dialog-information-symbolic')
+            self._activity_icon.set_from_icon_name(icon_name)
+
+            for cls in ('media', 'timer', 'download', 'recording', 'sharing'):
+                self._activity_icon.remove_css_class(cls)
+            self._activity_icon.add_css_class(act_type)
+
+            self._activity_title.set_text(title)
+
+            if detail:
+                self._activity_detail.set_text(detail)
+                self._activity_detail.set_visible(True)
+            else:
+                self._activity_detail.set_visible(False)
 
         # Progress bar
         if progress is not None and act_type in ('download', 'rendering'):

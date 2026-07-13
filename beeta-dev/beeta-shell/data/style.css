@@ -81,7 +81,21 @@ window {
 .topbar-left,
 .topbar-center,
 .topbar-right {
-    padding: 4px 0;
+    padding: 12px 0;
+}
+
+.topbar-label-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: @beeta_text_primary;
+    letter-spacing: 0.2px;
+}
+
+.topbar-label-sub {
+    font-size: 10px;
+    font-weight: 400;
+    color: @beeta_text_secondary;
+    letter-spacing: 0.5px;
 }
 
 
@@ -165,6 +179,39 @@ window {
 
 .live-center-icon {
     margin-right: 8px;
+}
+
+.live-center-cover {
+    border-radius: 8px;
+    background-color: alpha(white, 0.1);
+    border: 1px solid alpha(white, 0.1);
+}
+
+.live-center-media-btn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: alpha(white, 0.7);
+    padding: 4px;
+    border-radius: 50%;
+}
+
+.live-center-media-btn:hover {
+    color: white;
+    background-color: alpha(white, 0.1);
+}
+
+.live-center-media-btn-primary {
+    background: alpha(white, 0.15);
+    border: 1px solid alpha(white, 0.2);
+    box-shadow: none;
+    color: white;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.live-center-media-btn-primary:hover {
+    background: alpha(white, 0.25);
 }
 
 .live-center-icon.media {
@@ -373,6 +420,69 @@ window {
     color: @beeta_text_muted;
     letter-spacing: 1.5px;
     margin: 12px 0 6px 2px;
+}
+
+/* ── Launcher ─────────────────────────────────────────────────── */
+
+.launcher-panel {
+    background-color: alpha(@beeta_bg_primary, 0.6);
+    border: 1px solid alpha(white, 0.1);
+    box-shadow: inset 0 1px 0 alpha(white, 0.1), 0 12px 32px @beeta_glass_shadow;
+    padding: 24px;
+}
+
+.launcher-section-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: @beeta_text_primary;
+    margin-bottom: 8px;
+}
+
+.launcher-separator {
+    background-color: alpha(white, 0.1);
+    margin: 0 12px;
+}
+
+.launcher-mu-btn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: white;
+}
+.launcher-mu-btn:hover {
+    background-color: alpha(white, 0.1);
+}
+
+.launcher-cat-btn {
+    background-color: alpha(white, 0.05);
+    border: 1px solid alpha(white, 0.1);
+    box-shadow: none;
+    padding: 12px;
+    border-radius: 16px;
+}
+.launcher-cat-btn:hover {
+    background-color: alpha(white, 0.15);
+}
+
+.launcher-cat-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+.launcher-cat-sub {
+    font-size: 11px;
+    color: @beeta_text_secondary;
+}
+
+.launcher-all-btn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: @beeta_accent_primary;
+    font-size: 12px;
+    margin-top: auto;
 }
 
 .qs-mode-selector {
@@ -641,6 +751,59 @@ tooltip {
 
 .launcher-app:hover .launcher-app-name {
     color: @beeta_text_primary;
+}
+
+/* ── Desktop Widgets ──────────────────────────────────────────── */
+
+.desktop-widget {
+    background-color: alpha(@beeta_bg_primary, 0.5);
+    padding: 20px;
+    box-shadow: inset 0 1px 0 alpha(white, 0.15), 0 8px 24px @beeta_glass_shadow;
+}
+
+.widget-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    letter-spacing: 0.2px;
+}
+
+.widget-sub {
+    font-size: 11px;
+    font-weight: 400;
+    color: alpha(white, 0.8);
+}
+
+.widget-temp-large {
+    font-size: 48px;
+    font-weight: 300;
+    color: white;
+}
+
+.sys-ring {
+    font-size: 11px;
+    font-weight: 500;
+    color: white;
+    border: 4px solid alpha(white, 0.1);
+    border-top-color: @beeta_accent_primary;
+    border-radius: 50%;
+    padding: 12px;
+    min-width: 48px;
+    min-height: 48px;
+}
+
+.widget-ai-btn {
+    background-color: alpha(white, 0.1);
+    border: 1px solid alpha(white, 0.1);
+    box-shadow: none;
+    border-radius: 16px;
+    padding: 12px;
+    color: white;
+    transition: all 200ms ease;
+}
+
+.widget-ai-btn:hover {
+    background-color: alpha(white, 0.2);
 }
 
 

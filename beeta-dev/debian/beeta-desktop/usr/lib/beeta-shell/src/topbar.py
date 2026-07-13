@@ -181,39 +181,76 @@ class TopBar:
         self._workspace_switcher = WorkspaceSwitcher(
             self._config, self._motion
         )
+        
+        ws_text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        ws_title = Gtk.Label(label='Workspaces')
+        ws_title.add_css_class('topbar-label-title')
+        ws_title.set_halign(Gtk.Align.START)
+        ws_sub = Gtk.Label(label='Switch easily')
+        ws_sub.add_css_class('topbar-label-sub')
+        ws_sub.set_halign(Gtk.Align.START)
+        ws_text_box.append(ws_title)
+        ws_text_box.append(ws_sub)
+        
         left_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             halign=Gtk.Align.START,
             valign=Gtk.Align.CENTER,
-            margin_start=12,
+            margin_start=24,
+            spacing=16,
         )
         left_box.add_css_class('topbar-left')
         left_box.append(self._workspace_switcher)
+        left_box.append(ws_text_box)
         self._container.set_start_widget(left_box)
 
         # ── Center: Live Center ──
         self._live_center = LiveCenter(self._motion)
+        
+        lc_text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        lc_text_box.append(self._live_center)
+        lc_sub = Gtk.Label(label='Live Center\nMusic, timers, calls & active things')
+        lc_sub.add_css_class('topbar-label-sub')
+        lc_sub.set_justify(Gtk.Justification.CENTER)
+        lc_text_box.append(lc_sub)
+        
         center_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             halign=Gtk.Align.CENTER,
             valign=Gtk.Align.CENTER,
+            margin_top=8,
         )
         center_box.add_css_class('topbar-center')
-        center_box.append(self._live_center)
+        center_box.append(lc_text_box)
         self._container.set_center_widget(center_box)
 
         # ── Right: System Tray ──
         self._system_tray = SystemTray(
             self._config, self._motion
         )
+        
+        sys_text_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        sys_title = Gtk.Label(label='Battery & System (Laptop)')
+        sys_title.add_css_class('topbar-label-title')
+        sys_title.set_halign(Gtk.Align.END)
+        sys_sub = Gtk.Label(label='Shown only on laptops')
+        sys_sub.add_css_class('topbar-label-sub')
+        sys_sub.set_halign(Gtk.Align.END)
+        sys_text_box.append(sys_title)
+        sys_text_box.append(sys_sub)
+        
+        tray_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        tray_box.append(self._system_tray)
+        tray_box.append(sys_text_box)
+        
         right_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             halign=Gtk.Align.END,
             valign=Gtk.Align.CENTER,
-            margin_end=12,
+            margin_end=24,
         )
         right_box.add_css_class('topbar-right')
-        right_box.append(self._system_tray)
+        right_box.append(tray_box)
         self._container.set_end_widget(right_box)
 
         self._window.set_child(self._container)
