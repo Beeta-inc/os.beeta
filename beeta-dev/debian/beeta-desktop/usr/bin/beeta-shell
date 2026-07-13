@@ -51,7 +51,7 @@ echo "[beeta-shell] GDK_BACKEND=${GDK_BACKEND}"
 echo "[beeta-shell] XDG_CURRENT_DESKTOP=${XDG_CURRENT_DESKTOP}"
 
 # Launch the shell
-exec python3 -c "
+exec /usr/bin/python3 -c "
 import sys
 sys.path.insert(0, '${BEETA_SHELL_DIR}/..')
 from src.main import main

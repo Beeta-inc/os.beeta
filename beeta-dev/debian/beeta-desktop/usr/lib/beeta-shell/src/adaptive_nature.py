@@ -38,6 +38,9 @@ from typing import TYPE_CHECKING, Optional
 from urllib.request import urlopen, Request
 from urllib.error import URLError
 
+import gi
+gi.require_version('Gdk', '4.0')
+gi.require_version('Gtk', '4.0')
 from gi.repository import Gdk, GLib, GObject, Gtk
 
 if TYPE_CHECKING:

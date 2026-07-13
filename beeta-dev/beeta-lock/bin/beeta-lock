@@ -11,9 +11,9 @@ DEV_MAIN="$SCRIPT_DIR/../src/main.py"
 INSTALLED_MAIN="/usr/share/beeta-lock/src/main.py"
 
 if [ -f "$DEV_MAIN" ]; then
-    exec python3 "$DEV_MAIN" "$@"
+    exec /usr/bin/python3 "$DEV_MAIN" "$@"
 elif [ -f "$INSTALLED_MAIN" ]; then
-    exec python3 "$INSTALLED_MAIN" "$@"
+    exec /usr/bin/python3 "$INSTALLED_MAIN" "$@"
 else
     echo "Error: Cannot find Beeta Lock entry point."
     exit 1

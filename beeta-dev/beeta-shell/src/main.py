@@ -215,10 +215,11 @@ class BeetaShell(Gtk.Application):
     def _setup_actions(self) -> None:
         """Set up application-wide keyboard shortcut actions."""
         # Super key → Toggle launcher
+        # Note: bare <Super_L> cannot be used as a GTK4 accelerator.
+        # The Wayfire compositor handles Super-key passthrough instead.
         action_launcher = Gio.SimpleAction.new('toggle-launcher', None)
         action_launcher.connect('activate', self._on_toggle_launcher)
         self.add_action(action_launcher)
-        self.set_accels_for_action('app.toggle-launcher', ['<Super_L>'])
 
         # Alt+Space → Toggle launcher (alternative)
         action_launcher_alt = Gio.SimpleAction.new(
