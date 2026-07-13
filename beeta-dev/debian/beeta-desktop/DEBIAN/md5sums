@@ -43,7 +43,7 @@ d892744199fc1f971bbe6f6f6fc4d754  usr/share/beeta-lock/src/theme.py
 9892d73ab4b30bb64f89c7b55069f812  usr/share/beeta-shell/beeta.conf
 1bec5645558fe096bbdbe026a4bf1a39  usr/share/beeta-shell/style.css
 83d6e1ad1b577bce0d439d6501c2b08e  usr/share/doc/beeta-desktop/changelog.Debian.gz
-93ffa3ffa9b4f6102e5cd2e44000d65b  usr/share/themes/BeetaGlass/gtk-3.0/gtk.css.template
-512d4310ae03d6e78913dbe6c496b823  usr/share/themes/BeetaGlass/gtk-4.0/gtk.css.template
+89c67400fb01fa3a30d0aad1a87bd9b5  usr/share/themes/BeetaGlass/gtk-3.0/gtk.css.template
+44a96410ce3f5f18b8a8cc5aa577e300  usr/share/themes/BeetaGlass/gtk-4.0/gtk.css.template
 a2f56ac1962bd46db0cf46b8b0aba867  usr/share/themes/BeetaGlass/index.theme
 d0b9ab20484550c068b1f6e636b02f23  usr/share/wayland-sessions/beeta-session.desktop

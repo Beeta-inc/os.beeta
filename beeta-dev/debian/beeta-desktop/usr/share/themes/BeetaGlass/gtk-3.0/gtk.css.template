@@ -41,7 +41,7 @@ window {
 /* Headerbar */
 .titlebar,
 headerbar {
-    background-color: rgba(18, 20, 45, 0.72);
+    background-color: @theme_base_color;
     border-bottom: 1px solid @borders;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
     padding: 0 6px;

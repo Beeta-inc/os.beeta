@@ -89,7 +89,7 @@ selection {
    ══════════════════════════════════════════════════════════════ */
 
 headerbar {
-    background-color: @beeta_glass;
+    background-color: @beeta_bg_surface;
     border-bottom: 1px solid @beeta_glass_border;
     box-shadow: 0 1px 0 alpha(white, 0.02), 0 2px 12px rgba(0, 0, 0, 0.2);
     min-height: 42px;
