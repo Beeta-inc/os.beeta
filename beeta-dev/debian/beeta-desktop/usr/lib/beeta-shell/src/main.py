@@ -32,10 +32,13 @@ from gi.repository import Gtk, Gtk4LayerShell, Gdk, GLib, Gio
 from .config import BeetaConfig
 from .states import StateManager
 from .adaptive_nature import AdaptiveNature
+from .adaptive_motion import AdaptiveMotion
 from .topbar import TopBar
+from .sidebar import Sidebar
 from .bottombar import BottomBar
 from .lock_screen import LockScreen
 from .desktop_widgets import DesktopWidgets
+from .launcher import Launcher
 
 
 # Application metadata
@@ -107,6 +110,7 @@ class BeetaShell(Gtk.Application):
         self.adaptive_motion: Optional[AdaptiveMotion] = None
         self.topbar: Optional[TopBar] = None
         self.bottombar: Optional[BottomBar] = None
+        self.sidebar: Optional[Sidebar] = None
         self.lockscreen: Optional[LockScreen] = None
         self.desktop_widgets: Optional[DesktopWidgets] = None
 
@@ -169,8 +173,16 @@ class BeetaShell(Gtk.Application):
             state_manager=self.state_manager,
         )
 
+        self.sidebar = Sidebar(app=self)
+
+        self.launcher = Launcher(
+            app=self,
+            adaptive_motion=self.adaptive_motion,
+        )
+
         # Create lock screen overlay
         self.lockscreen = LockScreen(
+            app=self,
             config=self.config,
             state_manager=self.state_manager,
         )
@@ -285,12 +297,12 @@ class BeetaShell(Gtk.Application):
             self.desktop_widgets = None
             print(f'[{_APP_NAME}] Desktop widgets disabled.')
             if self.config:
-                self.config.set_bool('Desktop', 'show_widgets', False)
+                self.config.set('Desktop', 'show_widgets', 'false')
         else:
             self.desktop_widgets = DesktopWidgets(app=self)
             print(f'[{_APP_NAME}] Desktop widgets enabled.')
             if self.config:
-                self.config.set_bool('Desktop', 'show_widgets', True)
+                self.config.set('Desktop', 'show_widgets', 'true')
 
     def _on_toggle_launcher(
         self, action: Gio.SimpleAction, parameter: Optional[GLib.Variant]

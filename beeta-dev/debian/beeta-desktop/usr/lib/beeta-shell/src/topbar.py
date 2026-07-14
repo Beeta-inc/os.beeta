@@ -192,6 +192,9 @@ class TopBar:
         ws_text_box.append(ws_title)
         ws_text_box.append(ws_sub)
         
+        logo = Gtk.Label(label='Beeta OS')
+        logo.add_css_class('topbar-logo')
+        
         left_box = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             halign=Gtk.Align.START,
@@ -200,6 +203,7 @@ class TopBar:
             spacing=16,
         )
         left_box.add_css_class('topbar-left')
+        left_box.append(logo)
         left_box.append(self._workspace_switcher)
         left_box.append(ws_text_box)
         self._container.set_start_widget(left_box)

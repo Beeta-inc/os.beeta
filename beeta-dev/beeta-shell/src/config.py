@@ -33,6 +33,7 @@ _DEFAULTS: dict[str, dict[str, str]] = {
         'adaptive_nature_mode': 'adaptive',
         'performance_mode': 'balanced',
         'is_laptop': 'auto',
+        'show_widgets': 'false',
     },
     'Dock': {
         'pinned_apps': 'org.gnome.Nautilus;org.gnome.Terminal;firefox;org.gnome.Calculator;gnome-control-center',

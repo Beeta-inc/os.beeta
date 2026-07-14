@@ -153,10 +153,7 @@ class Launcher:
         if self._visible:
             return
         self._visible = True
-        self._search_entry.set_text('')
-        self._search_entry.grab_focus()
         self._current_category = 'All'
-        self._update_category_buttons()
         self._filter_and_display()
         self._window.present()
 
@@ -381,25 +378,12 @@ class Launcher:
 
     # ── Internal: Event Handlers ─────────────────────────────────
 
-    def _on_search_changed(self, entry: Gtk.SearchEntry) -> None:
-        """Handle search text changes — filter apps in real time."""
-        self._filter_and_display()
-
     def _on_category_clicked(
         self, button: Gtk.Button, category: str
     ) -> None:
         """Handle category tab click."""
         self._current_category = category
-        self._update_category_buttons()
         self._filter_and_display()
-
-    def _update_category_buttons(self) -> None:
-        """Update active state of category buttons."""
-        for cat, btn in self._category_buttons.items():
-            if cat == self._current_category:
-                btn.add_css_class('active')
-            else:
-                btn.remove_css_class('active')
 
     def _on_app_clicked(
         self, button: Gtk.Button, app: _AppEntry
@@ -424,17 +408,7 @@ class Launcher:
             print(f'[Launcher] Failed to launch {app.name}: {e}')
         self.hide()
 
-    def _on_backdrop_clicked(
-        self,
-        gesture: Gtk.GestureClick,
-        n_press: int,
-        x: float,
-        y: float,
-    ) -> None:
-        """Close launcher when clicking the backdrop."""
-        # Only close if click is outside the panel
-        # (the panel handles its own clicks)
-        self.hide()
+
 
     def _on_key_pressed(
         self,

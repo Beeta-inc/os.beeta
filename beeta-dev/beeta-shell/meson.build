@@ -20,6 +20,10 @@ shell_sources = files(
     'src/system_tray.py',
     'src/dock.py',
     'src/launcher.py',
+    'src/weather_renderer.py',
+    'src/desktop_widgets.py',
+    'src/sidebar.py',
+    'src/lock_screen.py',
 )
 
 # Install Python sources to /usr/lib/beeta-shell/src/

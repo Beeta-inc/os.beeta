@@ -46,7 +46,6 @@
 @define-color beeta_info           rgba(94, 231, 255, 1.0);
 
 /* [ADAPTIVE] Transitions — controlled by Adaptive Motion tier */
-@define-color _motion_dur          300ms;
 
 
 /* ══════════════════════════════════════════════════════════════
@@ -56,7 +55,6 @@
 * {
     font-family: "Inter", "Cantarell", system-ui, sans-serif;
     outline: none;
-    -gtk-outline-radius: 0;
 }
 
 window,
