@@ -988,21 +988,353 @@ tooltip {
     margin-right: 12px;
 }
 
-/* Lock Screen Layout Updates */
-.lock-card-small {
-    background: @beeta_glass_bg;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 16px;
+/* ══════════════════════════════════════════════════════════════
+   LOCK SCREEN
+   ══════════════════════════════════════════════════════════════ */
+.lock-screen {
+    background: transparent;
 }
+.lock-screen-dimmer {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+/* Lock Screen — Top Bar */
+.lock-logo {
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+}
+.lock-live-pill {
+    background: alpha(@beeta_glass_bg, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 6px 18px;
+}
+.lock-live-text {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+}
+.lock-live-sub {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+}
+.lock-status-text {
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Lock Screen — Cards */
+.lock-card {
+    background: alpha(@beeta_glass_bg, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 18px;
+}
+.lock-card-title {
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+}
+.lock-card-sub {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+}
+.lock-card-body {
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+}
+.lock-card-meta {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+}
+.lock-card-link {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Lock Screen — Weather */
+.lock-weather-icon {
+    font-size: 36px;
+}
+.lock-weather-temp {
+    color: white;
+    font-size: 42px;
+    font-weight: 200;
+}
+.lock-weather-desc {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+}
+.lock-forecast-time {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+}
+.lock-forecast-icon {
+    font-size: 16px;
+}
+.lock-forecast-temp {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Lock Screen — News */
+.lock-news-badge {
+    font-size: 18px;
+}
+.lock-news-thumb {
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px;
+}
+
+/* Lock Screen — Calendar */
+.lock-cal-time {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: 600;
+}
+.lock-cal-title {
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+}
+.lock-cal-loc {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+}
+
+/* Lock Screen — Center Column */
 .lock-clock-time {
     font-size: 84px;
-    font-weight: 800;
+    font-weight: 200;
     color: white;
+    letter-spacing: -2px;
 }
 .lock-clock-date {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
     color: white;
     opacity: 0.9;
+}
+.lock-clock-location {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 4px;
+}
+.lock-avatar {
+    border-radius: 50%;
+    background: alpha(@beeta_glass_bg, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    margin-top: 16px;
+}
+.lock-username {
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+}
+.lock-welcome {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 14px;
+}
+.lock-fingerprint {
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+.lock-pwd-row {
+    background: alpha(@beeta_glass_bg, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 4px 8px;
+}
+.lock-submit-btn {
+    background: @beeta_accent_secondary;
+    border: none;
+    border-radius: 50%;
+    padding: 8px;
+    min-width: 36px;
+    min-height: 36px;
+    color: white;
+}
+.lock-pin-link {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* Lock Screen — Apps & Status */
+.lock-app-icon {
+    font-size: 18px;
+}
+.lock-app-name {
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+}
+.lock-app-status {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 11px;
+}
+
+/* Lock Screen — Quick Note */
+.lock-note-body {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* Lock Screen — Bottom Bar */
+.lock-swipe-chevron {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 24px;
+}
+.lock-swipe-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+}
+.lock-bottom-icon {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+.lock-bottom-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+}
+.lock-welcome-pill {
+    background: alpha(@beeta_glass_bg, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 8px 24px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Split Pills in Bottom Bar */
+.weather-pill {
+    padding: 4px 16px;
+    min-height: 48px;
+}
+.ai-pill {
+    padding: 0;
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: 50%;
+}
+.ai-pill .ai-button {
+    margin: 0;
+    padding: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle, @beeta_accent_secondary, transparent);
+    box-shadow: 0 0 12px alpha(@beeta_accent_secondary, 0.3);
+}
+
+/* Weather Card Layout Improvements */
+.widget-location {
+    font-size: 13px;
+    color: white;
+    opacity: 0.95;
+    margin-top: 4px;
+}
+.widget-feels {
+    font-size: 12px;
+    color: white;
+    opacity: 0.7;
+}
+.widget-forecast-row {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.widget-forecast-time {
+    font-size: 11px;
+    color: white;
+    opacity: 0.6;
+}
+.widget-forecast-icon {
+    font-size: 16px;
+    margin: 2px 0;
+}
+.widget-forecast-temp {
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Today's Summary Card */
+.summary-item-header {
+    font-size: 11px;
+    font-weight: bold;
+    color: @beeta_accent_secondary;
+    opacity: 0.8;
+}
+.summary-item-body {
+    font-size: 13px;
+    color: white;
+    font-weight: 500;
+    line-height: 1.3;
+}
+.summary-item-meta {
+    font-size: 11px;
+    color: white;
+    opacity: 0.5;
+}
+.news-thumbnail {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+}
+.summary-row-icon {
+    font-size: 18px;
+}
+
+/* Background Apps */
+.bg-app-icon {
+    font-size: 18px;
+}
+.bg-app-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+}
+.bg-app-status {
+    font-size: 11px;
+    color: white;
+    opacity: 0.6;
+}
+.bg-app-progress progressbar trough progress {
+    background-color: @beeta_accent_secondary;
+}
+.spotify-progress progressbar trough progress {
+    background-color: @beeta_success;
+}
+.vscode-progress progressbar trough progress {
+    background-color: @beeta_accent_primary;
+}
+.widget-link {
+    font-size: 12px;
+    color: @beeta_accent_secondary;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+/* Ask AI Card Orb */
+.ai-orb-button {
+    background: radial-gradient(circle, rgba(0, 150, 255, 0.8), rgba(0, 100, 255, 0.4));
+    border: 1px solid rgba(0, 150, 255, 0.5);
+    border-radius: 50%;
+    color: white;
+    box-shadow: 0 0 16px rgba(0, 150, 255, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.3);
+    transition: all 300ms ease;
+}
+.ai-orb-button:hover {
+    box-shadow: 0 0 24px rgba(0, 150, 255, 0.8), inset 0 0 12px rgba(255, 255, 255, 0.5);
 }

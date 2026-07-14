@@ -305,34 +305,40 @@ class BottomBar:
             valign=Gtk.Align.END,
             margin_end=24,
             margin_bottom=12,
+            spacing=12,
         )
         
-        right_pill = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        right_pill.add_css_class('glass-panel-rounded')
-        right_pill.add_css_class('bottombar-pill')
+        # 1. Weather Pill
+        weather_pill = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        weather_pill.add_css_class('glass-panel-rounded')
+        weather_pill.add_css_class('bottombar-pill')
+        weather_pill.add_css_class('weather-pill')
         
-        # Upper row for Weather, lower row for Ask AI, wait mockup has them side by side.
-        right_content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=16)
-
         # Weather widget text col
-        weather_text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        weather_text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, valign=Gtk.Align.CENTER)
         self._weather_temp_label = Gtk.Label(label='--°C')
         self._weather_temp_label.add_css_class('bottombar-weather-temp')
-        self._weather_temp_label.set_halign(Gtk.Align.END)
+        self._weather_temp_label.set_halign(Gtk.Align.START)
         self._weather_desc_label = Gtk.Label(label='Loading...')
         self._weather_desc_label.add_css_class('bottombar-weather-desc')
-        self._weather_desc_label.set_halign(Gtk.Align.END)
+        self._weather_desc_label.set_halign(Gtk.Align.START)
         weather_text.append(self._weather_temp_label)
         weather_text.append(self._weather_desc_label)
         
-        weather_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        weather_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8, valign=Gtk.Align.CENTER)
         self._weather_widget = PhysicsWeatherWidget(adaptive_motion=self._motion, width=28, height=28)
         weather_box.append(self._weather_widget)
         weather_box.append(weather_text)
         
-        right_content.append(weather_box)
+        weather_pill.append(weather_box)
+        right_box.append(weather_pill)
 
-        # AI button
+        # 2. AI Pill (Standalone circle)
+        ai_pill = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        ai_pill.add_css_class('glass-panel-rounded')
+        ai_pill.add_css_class('bottombar-pill')
+        ai_pill.add_css_class('ai-pill')
+        
         ai_btn = Gtk.Button()
         ai_btn.add_css_class('ai-button')
         ai_btn_img = Gtk.Image.new_from_icon_name('preferences-system-symbolic') # AI icon placeholder
@@ -340,10 +346,9 @@ class BottomBar:
         ai_btn.set_child(ai_btn_img)
         ai_btn.set_tooltip_text('Ask Beeta AI')
         ai_btn.connect('clicked', self._on_ai_clicked)
-        right_content.append(ai_btn)
-
-        right_pill.append(right_content)
-        right_box.append(right_pill)
+        
+        ai_pill.append(ai_btn)
+        right_box.append(ai_pill)
 
         self._container.set_end_widget(right_box)
         self._window.set_child(self._container)
